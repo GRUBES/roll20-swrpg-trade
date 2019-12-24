@@ -12,14 +12,10 @@ import { version } from "../package.json";
 import * as Trade from "./trade/trade";
 
 // API Command prefix
-const prefix = "swtrade-";
+const prefix = "swrpg-";
 
 // API Command prefix with !
 const commandPrefix = `!${prefix}`;
-
-const minRarity = 0;
-const maxRarity = 10;
-const rarityToDifficulty = (r = 0) => Math.floor(Math.max(Math.min(r, maxRarity), minRarity) / 2);
 
 /**
  * Handler method for chat messages
@@ -99,7 +95,7 @@ function parseInput(msg) {
  */
 function execute(command, input) {
     const routes = {
-        "trade": Trade.buyItem
+        "trade": Trade.execute
     };
 
     if (!(routes[command] && (typeof routes[command] === "function"))) {
