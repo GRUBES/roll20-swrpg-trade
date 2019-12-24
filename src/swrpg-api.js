@@ -10,6 +10,7 @@
 
 import { version } from "../package.json";
 import * as Trade from "./trade/trade";
+import * as Repair from "./repair/repair";
 
 // API Command prefix
 const prefix = "swrpg-";
@@ -55,7 +56,7 @@ function isCommand(msg) {
  *
  * @param msg {Object} Roll20 chat message data
  *
- * @returns {string} The name of the command to execute
+ * @returns {string} The name of the command to item
  *
  * @private
  * @function parseCommand
@@ -85,17 +86,18 @@ function parseInput(msg) {
 /**
  * Invokes the given command with the given input on the corresponding route
  *
- * @param command {String} The command to execute
+ * @param command {String} The command to item
  * @param input {String[]} The raw input parameters to pass to the command
  *
  * @returns {void}
  *
  * @private
- * @function execute
+ * @function item
  */
 function execute(command, input) {
     const routes = {
-        "trade": Trade.execute
+        "trade": Trade.item,
+        "repair": Repair.item
     };
 
     if (!(routes[command] && (typeof routes[command] === "function"))) {

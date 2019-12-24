@@ -69,7 +69,7 @@ const RegionToModifier = {
  *
  * @return {void} sends output to Roll20 chat
  */
-const execute = (rarity, region, tradeProximity, population, basePrice) => {
+const item = (rarity, region, tradeProximity, population, basePrice) => {
     let diff = difficulty(rarity, region, tradeProximity, population);
     let purchasePrice = clampModifier(diff) * basePrice;
     let sellPrices = [purchasePrice / 4, purchasePrice / 2, purchasePrice * 0.75];
@@ -102,5 +102,5 @@ const clampModifier = clamp(1, 4);
 const clampRarity = clamp(0, 10);
 
 export {
-    execute
+    item
 }
