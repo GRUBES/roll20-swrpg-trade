@@ -1,0 +1,20 @@
+// #RepairCondition
+?{Condition|New, 0|Minor, 1|Moderate, 2|Major, 3}
+
+//#RepairItem
+!swrpg-repair #RepairCondition ?{Base Price}
+
+// #TradeItem
+!swrpg-trade #TradeRarity #TradeLocation #TradeProximity #TradePopulation ?{Base Price|0}
+
+// #TradeLocation
+?{Region|Core, 0|Colonies, 1|Inner Rim, 2|Mid Rim, 3|Outer Rim, 4|Expansion, 5|Wild Space, 6|Unknown Regions, 7}
+
+// #TradePopulation
+?{Population|High, 0|Average, 1|Low, 2|Uncivilized, 3}
+
+// #TradeProximity
+?{Trade Route Proximity|On, 0|Near, 1|Far, 2}
+
+// #TradeRarity
+?{Rarity|0|1|2|3|4|5|6|7|8|9|10}
