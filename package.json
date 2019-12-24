@@ -1,0 +1,26 @@
+{
+  "name": "roll20-swrpg-trade",
+  "version": "0.1.0",
+  "description": "Implements the Galactic Economy mechanics presented in the Core Rulebook for the [Roll20](https://roll20.net/) VTT application.",
+  "main": "swrpg-trade.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "rollup -c"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@etg-gh:GRUBES/roll20-swrpg-trade.git"
+  },
+  "keywords": [
+    "roll20",
+    "swrpg"
+  ],
+  "author": "Draico Dorath",
+  "license": "MIT",
+  "devDependencies": {
+    "@rollup/plugin-json": "^4.0.1"
+  },
+  "dependencies": {
+    "rollup": "^1.27.14"
+  }
+}
