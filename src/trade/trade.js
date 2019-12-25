@@ -1,12 +1,4 @@
-/**
- * Core logic for the Galactic Economy system
- *
- * @module swrpg/trade/core
- *
- * @author Draico Dorath
- * @copyright 2019
- * @license MIT
- */
+import {clamp} from "../util/math";
 
 const speakingAs = "Trade Representative";
 
@@ -96,11 +88,19 @@ const difficulty = (rarity, region, tradeProximity, population) => clampDifficul
 
 const rarityToDifficulty = (r = 0) => Math.floor(clampRarity(r) / 2);
 
-const clamp = (min, max) => v => Math.max(Math.min(v, max), min);
 const clampDifficulty = clamp(0, 5);
 const clampModifier = clamp(1, 4);
 const clampRarity = clamp(0, 10);
 
+/**
+ * Core logic for the Galactic Economy system
+ *
+ * @module swrpg/trade/core
+ *
+ * @author Draico Dorath
+ * @copyright 2019
+ * @license MIT
+ */
 export {
     item
 }

@@ -18,3 +18,21 @@
 
 // #TradeRarity
 ?{Rarity|0|1|2|3|4|5|6|7|8|9|10}
+
+// #ContactScope
+?{Scope|Individual, 0|Small Group, 1|Planet, 2|System, 3|Sector, 4|Vast, 5}
+
+// #ContactExpertise
+?{Expertise|None, 0|Minimal, 1|Professional, 2|Accomplished, 3|Well-Known, 4|Thought Leaders, 5}
+
+// #ContactObscurity
+?{Obscurity|Basic Info, 0|Standard Info, 1|Basic Research, 2|Specialist Research, 3|Significant Research, 4|Secret, 5}
+
+// #ContactReputation
+?{Reputation|Famous, 1|Well-Known, 2|Average, 3|Upstart, 4|Unfamiliar, 5|Adversarial, 6}
+
+// #ContactRelevance
+?{Relevance|High, 1|Average, 2|Low, 3|None, 4}
+
+// #ContactInvestigate
+!swrpg-contact #ContactScope #ContactExpertise #ContactObscurity #ContactReputation #ContactRelevance
