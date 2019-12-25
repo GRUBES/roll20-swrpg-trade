@@ -17,7 +17,7 @@ const Reputation = {
     WELL_KNOWN: 2,
     AVERAGE: 3,
     UPSTART: 4,
-    UNACQUIANTED: 5,
+    UNFAMILIAR: 5,
     ADVERSARY: 6
 };
 
