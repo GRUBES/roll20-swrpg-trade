@@ -75,7 +75,7 @@ const item = (rarity, region, tradeProximity, population, basePrice) => {
         sellPrices.join(" | "),
         `}}`
     ].join(" ");
-    sendChat(speakingAs, msg);
+    sendChat(speakingAs, msg, null, {noarchive: true});
 };
 
 const difficulty = (rarity, region, tradeProximity, population) => clampDifficulty([

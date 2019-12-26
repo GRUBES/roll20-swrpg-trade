@@ -1,7 +1,7 @@
 // #RepairCondition
 ?{Condition|New, 0|Minor, 1|Moderate, 2|Major, 3}
 
-//#RepairItem
+// #RepairItem
 !swrpg-repair #RepairCondition ?{Base Price}
 
 // #TradeItem
@@ -36,3 +36,6 @@
 
 // #ContactInvestigate
 !swrpg-contact #ContactScope #ContactExpertise #ContactObscurity #ContactReputation #ContactRelevance
+
+// #PartyLocation
+/w gm @{-DicePool|grouplocation}

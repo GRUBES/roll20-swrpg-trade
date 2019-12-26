@@ -40,7 +40,7 @@ const item = (condition, basePrice) => {
         `{{Repair Cost: ${basePrice * CostModifier[condition]}}}`,
         `{{Each Advantage reduces cost by 10% for self repair}}`
     ].join(" ");
-    sendChat(speakingAs, msg);
+    sendChat(speakingAs, msg, null, {noarchive: true});
 };
 
 export {

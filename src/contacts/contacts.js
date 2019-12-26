@@ -35,10 +35,10 @@ const investigate = (scope, expertise, obscurity, reputation, relevance) => {
     let time = response(obscurity, reputation, relevance);
 
     let msg = `!eed ${ability}g ${difficulty}p upgrade(ability|${proficiency}) upgrade(difficulty|${relevance-1})`;
-    sendChat(speakingAs, msg);
+    sendChat(speakingAs, msg, null, {noarchive: true});
 
     msg = `/w gm &{template:base} {{title=Response Time}} {{${time} days}}`;
-    sendChat(speakingAs, msg);
+    sendChat(speakingAs, msg, null, {noarchive: true});
 };
 
 const response = (obscurity, reputation, relevance) => (obscurity * 3 * reputation * relevance);
