@@ -1,6 +1,8 @@
 # Roll20 GM Utilities for FFG Star Wars RPG
 
-Implements several helpful Roll20 macros for GMs of the Star Wars RPG by Fantasy Flight Games.
+Implements several helpful Roll20 macros for GMs of the
+[Star Wars RPG](https://www.fantasyflightgames.com/en/products/#/universe/star-wars) by
+[Fantasy Flight Games](https://www.fantasyflightgames.com/).
 
 ## Installation and Setup
 
@@ -8,6 +10,7 @@ Implements several helpful Roll20 macros for GMs of the Star Wars RPG by Fantasy
 1. Copy `dist/swrpg.js` and paste it into the contents of this new Script.
 1. Name the new Script something like "SWRPG"
 1. Save the new Script
+1. If successful, you should see `"[SWRPG] vX.X.X loaded."` in the *API Output Console*
 1. Launch your game
 1. Create new macros exactly as defined in `dist/swrpg-macros.txt`
 1. The primary top-level macros are:
