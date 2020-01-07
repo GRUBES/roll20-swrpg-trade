@@ -14,7 +14,8 @@ Implements several helpful Roll20 macros for GMs of the
 1. Launch your game
 1. Create new macros exactly as defined in `dist/swrpg-macros.txt`
 1. The primary top-level macros are:
-    * `PartyLocation`: sends a GM chat message of the Party's Current Location, as defined on the GM Sheet
+    * `PartyLocation`: sends a GM chat message of the Party's Current Location, as defined
+        [on the GM Sheet](https://wiki.roll20.net/SWRPG-API-Compatible#General_Info)
     * `TradeItem`: Prompts to help the GM assign a difficulty and prices for the sale/purchase of an Item
     * `RepairItem`: Prompts to help the GM assign a difficulty and prices for the repair of an Item  
     * `ContactInvestigate`: Prompts to help the GM roll and define a response time for the party's Contact Network, as
