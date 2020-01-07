@@ -12,6 +12,7 @@ import { version } from "../package.json";
 import * as Trade from "./trade/trade";
 import * as Repair from "./repair/repair";
 import * as Contact from "./contacts/contacts";
+import * as Craft from "./crafting/craft";
 
 // API Command prefix
 const prefix = "swrpg-";
@@ -99,7 +100,8 @@ function execute(command, input) {
     const routes = {
         "trade": Trade.item,
         "repair": Repair.item,
-        "contact": Contact.investigate
+        "contact": Contact.investigate,
+        "craft-weapon": Craft.weapon
     };
 
     if (!(routes[command] && (typeof routes[command] === "function"))) {
