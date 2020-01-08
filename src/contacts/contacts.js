@@ -65,9 +65,7 @@ const display = (scope, expertise, obscurity, reputation, relevance) => {
     let time = responseTime(obscurity, reputation, relevance);
 
     // FIXME How can I roll this in private?
-    log(`[SWRPG] eote:${typeof eote}`);
-    let msg = `!eed ${ab}g ${diff}p upgrade(ability|${pf}) upgrade(difficulty|${relevance-1})`;
-    sendChat(speakingAs, msg, null, {noarchive: true});
+    eote.process.setup(`!eed ${ab}g ${diff}p upgrade(ability|${pf}) upgrade(difficulty|${relevance-1})`, speakingAs);
 
     sendPrivate(speakingAs, {title: "Response Time", Days: time});
 };

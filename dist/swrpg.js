@@ -223,14 +223,6 @@
   const clampModifier = clamp(1, 4);
   const clampRarity = clamp(0, 10);
 
-  var Trade = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    difficulty: difficulty,
-    item: display,
-    purchasePrice: purchasePrice,
-    sellPrices: sellPrices
-  });
-
   /**
    * Core logic for item repair
    *
@@ -310,9 +302,7 @@
       let time = responseTime(obscurity, reputation, relevance);
 
       // FIXME How can I roll this in private?
-      log(`[SWRPG] eote:${typeof eote}`);
-      let msg = `!eed ${ab}g ${diff}p upgrade(ability|${pf}) upgrade(difficulty|${relevance-1})`;
-      sendChat(speakingAs$2, msg, null, {noarchive: true});
+      eote.process.setup(`!eed ${ab}g ${diff}p upgrade(ability|${pf}) upgrade(difficulty|${relevance-1})`, "-DicePool");
 
       sendPrivate(speakingAs$2, {title: "Response Time", Days: time});
   };
@@ -425,7 +415,7 @@
    */
   function execute(command, input) {
       const routes = {
-          "trade": undefined,
+          "trade": display,
           "repair": display$1,
           "contact": display$2
       };
