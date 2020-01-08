@@ -103,6 +103,7 @@ function execute(command, input) {
         "contact": Contact.investigate,
         "craft-acquire": Craft.acquireMaterials,
         "craft-gadget": Craft.gadget,
+        "craft-weapon": Craft.weapon
     };
 
     if (!(routes[command] && (typeof routes[command] === "function"))) {

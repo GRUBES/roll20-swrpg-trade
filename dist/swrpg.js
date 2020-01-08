@@ -829,6 +829,7 @@
           "contact": display,
           "craft-acquire": acquireMaterials,
           "craft-gadget": constructGadget,
+          "craft-gadget": constructGadget
       };
 
       if (!(routes[command] && (typeof routes[command] === "function"))) {
