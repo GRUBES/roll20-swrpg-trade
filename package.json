@@ -1,6 +1,6 @@
 {
   "name": "roll20-swrpg",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "GM Tools for running Star Wars FFG on the [Roll20](https://roll20.net/) VTT application.",
   "main": "swrpg-trade.js",
   "scripts": {
