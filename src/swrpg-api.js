@@ -97,7 +97,7 @@ function parseInput(msg) {
  */
 function execute(command, input) {
     const routes = {
-        "trade": Trade.display,
+        "trade": Trade.item,
         "repair": Repair.item,
         "contact": Contact.investigate
     };
