@@ -23,3 +23,7 @@ Implements several helpful Roll20 macros for GMs of the
         sourcebook.
         
 Personally I put these four macros in my Macro Bar, then color code them for very quick access.
+
+## API Commands
+
+TODO
