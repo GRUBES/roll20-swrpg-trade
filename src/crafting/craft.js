@@ -1,3 +1,5 @@
+const speakingAs = "Crafting Droid";
+
 const Template = {
     Weapon: {
         FIST: 0,
@@ -288,5 +290,4 @@ const Weapon = {
  * @license MIT
  */
 export {
-    weapon
 }
