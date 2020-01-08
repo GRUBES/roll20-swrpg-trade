@@ -1,3 +1,15 @@
+/**
+ * Core logic for the Crafting system
+ *
+ * @module swrpg/craft/core
+ *
+ * @author Draico Dorath
+ * @copyright 2020
+ * @license MIT
+ */
+
+import {sendPrivate} from "../util/chat";
+
 const speakingAs = "Crafting Droid";
 
 const Template = {
@@ -280,14 +292,5 @@ const Weapon = {
     }
 };
 
-/**
- * Core logic for the Crafting system
- *
- * @module swrpg/craft/core
- *
- * @author Draico Dorath
- * @copyright 2020
- * @license MIT
- */
 export {
 }

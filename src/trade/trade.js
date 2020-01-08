@@ -1,5 +1,17 @@
-import {clamp} from "../util/math";
+/**
+ * Core logic for the Galactic Economy system
+ *
+ * @module swrpg/trade/core
+ *
+ * @author Draico Dorath
+ * @copyright 2019
+ * @license MIT
+ */
 
+import {clamp} from "../util/math";
+import {sendPrivate} from "../util/chat";
+
+/* Sender of chat messages */
 const speakingAs = "Trade Representative";
 
 /**
@@ -86,59 +98,21 @@ const RegionToModifier = {
     [Region.UNKNOWN]: 4
 };
 
-/**
- * Calculates and displays results for trading an display to the GM
- *
- * @param rarity {number} Rarity of the display being purchased
- * @param region {Region} The Region in which the display is being purchased
- * @param tradeProximity {Proximity} Current proximity to major trade route
- * @param population {Population} relative population of planet on which the display is being purchased
- * @param basePrice {number} the base price of the display being purchased
- *
- * @return {void} sends output to Roll20 chat
- */
+// Calculate trade values and display to GM
 const display = (rarity, region, tradeProximity, population, basePrice) => {
-    let data = calculate(rarity, region, tradeProximity, population, basePrice);
-    let msg = [
-        "/w gm &{template:base}",
-        `{{title=Trade Negotiations}}`,
-        `{{Difficulty: ${data.difficulty}}}`,
-        `{{Purchase Price: ${data.purchasePrice}}}`,
-        `{{Sell Prices: ${data.sellPrices.join(" | ")}}}`
-    ].join(" ");
-    sendChat(speakingAs, msg, null, {noarchive: true});
-};
-
-/**
- * Mechanics for trading an display
- *
- * @param rarity {number} Rarity of the display being purchased
- * @param region {Region} The Region in which the display is being purchased
- * @param tradeProximity {Proximity} Current proximity to major trade route
- * @param population {Population} relative population of planet on which the display is being purchased
- * @param basePrice {number} the base price of the display being purchased
- *
- * @return {{difficulty: number, purchasePrice: number, sellPrices: number[]}}
- */
-const calculate = (rarity, region, tradeProximity, population, basePrice) => {
     let diff = difficulty(rarity, region, tradeProximity, population);
     let buy = purchasePrice(diff, basePrice);
-    let sell = sellPrices(buy);
-
-    return {difficulty: diff, purchasePrice: buy, sellPrices: sell};
+    let sell = sellPrices(buy).join(" | ");
+    let content = {
+        title: "Trade Negotiations",
+        Difficulty: diff,
+        "Purchase Price": buy,
+        "Sell Prices": sell
+    };
+    sendPrivate(speakingAs, content);
 };
 
-/**
- * Calculates the Difficulty of the Negotiation or Streetwise check needed to locate a buyer or
- * seller for the desired display
- *
- * @param rarity {number} the Rarity of the desired display
- * @param region {Region} the Region where the trade is taking place
- * @param tradeProximity {Proximity} the proximity to major trade route(s)
- * @param population {Population} the population of the location of the trade
- *
- * @returns {number} the Difficulty of the required check
- */
+// Calculate the Difficulty of the Negotiation or Streetwise roll
 const difficulty = (rarity, region, tradeProximity, population) => clampDifficulty([
     rarityToDifficulty(rarity),
     RegionToModifier[region],
@@ -146,53 +120,68 @@ const difficulty = (rarity, region, tradeProximity, population) => clampDifficul
     PopulationToModifier[population]
 ].reduce((t, v) => t + v));
 
-/**
- * Calculates the recommended Purchase Price of the display for this trade
- *
- * @param diff {number} the Difficulty of the trade check
- * @param basePrice {number} the standard value of the display
- *
- * @returns {number} the modified value of the display for this trade
- */
+// Calculate recommended Purchase Price
 const purchasePrice = (diff, basePrice) => clampModifier(diff) * basePrice;
 
-/**
- * Calculates the recommended Sale Prices of the display.
- *
- * @param purchasePrice
- *
- * @returns {number[]} list of recommended Sale Prices. The first element is the base Sale Price,
- *  the second is for two successes in the sale check, and the third is for three or more successes.
- */
+// Calculate recommended Sale Prices based on number of Successes
 const sellPrices = (purchasePrice) => [purchasePrice / 4, purchasePrice / 2, purchasePrice * 0.75];
 
-/**
- * Maps an display's Rarity to the appropriate Difficulty
- *
- * @param r {number} the Rarity
- *
- * @returns {number} the base Difficulty of the check
- *
- * @private
- */
+// Maps an item's Rarity to the appropriate Difficulty
 const rarityToDifficulty = (r = 0) => Math.floor(clampRarity(r) / 2);
 
 const clampDifficulty = clamp(0, 5);
 const clampModifier = clamp(1, 4);
 const clampRarity = clamp(0, 10);
 
-/**
- * Core logic for the Galactic Economy system
- *
- * @module swrpg/trade/core
- *
- * @author Draico Dorath
- * @copyright 2019
- * @license MIT
- */
 export {
+    /**
+     * Calculates the Difficulty of the Negotiation or Streetwise check needed to locate a buyer or
+     * seller for the desired display
+     *
+     * @param rarity {number} the Rarity of the desired display
+     * @param region {Region} the Region where the trade is taking place
+     * @param tradeProximity {Proximity} the proximity to major trade route(s)
+     * @param population {Population} the population of the location of the trade
+     *
+     * @returns {number} the Difficulty of the required check
+     *
+     * @function
+     */
     difficulty,
-    display,
+    /**
+     * Calculates and displays to the GM results for trading an item
+     *
+     * @param rarity {number} Rarity of the display being purchased
+     * @param region {Region} The Region in which the display is being purchased
+     * @param tradeProximity {Proximity} Current proximity to major trade route
+     * @param population {Population} relative population of planet on which the display is being purchased
+     * @param basePrice {number} the base price of the display being purchased
+     *
+     * @returns {void} sends output to Roll20 chat
+     *
+     * @function
+     */
+    display as item,
+    /**
+     * Calculates the recommended Purchase Price of the display for this trade
+     *
+     * @param diff {number} the Difficulty of the trade check
+     * @param basePrice {number} the standard value of the display
+     *
+     * @returns {number} the modified value of the display for this trade
+     *
+     * @function
+     */
     purchasePrice,
+    /**
+     * Calculates the recommended Sale Prices of the display.
+     *
+     * @param purchasePrice {number} the price at which this item could be purchased in this location
+     *
+     * @returns {number[]} list of recommended Sale Prices. The first element is the base Sale Price,
+     *  the second is for two successes in the sale check, and the third is for three or more successes.
+     *
+     * @function
+     */
     sellPrices
 }

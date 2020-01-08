@@ -13,8 +13,95 @@
    * @license MIT
    */
 
+  // Clamp a value between two others, inclusive
   const clamp = (min, max) => v => Math.max(Math.min(v, max), min);
 
+  /**
+   * Data structure for the predefined properties of the "Base" Roll Template
+   *
+   * @typedef {Object} BaseTemplate
+   *
+   * @property [title] {string}
+   * @property [flavor] {string}
+   * @property [wide] {string}
+   * @property [roll] {string}
+   * @property [results] {string}
+   * @property [subtitle] {string}
+   * @property [header] {string}
+   * @property [item] {string}
+   * @property [prewide] {string}
+   * @property [wide] {string}
+   * @property [wide2] {string}
+   * @property [wide3] {string}
+   * @property [wide4] {string}
+   * @property [wide5] {string}
+   */
+
+  /**
+   * The "Base" Roll Template's predefined properties
+   *
+   * @type {string[]}
+   *
+   * @private
+   */
+  const TemplateKeys = [
+      "title",
+      "flavor",
+      "roll",
+      "results",
+      "subtitle",
+      "header",
+      "item",
+      "prewide",
+      "wide",
+      "wide2",
+      "wide3",
+      "wide4",
+      "wide5"
+  ];
+
+  /**
+   * Whispers the GM a chat message with the given data using the "Base" Roll Template
+   *
+   * @param speakingAs {string} the sender of the chat message
+   * @param data {BaseTemplate} the message data
+   *
+   * @return {void} sends output to Roll20 chat
+   */
+  const sendPrivate = (speakingAs, data) => {
+      let msg = "/w gm &{template:base} " + parseMessage(data);
+      sendChat(speakingAs, msg, null, {noarchive: true});
+  };
+
+  /**
+   * Translates the given data into an appropriate message for the "Base" Roll Template
+   *
+   * @param data {BaseTemplate}
+   *
+   * @returns {string} the message content
+   *
+   * @private
+   */
+  const parseMessage = (data) => _.chain(data)
+      .mapObject((v, k) => {
+          let separator = TemplateKeys.includes(k) ? "=" : ": ";
+          return `{{${k}${separator}${v}}}`
+      })
+      .values()
+      .value()
+      .join("");
+
+  /**
+   * Core logic for the Galactic Economy system
+   *
+   * @module swrpg/trade/core
+   *
+   * @author Draico Dorath
+   * @copyright 2019
+   * @license MIT
+   */
+
+  /* Sender of chat messages */
   const speakingAs = "Trade Representative";
 
   /**
@@ -101,59 +188,21 @@
       [Region.UNKNOWN]: 4
   };
 
-  /**
-   * Calculates and displays results for trading an display to the GM
-   *
-   * @param rarity {number} Rarity of the display being purchased
-   * @param region {Region} The Region in which the display is being purchased
-   * @param tradeProximity {Proximity} Current proximity to major trade route
-   * @param population {Population} relative population of planet on which the display is being purchased
-   * @param basePrice {number} the base price of the display being purchased
-   *
-   * @return {void} sends output to Roll20 chat
-   */
+  // Calculate trade values and display to GM
   const display = (rarity, region, tradeProximity, population, basePrice) => {
-      let data = calculate(rarity, region, tradeProximity, population, basePrice);
-      let msg = [
-          "/w gm &{template:base}",
-          `{{title=Trade Negotiations}}`,
-          `{{Difficulty: ${data.difficulty}}}`,
-          `{{Purchase Price: ${data.purchasePrice}}}`,
-          `{{Sell Prices: ${data.sellPrices.join(" | ")}}}`
-      ].join(" ");
-      sendChat(speakingAs, msg, null, {noarchive: true});
-  };
-
-  /**
-   * Mechanics for trading an display
-   *
-   * @param rarity {number} Rarity of the display being purchased
-   * @param region {Region} The Region in which the display is being purchased
-   * @param tradeProximity {Proximity} Current proximity to major trade route
-   * @param population {Population} relative population of planet on which the display is being purchased
-   * @param basePrice {number} the base price of the display being purchased
-   *
-   * @return {{difficulty: number, purchasePrice: number, sellPrices: number[]}}
-   */
-  const calculate = (rarity, region, tradeProximity, population, basePrice) => {
       let diff = difficulty(rarity, region, tradeProximity, population);
       let buy = purchasePrice(diff, basePrice);
-      let sell = sellPrices(buy);
-
-      return {difficulty: diff, purchasePrice: buy, sellPrices: sell};
+      let sell = sellPrices(buy).join(" | ");
+      let content = {
+          title: "Trade Negotiations",
+          Difficulty: diff,
+          "Purchase Price": buy,
+          "Sell Prices": sell
+      };
+      sendPrivate(speakingAs, content);
   };
 
-  /**
-   * Calculates the Difficulty of the Negotiation or Streetwise check needed to locate a buyer or
-   * seller for the desired display
-   *
-   * @param rarity {number} the Rarity of the desired display
-   * @param region {Region} the Region where the trade is taking place
-   * @param tradeProximity {Proximity} the proximity to major trade route(s)
-   * @param population {Population} the population of the location of the trade
-   *
-   * @returns {number} the Difficulty of the required check
-   */
+  // Calculate the Difficulty of the Negotiation or Streetwise roll
   const difficulty = (rarity, region, tradeProximity, population) => clampDifficulty([
       rarityToDifficulty(rarity),
       RegionToModifier[region],
@@ -161,40 +210,26 @@
       PopulationToModifier[population]
   ].reduce((t, v) => t + v));
 
-  /**
-   * Calculates the recommended Purchase Price of the display for this trade
-   *
-   * @param diff {number} the Difficulty of the trade check
-   * @param basePrice {number} the standard value of the display
-   *
-   * @returns {number} the modified value of the display for this trade
-   */
+  // Calculate recommended Purchase Price
   const purchasePrice = (diff, basePrice) => clampModifier(diff) * basePrice;
 
-  /**
-   * Calculates the recommended Sale Prices of the display.
-   *
-   * @param purchasePrice
-   *
-   * @returns {number[]} list of recommended Sale Prices. The first element is the base Sale Price,
-   *  the second is for two successes in the sale check, and the third is for three or more successes.
-   */
+  // Calculate recommended Sale Prices based on number of Successes
   const sellPrices = (purchasePrice) => [purchasePrice / 4, purchasePrice / 2, purchasePrice * 0.75];
 
-  /**
-   * Maps an display's Rarity to the appropriate Difficulty
-   *
-   * @param r {number} the Rarity
-   *
-   * @returns {number} the base Difficulty of the check
-   *
-   * @private
-   */
+  // Maps an item's Rarity to the appropriate Difficulty
   const rarityToDifficulty = (r = 0) => Math.floor(clampRarity(r) / 2);
 
   const clampDifficulty = clamp(0, 5);
   const clampModifier = clamp(1, 4);
   const clampRarity = clamp(0, 10);
+
+  var Trade = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    difficulty: difficulty,
+    item: display,
+    purchasePrice: purchasePrice,
+    sellPrices: sellPrices
+  });
 
   /**
    * Core logic for item repair
@@ -206,8 +241,15 @@
    * @license MIT
    */
 
+  /* Sender of chat messages */
   const speakingAs$1 = "Repair Droid";
 
+  /**
+   * Enumeration of Item Conditions
+   *
+   * @enum {number}
+   * @readonly
+   */
   const Condition = {
       NEW: 0,
       MINOR: 1,
@@ -215,6 +257,12 @@
       MAJOR: 3
   };
 
+  /**
+   * Maps an Item's Condition to its cost modifier
+   *
+   * @enum {number}
+   * @readonly
+   */
   const CostModifier = {
       [Condition.NEW]: 0,
       [Condition.MINOR]: 0.25,
@@ -222,24 +270,24 @@
       [Condition.MAJOR]: 1,
   };
 
-  /**
-   * Mechanics for repairing an item
-   *
-   * @param condition {Condition} the condition of the item
-   * @param basePrice {number} the base price of the item
-   *
-   * @return {void} sends output to Roll20 chat
-   */
-  const item = (condition, basePrice) => {
-      let msg = [
-          "/w gm &{template:base}",
-          `{{title=Item Repair}}`,
-          `{{Difficulty: ${condition}}}`,
-          `{{Repair Cost: ${basePrice * CostModifier[condition]}}}`,
-          `{{Advantage/Threat modifies cost by 10% for self repair}}`
-      ].join(" ");
-      sendChat(speakingAs$1, msg, null, {noarchive: true});
+  // Calculate repair values and display to GM
+  const display$1 = (condition, basePrice) => {
+      let diff = difficulty$1(condition);
+      let price = cost(condition, basePrice);
+      let content = {
+          title: "Item Repair",
+          Difficulty: diff,
+          "Repair Cost": price,
+          "Adv or Thr": "modifies cost accordingly by 10% each for self repair"
+      };
+      sendPrivate(speakingAs$1, content);
   };
+
+  // Calculate the Difficulty of the repair check
+  const difficulty$1 = (condition) => condition;
+
+  // Calculate the material cost of the repairs
+  const cost = (condition, basePrice) => basePrice * CostModifier[condition];
 
   /**
    * Core logic for the Contact Networks system
@@ -251,22 +299,35 @@
    * @license MIT
    */
 
+  /* Sender of chat messages */
   const speakingAs$2 = "Information Broker";
 
-  const investigate = (scope, expertise, obscurity, reputation, relevance) => {
-      let ability = clamp5(scope);
-      let proficiency = clamp5(expertise);
-      let difficulty = clamp5(obscurity);
-      let time = response(obscurity, reputation, relevance);
+  // Calculate results for Contact Network and display
+  const display$2 = (scope, expertise, obscurity, reputation, relevance) => {
+      let ab = ability(scope);
+      let pf = proficiency(expertise);
+      let diff = difficulty$2(obscurity);
+      let time = responseTime(obscurity, reputation, relevance);
 
-      let msg = `!eed ${ability}g ${difficulty}p upgrade(ability|${proficiency}) upgrade(difficulty|${relevance-1})`;
+      // FIXME How can I roll this in private?
+      log(`[SWRPG] eote:${typeof eote}`);
+      let msg = `!eed ${ab}g ${diff}p upgrade(ability|${pf}) upgrade(difficulty|${relevance-1})`;
       sendChat(speakingAs$2, msg, null, {noarchive: true});
 
-      msg = `/w gm &{template:base} {{title=Response Time}} {{${time} days}}`;
-      sendChat(speakingAs$2, msg, null, {noarchive: true});
+      sendPrivate(speakingAs$2, {title: "Response Time", Days: time});
   };
 
-  const response = (obscurity, reputation, relevance) => (obscurity * 3 * reputation * relevance);
+  // Calculate the number of ability dice the Contact Network uses
+  const ability = (scope) => clamp5(scope);
+
+  // Calculate the Difficulty of the Contact Network's skill check
+  const difficulty$2 = (obscurity) => clamp5(obscurity);
+
+  // Calculate the number of ability upgrades the Contact Network receives
+  const proficiency = (expertise) => clamp5(expertise);
+
+  // Calculate the response time of the informant
+  const responseTime = (obscurity, reputation, relevance) => (obscurity * 3 * reputation * relevance);
 
   const clamp5 = clamp(0, 5);
 
@@ -364,9 +425,9 @@
    */
   function execute(command, input) {
       const routes = {
-          "trade": display,
-          "repair": item,
-          "contact": investigate
+          "trade": undefined,
+          "repair": display$1,
+          "contact": display$2
       };
 
       if (!(routes[command] && (typeof routes[command] === "function"))) {

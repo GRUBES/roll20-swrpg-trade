@@ -8,6 +8,7 @@
  * @license MIT
  */
 
+// Clamp a value between two others, inclusive
 const clamp = (min, max) => v => Math.max(Math.min(v, max), min);
 
 export {
