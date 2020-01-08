@@ -698,12 +698,17 @@
   /* Step 3: Construction */
   const constructWeapon = (templateType) => {
       let tmpl = Template[templateType];
-      let content = {
+
+      let craftContent = {
           title: "Weapon Construction",
-          subtitle: `${tmpl.name} - ${tmpl.type}`,
           Difficulty: tmpl.difficulty,
           Skills: tmpl.skills.join(", "),
-          "Time Required": `${tmpl.time}, -2 hours for each additional success`,
+          "Time Required": `${tmpl.time}, -2 hours for each additional success`
+      };
+
+      let itemContent = {
+          title: tmpl.name,
+          subtitle: tmpl.type,
           Damage: tmpl.damage,
           Critical: tmpl.critical,
           Qualities: tmpl.special,
@@ -712,7 +717,9 @@
           Encumbrance: tmpl.encumbrance,
           "Hard Points": tmpl.hardpoints
       };
-      sendPrivate(speakingAs$2, content);
+
+      sendPrivate(speakingAs$2, craftContent);
+      sendPrivate(speakingAs$2, itemContent);
   };
 
   /**
