@@ -92,6 +92,46 @@
       .join("");
 
   /**
+   * Core logic for the Contact Networks system
+   *
+   * @module swrpg/contacts/core
+   *
+   * @author Draico Dorath
+   * @copyright 2019
+   * @license MIT
+   */
+
+  /* Sender of chat messages */
+  const speakingAs = "Information Broker";
+
+  // Calculate results for Contact Network and display
+  const display = (scope, expertise, obscurity, reputation, relevance) => {
+      let ab = ability(scope);
+      let pf = proficiency(expertise);
+      let diff = difficulty(obscurity);
+      let time = responseTime(obscurity, reputation, relevance);
+
+      // FIXME How can I roll this in private?
+      eote.process.setup(`!eed ${ab}g ${diff}p upgrade(ability|${pf}) upgrade(difficulty|${relevance-1})`, speakingAs);
+
+      sendPrivate(speakingAs, {title: "Response Time", Days: time});
+  };
+
+  // Calculate the number of ability dice the Contact Network uses
+  const ability = (scope) => clamp5(scope);
+
+  // Calculate the Difficulty of the Contact Network's skill check
+  const difficulty = (obscurity) => clamp5(obscurity);
+
+  // Calculate the number of ability upgrades the Contact Network receives
+  const proficiency = (expertise) => clamp5(expertise);
+
+  // Calculate the response time of the informant
+  const responseTime = (obscurity, reputation, relevance) => (obscurity * 3 * reputation * relevance);
+
+  const clamp5 = clamp(0, 5);
+
+  /**
    * Core logic for the Galactic Economy system
    *
    * @module swrpg/trade/core
@@ -102,7 +142,7 @@
    */
 
   /* Sender of chat messages */
-  const speakingAs = "Trade Representative";
+  const speakingAs$1 = "Trade Representative";
 
   /**
    * Enumeration of proximity to major trade route
@@ -189,8 +229,8 @@
   };
 
   // Calculate trade values and display to GM
-  const display = (rarity, region, tradeProximity, population, basePrice) => {
-      let diff = difficulty(rarity, region, tradeProximity, population);
+  const display$1 = (rarity, region, tradeProximity, population, basePrice) => {
+      let diff = difficulty$1(rarity, region, tradeProximity, population);
       let buy = purchasePrice(diff, basePrice);
       let sell = sellPrices(buy).join(" | ");
       let content = {
@@ -199,11 +239,11 @@
           "Purchase Price": buy,
           "Sell Prices": sell
       };
-      sendPrivate(speakingAs, content);
+      sendPrivate(speakingAs$1, content);
   };
 
   // Calculate the Difficulty of the Negotiation or Streetwise roll
-  const difficulty = (rarity, region, tradeProximity, population) => clampDifficulty([
+  const difficulty$1 = (rarity, region, tradeProximity, population) => clampDifficulty([
       rarityToDifficulty(rarity),
       RegionToModifier[region],
       ProximityToModifier[tradeProximity],
@@ -224,6 +264,415 @@
   const clampRarity = clamp(0, 10);
 
   /**
+   * Core logic for the Crafting system
+   *
+   * @module swrpg/craft/core
+   *
+   * @author Draico Dorath
+   * @copyright 2020
+   * @license MIT
+   */
+
+  /**
+   * Crafting template for a weapon
+   *
+   * @typedef {Object} WeaponTemplate
+   *
+   * @property critical {number} Critical Rating of the weapon
+   * @property damage {string|number} Damage of the weapon. Number for Ranged weapons; string for Melee
+   * @property difficulty {number} Difficulty of the crafting check for the template
+   * @property encumbrance {number} Encumbrance rating of the weapon
+   * @property hands {string} Description of hands needed to wield the weapon
+   * @property hardpoints {number} Customization Hard Points on the weapon
+   * @property isRestricted {boolean} whether the weapon is Restricted
+   * @property price {number} base price of materials for crafting the weapon
+   * @property range {string} Range Band of the weapon
+   * @property rarity {number} Rarity rating of the materials for the weapon
+   * @property skills {string[]} Skills that can be used to craft the weapon
+   * @property special {string} Qualities of the crafted weapon
+   * @property time {string} the time required to craft the weapon
+   * @property type {string} the type of weapon
+   */
+
+  /**
+   * Crafting template for a gadget
+   *
+   * @typedef {Object} GadgetTemplate
+   *
+   * @property difficulty {number} Difficulty of the crafting check for the template
+   * @property encumbrance {number} Encumbrance rating of the weapon
+   * @property isRestricted {boolean} whether the weapon is Restricted
+   * @property price {number} base price of materials for crafting the weapon
+   * @property rarity {number} Rarity rating of the materials for the weapon
+   * @property skills {string[]} Skills that can be used to craft the weapon
+   * @property special {string} Qualities of the crafted weapon
+   * @property time {string} the time required to craft the weapon
+   */
+
+  /* Sender of chat messages */
+  const speakingAs$2 = "Crafting Droid";
+
+  /* Types of templates which can be crafted */
+  const TemplateType = {
+      Weapon: {
+          FIST: 0,
+          BLUNT: 1,
+          SHIELD: 2,
+          BLADED: 3,
+          VIBRO: 4,
+          POWERED: 5,
+          SIMPLE: 6,
+          SOLID_PISTOL: 7,
+          SOLID_RIFLE: 8,
+          ENERGY_PISTOL: 9,
+          ENERGY_RIFLE: 10,
+          HEAVY_RIFLE: 11,
+          LAUNCHER: 12,
+          MISSILE: 13,
+          GRENADE: 14,
+          MINE: 15
+      },
+      Gadget: {
+          SIMPLE: 16,
+          SPECIALIST: 17,
+          PRECISION: 18
+      }
+  };
+
+  /* Step 1: Select Template. Maps a TemplateType to its Template */
+  const Template = {
+      /** @type {GadgetTemplate} */
+      [TemplateType.Gadget.SIMPLE]: {
+          difficulty: 1,
+          encumbrance: 4,
+          isRestricted: false,
+          price: 50,
+          rarity: 1,
+          skills: ["Mechanics"],
+          special: "Allows characters to make checks with chosen skill with the right tool",
+          time: "2 hours"
+      },
+      /** @type {GadgetTemplate} */
+      [TemplateType.Gadget.SPECIALIST]: {
+          difficulty: 2,
+          encumbrance: 8,
+          isRestricted: false,
+          price: 400,
+          rarity: 4,
+          skills: ["Mechanics"],
+          special: "Add automatic success to checks with chosen skill",
+          time: "10 hours"
+      },
+      /** @type {GadgetTemplate} */
+      [TemplateType.Gadget.PRECISION]: {
+          difficulty: 3,
+          encumbrance: 5,
+          isRestricted: false,
+          price: 150,
+          rarity: 3,
+          skills: ["Mechanics"],
+          special: "Remove 2blk from checks with chosen skill",
+          time: "16 hours"
+      },
+      /** @type {WeaponTemplate} */
+      [TemplateType.Weapon.FIST]: {
+          critical: 4,
+          damage: "+1",
+          difficulty: 2,
+          encumbrance: 1,
+          hands: "One-handed",
+          hardpoints: 0,
+          isRestricted: false,
+          price: 10,
+          range: "Engaged",
+          rarity: 0,
+          skills: ["Mechanics", "Survival"],
+          special: "Disorient 3",
+          time: "4 hours",
+          type: "Brawl"
+      },
+      /** @type {WeaponTemplate} */
+      [TemplateType.Weapon.BLUNT]: {
+          critical: 5,
+          damage: "+2",
+          difficulty: 1,
+          encumbrance: 3,
+          hands: "One-handed",
+          hardpoints: 0,
+          isRestricted: false,
+          price: 5,
+          range: "Engaged",
+          rarity: 0,
+          skills: ["Mechanics", "Survival"],
+          special: "Disorient 2",
+          time: "6 hours",
+          type: "Melee"
+      },
+      /** @type {WeaponTemplate} */
+      [TemplateType.Weapon.SHIELD]: {
+          critical: 5,
+          damage: "+0",
+          difficulty: 2,
+          encumbrance: 1,
+          hands: "One-handed",
+          hardpoints: 0,
+          isRestricted: false,
+          price: 10,
+          range: "Engaged",
+          rarity: 0,
+          skills: ["Mechanics", "Survival"],
+          special: "Defensive 1",
+          time: "8 hours",
+          type: "Melee"
+      },
+      /** @type {WeaponTemplate} */
+      [TemplateType.Weapon.BLADED]: {
+          critical: 3,
+          damage: "+1",
+          difficulty: 2,
+          encumbrance: 2,
+          hands: "One-handed",
+          hardpoints: 0,
+          isRestricted: false,
+          price: 10,
+          range: "Engaged",
+          rarity: 0,
+          skills: ["Mechanics", "Survival"],
+          special: "",
+          time: "16 hours",
+          type: "Melee"
+      },
+      /** @type {WeaponTemplate} */
+      [TemplateType.Weapon.VIBRO]: {
+          critical: 2,
+          damage: "+1",
+          difficulty: 3,
+          encumbrance: 2,
+          hands: "One-handed",
+          hardpoints: 0,
+          isRestricted: false,
+          price: 200,
+          range: "Engaged",
+          rarity: 3,
+          skills: ["Mechanics"],
+          special: "Pierce 2; Vicious 1",
+          time: "24 hours",
+          type: "Melee"
+      },
+      /** @type {WeaponTemplate} */
+      [TemplateType.Weapon.POWERED]: {
+          critical: 3,
+          damage: "+2",
+          difficulty: 4,
+          encumbrance: 3,
+          hands: "One-handed",
+          hardpoints: 0,
+          isRestricted: false,
+          price: 400,
+          range: "Engaged",
+          rarity: 4,
+          skills: ["Mechanics"],
+          special: "Stun 3",
+          time: "48 hours",
+          type: "Melee"
+      },
+      /** @type {WeaponTemplate} */
+      [TemplateType.Weapon.SIMPLE]: {
+          critical: 5,
+          damage: 4,
+          difficulty: 2,
+          encumbrance: 3,
+          hands: "One-handed",
+          hardpoints: 0,
+          isRestricted: false,
+          price: 10,
+          range: "Short",
+          rarity: 0,
+          skills: ["Mechanics", "Survival"],
+          special: "Limited Ammo 1",
+          time: "4 hours",
+          type: "Ranged (Light)"
+      },
+      /** @type {WeaponTemplate} */
+      [TemplateType.Weapon.SOLID_PISTOL]: {
+          critical: 5,
+          damage: 4,
+          difficulty: 2,
+          encumbrance: 1,
+          hands: "One-handed",
+          hardpoints: 0,
+          isRestricted: false,
+          price: 50,
+          range: "Short",
+          rarity: 2,
+          skills: ["Mechanics"],
+          special: "",
+          time: "8 hours",
+          type: "Ranged (Light)"
+      },
+      /** @type {WeaponTemplate} */
+      [TemplateType.Weapon.SOLID_RIFLE]: {
+          critical: 5,
+          damage: 7,
+          difficulty: 3,
+          encumbrance: 5,
+          hands: "One-handed",
+          hardpoints: 1,
+          isRestricted: false,
+          price: 125,
+          range: "Medium",
+          rarity: 2,
+          skills: ["Mechanics"],
+          special: "Cumbersome 2",
+          time: "8 hours",
+          type: "Ranged (Heavy)"
+      },
+      /** @type {WeaponTemplate} */
+      [TemplateType.Weapon.ENERGY_PISTOL]: {
+          critical: 3,
+          damage: 6,
+          difficulty: 3,
+          encumbrance: 1,
+          hands: "One-handed",
+          hardpoints: 3,
+          isRestricted: false,
+          price: 200,
+          range: "Medium",
+          rarity: 3,
+          skills: ["Mechanics"],
+          special: "",
+          time: "12 hours",
+          type: "Ranged (Light)"
+      },
+      /** @type {WeaponTemplate} */
+      [TemplateType.Weapon.ENERGY_RIFLE]: {
+          critical: 3,
+          damage: 9,
+          difficulty: 3,
+          encumbrance: 4,
+          hands: "One-handed",
+          hardpoints: 4,
+          isRestricted: false,
+          price: 450,
+          range: "Long",
+          rarity: 4,
+          skills: ["Mechanics"],
+          special: "",
+          time: "16 hours",
+          type: "Ranged (Heavy)"
+      },
+      /** @type {WeaponTemplate} */
+      [TemplateType.Weapon.HEAVY_RIFLE]: {
+          critical: 3,
+          damage: 10,
+          difficulty: 4,
+          encumbrance: 6,
+          hands: "One-handed",
+          hardpoints: 4,
+          isRestricted: true,
+          price: 1000,
+          range: "Long",
+          rarity: 6,
+          skills: ["Mechanics"],
+          special: "Cumbersome 3",
+          time: "24 hours",
+          type: "Gunnery"
+      },
+      /** @type {WeaponTemplate} */
+      [TemplateType.Weapon.LAUNCHER]: {
+          critical: 0,
+          damage: 0,
+          difficulty: 4,
+          encumbrance: "",
+          hands: "One-handed",
+          hardpoints: "",
+          isRestricted: true,
+          price: 4000,
+          range: "",
+          rarity: 7,
+          skills: ["Mechanics"],
+          special: "",
+          time: "16 hours",
+          type: "Gunnery"
+      },
+      /** @type {WeaponTemplate} */
+      [TemplateType.Weapon.MISSILE]: {
+          critical: 2,
+          damage: 20,
+          difficulty: 3,
+          encumbrance: 7,
+          hands: "One-handed",
+          hardpoints: 4,
+          isRestricted: true,
+          price: 1100,
+          range: "Extreme",
+          rarity: 3,
+          skills: ["Mechanics"],
+          special: "Blast 10; Breach 1; Cumbersome 3; Guided 3; Prepare 1; Limited Ammo 1",
+          time: "4 hours",
+          type: "Gunnery"
+      },
+      /** @type {WeaponTemplate} */
+      [TemplateType.Weapon.GRENADE]: {
+          critical: 4,
+          damage: 8,
+          difficulty: 3,
+          encumbrance: 1,
+          hands: "One-handed",
+          hardpoints: 0,
+          isRestricted: false,
+          price: 35,
+          range: "Short",
+          rarity: 4,
+          skills: ["Mechanics"],
+          special: "Blast 6; Limited Ammo 1",
+          time: "2 hours",
+          type: "Ranged (Light)"
+      },
+      /** @type {WeaponTemplate} */
+      [TemplateType.Weapon.MINE]: {
+          critical: 3,
+          damage: 12,
+          difficulty: 3,
+          encumbrance: 3,
+          hands: "Two-handed",
+          hardpoints: 0,
+          isRestricted: true,
+          price: 425,
+          range: "Engaged",
+          rarity: 5,
+          skills: ["Mechanics"],
+          special: "Blast 4; Limited Ammo 1",
+          time: "4 hours",
+          type: "Mechanics"
+      }
+  };
+
+  /* Step 2: Acquire Materials */
+  const acquireMaterials = (templateType, region, tradeProximity, population) => {
+      let diff = difficulty$1(Template[templateType].rarity, region, tradeProximity, population);
+      let buy = purchasePrice(diff, Template[templateType].price);
+      let content = {
+          title: "Acquiring Materials",
+          Difficulty: diff,
+          "Purchase Price": buy
+      };
+      sendPrivate(speakingAs$2, content);
+  };
+
+  /* Step 3: Construction */
+  const constructGadget = (templateType) => {
+      let content = {
+          title: "Gadget Construction",
+          Difficulty: Template[templateType].difficulty,
+          Skills: Template[templateType].skills.join(", "),
+          "Time Required": `${Template[templateType].time}, -2 hours for each additional success`,
+          Effect: Template[templateType].special
+      };
+      sendPrivate(speakingAs$2, content);
+  };
+
+  /**
    * Core logic for item repair
    *
    * @module swrpg/repair/core
@@ -234,7 +683,7 @@
    */
 
   /* Sender of chat messages */
-  const speakingAs$1 = "Repair Droid";
+  const speakingAs$3 = "Repair Droid";
 
   /**
    * Enumeration of Item Conditions
@@ -263,8 +712,8 @@
   };
 
   // Calculate repair values and display to GM
-  const display$1 = (condition, basePrice) => {
-      let diff = difficulty$1(condition);
+  const display$2 = (condition, basePrice) => {
+      let diff = difficulty$2(condition);
       let price = cost(condition, basePrice);
       let content = {
           title: "Item Repair",
@@ -272,54 +721,14 @@
           "Repair Cost": price,
           "Adv or Thr": "modifies cost accordingly by 10% each for self repair"
       };
-      sendPrivate(speakingAs$1, content);
+      sendPrivate(speakingAs$3, content);
   };
 
   // Calculate the Difficulty of the repair check
-  const difficulty$1 = (condition) => condition;
+  const difficulty$2 = (condition) => condition;
 
   // Calculate the material cost of the repairs
   const cost = (condition, basePrice) => basePrice * CostModifier[condition];
-
-  /**
-   * Core logic for the Contact Networks system
-   *
-   * @module swrpg/contacts/core
-   *
-   * @author Draico Dorath
-   * @copyright 2019
-   * @license MIT
-   */
-
-  /* Sender of chat messages */
-  const speakingAs$2 = "Information Broker";
-
-  // Calculate results for Contact Network and display
-  const display$2 = (scope, expertise, obscurity, reputation, relevance) => {
-      let ab = ability(scope);
-      let pf = proficiency(expertise);
-      let diff = difficulty$2(obscurity);
-      let time = responseTime(obscurity, reputation, relevance);
-
-      // FIXME How can I roll this in private?
-      eote.process.setup(`!eed ${ab}g ${diff}p upgrade(ability|${pf}) upgrade(difficulty|${relevance-1})`, "-DicePool");
-
-      sendPrivate(speakingAs$2, {title: "Response Time", Days: time});
-  };
-
-  // Calculate the number of ability dice the Contact Network uses
-  const ability = (scope) => clamp5(scope);
-
-  // Calculate the Difficulty of the Contact Network's skill check
-  const difficulty$2 = (obscurity) => clamp5(obscurity);
-
-  // Calculate the number of ability upgrades the Contact Network receives
-  const proficiency = (expertise) => clamp5(expertise);
-
-  // Calculate the response time of the informant
-  const responseTime = (obscurity, reputation, relevance) => (obscurity * 3 * reputation * relevance);
-
-  const clamp5 = clamp(0, 5);
 
   /**
    * Entry point module for the Galactic Economy system
@@ -415,9 +824,11 @@
    */
   function execute(command, input) {
       const routes = {
-          "trade": display,
-          "repair": display$1,
-          "contact": display$2
+          "trade": display$1,
+          "repair": display$2,
+          "contact": display,
+          "craft-acquire": acquireMaterials,
+          "craft-gadget": constructGadget,
       };
 
       if (!(routes[command] && (typeof routes[command] === "function"))) {

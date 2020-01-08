@@ -8,11 +8,53 @@
  * @license MIT
  */
 
+import * as Trade from "../trade/trade";
 import {sendPrivate} from "../util/chat";
+import {difficulty} from "../trade/trade";
+import {purchasePrice} from "../trade/trade";
+import {sellPrices} from "../trade/trade";
 
+/**
+ * Crafting template for a weapon
+ *
+ * @typedef {Object} WeaponTemplate
+ *
+ * @property critical {number} Critical Rating of the weapon
+ * @property damage {string|number} Damage of the weapon. Number for Ranged weapons; string for Melee
+ * @property difficulty {number} Difficulty of the crafting check for the template
+ * @property encumbrance {number} Encumbrance rating of the weapon
+ * @property hands {string} Description of hands needed to wield the weapon
+ * @property hardpoints {number} Customization Hard Points on the weapon
+ * @property isRestricted {boolean} whether the weapon is Restricted
+ * @property price {number} base price of materials for crafting the weapon
+ * @property range {string} Range Band of the weapon
+ * @property rarity {number} Rarity rating of the materials for the weapon
+ * @property skills {string[]} Skills that can be used to craft the weapon
+ * @property special {string} Qualities of the crafted weapon
+ * @property time {string} the time required to craft the weapon
+ * @property type {string} the type of weapon
+ */
+
+/**
+ * Crafting template for a gadget
+ *
+ * @typedef {Object} GadgetTemplate
+ *
+ * @property difficulty {number} Difficulty of the crafting check for the template
+ * @property encumbrance {number} Encumbrance rating of the weapon
+ * @property isRestricted {boolean} whether the weapon is Restricted
+ * @property price {number} base price of materials for crafting the weapon
+ * @property rarity {number} Rarity rating of the materials for the weapon
+ * @property skills {string[]} Skills that can be used to craft the weapon
+ * @property special {string} Qualities of the crafted weapon
+ * @property time {string} the time required to craft the weapon
+ */
+
+/* Sender of chat messages */
 const speakingAs = "Crafting Droid";
 
-const Template = {
+/* Types of templates which can be crafted */
+const TemplateType = {
     Weapon: {
         FIST: 0,
         BLUNT: 1,
@@ -30,11 +72,51 @@ const Template = {
         MISSILE: 13,
         GRENADE: 14,
         MINE: 15
+    },
+    Gadget: {
+        SIMPLE: 16,
+        SPECIALIST: 17,
+        PRECISION: 18
     }
 };
 
-const Weapon = {
-    [Template.Weapon.FIST]: {
+/* Step 1: Select Template. Maps a TemplateType to its Template */
+const Template = {
+    /** @type {GadgetTemplate} */
+    [TemplateType.Gadget.SIMPLE]: {
+        difficulty: 1,
+        encumbrance: 4,
+        isRestricted: false,
+        price: 50,
+        rarity: 1,
+        skills: ["Mechanics"],
+        special: "Allows characters to make checks with chosen skill with the right tool",
+        time: "2 hours"
+    },
+    /** @type {GadgetTemplate} */
+    [TemplateType.Gadget.SPECIALIST]: {
+        difficulty: 2,
+        encumbrance: 8,
+        isRestricted: false,
+        price: 400,
+        rarity: 4,
+        skills: ["Mechanics"],
+        special: "Add automatic success to checks with chosen skill",
+        time: "10 hours"
+    },
+    /** @type {GadgetTemplate} */
+    [TemplateType.Gadget.PRECISION]: {
+        difficulty: 3,
+        encumbrance: 5,
+        isRestricted: false,
+        price: 150,
+        rarity: 3,
+        skills: ["Mechanics"],
+        special: "Remove 2blk from checks with chosen skill",
+        time: "16 hours"
+    },
+    /** @type {WeaponTemplate} */
+    [TemplateType.Weapon.FIST]: {
         critical: 4,
         damage: "+1",
         difficulty: 2,
@@ -50,7 +132,8 @@ const Weapon = {
         time: "4 hours",
         type: "Brawl"
     },
-    [Template.Weapon.BLUNT]: {
+    /** @type {WeaponTemplate} */
+    [TemplateType.Weapon.BLUNT]: {
         critical: 5,
         damage: "+2",
         difficulty: 1,
@@ -66,7 +149,8 @@ const Weapon = {
         time: "6 hours",
         type: "Melee"
     },
-    [Template.Weapon.SHIELD]: {
+    /** @type {WeaponTemplate} */
+    [TemplateType.Weapon.SHIELD]: {
         critical: 5,
         damage: "+0",
         difficulty: 2,
@@ -82,7 +166,8 @@ const Weapon = {
         time: "8 hours",
         type: "Melee"
     },
-    [Template.Weapon.BLADED]: {
+    /** @type {WeaponTemplate} */
+    [TemplateType.Weapon.BLADED]: {
         critical: 3,
         damage: "+1",
         difficulty: 2,
@@ -98,7 +183,8 @@ const Weapon = {
         time: "16 hours",
         type: "Melee"
     },
-    [Template.Weapon.VIBRO]: {
+    /** @type {WeaponTemplate} */
+    [TemplateType.Weapon.VIBRO]: {
         critical: 2,
         damage: "+1",
         difficulty: 3,
@@ -114,7 +200,8 @@ const Weapon = {
         time: "24 hours",
         type: "Melee"
     },
-    [Template.Weapon.POWERED]: {
+    /** @type {WeaponTemplate} */
+    [TemplateType.Weapon.POWERED]: {
         critical: 3,
         damage: "+2",
         difficulty: 4,
@@ -130,7 +217,8 @@ const Weapon = {
         time: "48 hours",
         type: "Melee"
     },
-    [Template.Weapon.SIMPLE]: {
+    /** @type {WeaponTemplate} */
+    [TemplateType.Weapon.SIMPLE]: {
         critical: 5,
         damage: 4,
         difficulty: 2,
@@ -146,7 +234,8 @@ const Weapon = {
         time: "4 hours",
         type: "Ranged (Light)"
     },
-    [Template.Weapon.SOLID_PISTOL]: {
+    /** @type {WeaponTemplate} */
+    [TemplateType.Weapon.SOLID_PISTOL]: {
         critical: 5,
         damage: 4,
         difficulty: 2,
@@ -162,7 +251,8 @@ const Weapon = {
         time: "8 hours",
         type: "Ranged (Light)"
     },
-    [Template.Weapon.SOLID_RIFLE]: {
+    /** @type {WeaponTemplate} */
+    [TemplateType.Weapon.SOLID_RIFLE]: {
         critical: 5,
         damage: 7,
         difficulty: 3,
@@ -178,7 +268,8 @@ const Weapon = {
         time: "8 hours",
         type: "Ranged (Heavy)"
     },
-    [Template.Weapon.ENERGY_PISTOL]: {
+    /** @type {WeaponTemplate} */
+    [TemplateType.Weapon.ENERGY_PISTOL]: {
         critical: 3,
         damage: 6,
         difficulty: 3,
@@ -194,7 +285,8 @@ const Weapon = {
         time: "12 hours",
         type: "Ranged (Light)"
     },
-    [Template.Weapon.ENERGY_RIFLE]: {
+    /** @type {WeaponTemplate} */
+    [TemplateType.Weapon.ENERGY_RIFLE]: {
         critical: 3,
         damage: 9,
         difficulty: 3,
@@ -210,7 +302,8 @@ const Weapon = {
         time: "16 hours",
         type: "Ranged (Heavy)"
     },
-    [Template.Weapon.HEAVY_RIFLE]: {
+    /** @type {WeaponTemplate} */
+    [TemplateType.Weapon.HEAVY_RIFLE]: {
         critical: 3,
         damage: 10,
         difficulty: 4,
@@ -226,7 +319,8 @@ const Weapon = {
         time: "24 hours",
         type: "Gunnery"
     },
-    [Template.Weapon.LAUNCHER]: {
+    /** @type {WeaponTemplate} */
+    [TemplateType.Weapon.LAUNCHER]: {
         critical: 0,
         damage: 0,
         difficulty: 4,
@@ -242,7 +336,8 @@ const Weapon = {
         time: "16 hours",
         type: "Gunnery"
     },
-    [Template.Weapon.MISSILE]: {
+    /** @type {WeaponTemplate} */
+    [TemplateType.Weapon.MISSILE]: {
         critical: 2,
         damage: 20,
         difficulty: 3,
@@ -258,7 +353,8 @@ const Weapon = {
         time: "4 hours",
         type: "Gunnery"
     },
-    [Template.Weapon.GRENADE]: {
+    /** @type {WeaponTemplate} */
+    [TemplateType.Weapon.GRENADE]: {
         critical: 4,
         damage: 8,
         difficulty: 3,
@@ -274,7 +370,8 @@ const Weapon = {
         time: "2 hours",
         type: "Ranged (Light)"
     },
-    [Template.Weapon.MINE]: {
+    /** @type {WeaponTemplate} */
+    [TemplateType.Weapon.MINE]: {
         critical: 3,
         damage: 12,
         difficulty: 3,
@@ -292,5 +389,35 @@ const Weapon = {
     }
 };
 
+/* Step 2: Acquire Materials */
+const acquireMaterials = (templateType, region, tradeProximity, population) => {
+    let diff = Trade.difficulty(Template[templateType].rarity, region, tradeProximity, population);
+    let buy = Trade.purchasePrice(diff, Template[templateType].price);
+    let content = {
+        title: "Acquiring Materials",
+        Difficulty: diff,
+        "Purchase Price": buy
+    };
+    sendPrivate(speakingAs, content);
+};
+
+/* Step 3: Construction */
+const constructGadget = (templateType) => {
+    let content = {
+        title: "Gadget Construction",
+        Difficulty: Template[templateType].difficulty,
+        Skills: Template[templateType].skills.join(", "),
+        "Time Required": `${Template[templateType].time}, -2 hours for each additional success`,
+        Effect: Template[templateType].special
+    };
+    sendPrivate(speakingAs, content);
+};
+
+/* Step 3: Construction */
+const constructWeapon = (template) => {};
+
 export {
+    acquireMaterials,
+    constructGadget as gadget,
+    constructWeapon
 }

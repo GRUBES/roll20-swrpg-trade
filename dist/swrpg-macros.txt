@@ -43,4 +43,18 @@
 // #CraftTemplate
 ?{Select a Template|Fist Weapon, 0|Blunt Weapon, 1|Shield, 2|Bladed Weapon, 3|Vibro Weapon, 4|Powered Weapon, 5|
     Simple Projectile, 6|Projectile Pistol, 7|Projectile Rifle, 8|Energy Pistol, 9|Energy Rifle, 10|Heavy Rifle, 11|
+    Launcher, 12|Missile, 13|Grenade, 14|Mine, 15|Simple Tool, 16|Specialist Tool, 17|Precision Tool, 18}
+
+// #CraftWeaponTemplate
+?{Select a Template|Fist Weapon, 0|Blunt Weapon, 1|Shield, 2|Bladed Weapon, 3|Vibro Weapon, 4|Powered Weapon, 5|
+    Simple Projectile, 6|Projectile Pistol, 7|Projectile Rifle, 8|Energy Pistol, 9|Energy Rifle, 10|Heavy Rifle, 11|
     Launcher, 12|Missile, 13|Grenade, 14|Mine, 15}
+
+// #CraftGadgetTemplate
+?{Select a Template|Simple Tool, 16|Specialist Tool, 17|Precision Tool, 18}
+
+// #CraftAcquire
+!swrpg-craft-acquire #CraftTemplate #TradeRegion #TradeProximity #TradePopulation
+
+// #CraftGadget
+!swrpg-craft-gadget #CraftGadgetTemplate
