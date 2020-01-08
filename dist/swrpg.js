@@ -285,6 +285,7 @@
    * @property hands {string} Description of hands needed to wield the weapon
    * @property hardpoints {number} Customization Hard Points on the weapon
    * @property isRestricted {boolean} whether the weapon is Restricted
+   * @property name {string} the name of the weapon being crafted
    * @property price {number} base price of materials for crafting the weapon
    * @property range {string} Range Band of the weapon
    * @property rarity {number} Rarity rating of the materials for the weapon
@@ -300,13 +301,14 @@
    * @typedef {Object} GadgetTemplate
    *
    * @property difficulty {number} Difficulty of the crafting check for the template
-   * @property encumbrance {number} Encumbrance rating of the weapon
-   * @property isRestricted {boolean} whether the weapon is Restricted
-   * @property price {number} base price of materials for crafting the weapon
-   * @property rarity {number} Rarity rating of the materials for the weapon
-   * @property skills {string[]} Skills that can be used to craft the weapon
-   * @property special {string} Qualities of the crafted weapon
-   * @property time {string} the time required to craft the weapon
+   * @property encumbrance {number} Encumbrance rating of the gadget
+   * @property isRestricted {boolean} whether the gadget is Restricted
+   * @property name {string} the name of the gadget being crafted
+   * @property price {number} base price of materials for crafting the gadget
+   * @property rarity {number} Rarity rating of the materials for the gadget
+   * @property skills {string[]} Skills that can be used to craft the gadget
+   * @property special {string} Qualities of the crafted gadget
+   * @property time {string} the time required to craft the gadget
    */
 
   /* Sender of chat messages */
@@ -346,6 +348,7 @@
           difficulty: 1,
           encumbrance: 4,
           isRestricted: false,
+          name: "Simple Tool",
           price: 50,
           rarity: 1,
           skills: ["Mechanics"],
@@ -357,6 +360,7 @@
           difficulty: 2,
           encumbrance: 8,
           isRestricted: false,
+          name: "Specialist Tool",
           price: 400,
           rarity: 4,
           skills: ["Mechanics"],
@@ -368,6 +372,7 @@
           difficulty: 3,
           encumbrance: 5,
           isRestricted: false,
+          name: "Precision Tool",
           price: 150,
           rarity: 3,
           skills: ["Mechanics"],
@@ -383,6 +388,7 @@
           hands: "One-handed",
           hardpoints: 0,
           isRestricted: false,
+          name: "Fist Weapon",
           price: 10,
           range: "Engaged",
           rarity: 0,
@@ -400,6 +406,7 @@
           hands: "One-handed",
           hardpoints: 0,
           isRestricted: false,
+          name: "Blunt Weapon",
           price: 5,
           range: "Engaged",
           rarity: 0,
@@ -417,6 +424,7 @@
           hands: "One-handed",
           hardpoints: 0,
           isRestricted: false,
+          name: "Shield",
           price: 10,
           range: "Engaged",
           rarity: 0,
@@ -434,6 +442,7 @@
           hands: "One-handed",
           hardpoints: 0,
           isRestricted: false,
+          name: "Bladed Weapon",
           price: 10,
           range: "Engaged",
           rarity: 0,
@@ -451,6 +460,7 @@
           hands: "One-handed",
           hardpoints: 0,
           isRestricted: false,
+          name: "Vibro Weapon",
           price: 200,
           range: "Engaged",
           rarity: 3,
@@ -468,6 +478,7 @@
           hands: "One-handed",
           hardpoints: 0,
           isRestricted: false,
+          name: "Powered Weapon",
           price: 400,
           range: "Engaged",
           rarity: 4,
@@ -485,6 +496,7 @@
           hands: "One-handed",
           hardpoints: 0,
           isRestricted: false,
+          name: "Simple Projectile",
           price: 10,
           range: "Short",
           rarity: 0,
@@ -502,6 +514,7 @@
           hands: "One-handed",
           hardpoints: 0,
           isRestricted: false,
+          name: "Projectile Pistol",
           price: 50,
           range: "Short",
           rarity: 2,
@@ -519,6 +532,7 @@
           hands: "One-handed",
           hardpoints: 1,
           isRestricted: false,
+          name: "Projectile Rifle",
           price: 125,
           range: "Medium",
           rarity: 2,
@@ -536,6 +550,7 @@
           hands: "One-handed",
           hardpoints: 3,
           isRestricted: false,
+          name: "Energy Pistol",
           price: 200,
           range: "Medium",
           rarity: 3,
@@ -553,6 +568,7 @@
           hands: "One-handed",
           hardpoints: 4,
           isRestricted: false,
+          name: "Energy Rifle",
           price: 450,
           range: "Long",
           rarity: 4,
@@ -570,6 +586,7 @@
           hands: "One-handed",
           hardpoints: 4,
           isRestricted: true,
+          name: "Heavy Rifle",
           price: 1000,
           range: "Long",
           rarity: 6,
@@ -587,6 +604,7 @@
           hands: "One-handed",
           hardpoints: "",
           isRestricted: true,
+          name: "Launcher",
           price: 4000,
           range: "",
           rarity: 7,
@@ -604,6 +622,7 @@
           hands: "One-handed",
           hardpoints: 4,
           isRestricted: true,
+          name: "Missile",
           price: 1100,
           range: "Extreme",
           rarity: 3,
@@ -621,6 +640,7 @@
           hands: "One-handed",
           hardpoints: 0,
           isRestricted: false,
+          name: "Grenade",
           price: 35,
           range: "Short",
           rarity: 4,
@@ -638,6 +658,7 @@
           hands: "Two-handed",
           hardpoints: 0,
           isRestricted: true,
+          name: "Mine",
           price: 425,
           range: "Engaged",
           rarity: 5,
@@ -662,12 +683,34 @@
 
   /* Step 3: Construction */
   const constructGadget = (templateType) => {
+      let tmpl = Template[templateType];
       let content = {
           title: "Gadget Construction",
-          Difficulty: Template[templateType].difficulty,
-          Skills: Template[templateType].skills.join(", "),
-          "Time Required": `${Template[templateType].time}, -2 hours for each additional success`,
-          Effect: Template[templateType].special
+          subtitle: tmpl.name,
+          Difficulty: tmpl.difficulty,
+          Skills: tmpl.skills.join(", "),
+          "Time Required": `${tmpl.time}, -2 hours for each additional success`,
+          Effect: tmpl.special
+      };
+      sendPrivate(speakingAs$2, content);
+  };
+
+  /* Step 3: Construction */
+  const constructWeapon = (templateType) => {
+      let tmpl = Template[templateType];
+      let content = {
+          title: "Weapon Construction",
+          subtitle: `${tmpl.name} - ${tmpl.type}`,
+          Difficulty: tmpl.difficulty,
+          Skills: tmpl.skills.join(", "),
+          "Time Required": `${tmpl.time}, -2 hours for each additional success`,
+          Damage: tmpl.damage,
+          Critical: tmpl.critical,
+          Qualities: tmpl.special,
+          Range: tmpl.range,
+          "Hands Required": tmpl.hands,
+          Encumbrance: tmpl.encumbrance,
+          "Hard Points": tmpl.hardpoints
       };
       sendPrivate(speakingAs$2, content);
   };
@@ -829,7 +872,7 @@
           "contact": display,
           "craft-acquire": acquireMaterials,
           "craft-gadget": constructGadget,
-          "craft-gadget": constructGadget
+          "craft-weapon": constructWeapon
       };
 
       if (!(routes[command] && (typeof routes[command] === "function"))) {

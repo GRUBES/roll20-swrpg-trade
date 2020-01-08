@@ -58,3 +58,6 @@
 
 // #CraftGadget
 !swrpg-craft-gadget #CraftGadgetTemplate
+
+// #CraftWeapon
+!swrpg-craft-weapon #CraftWeaponTemplate
