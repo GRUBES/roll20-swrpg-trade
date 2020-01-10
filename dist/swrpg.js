@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  var version = "0.2.1";
+  var version = "0.3.0";
 
   /**
    * Math utility module
@@ -399,7 +399,7 @@
           difficulty: 1,
           name: "Labor Directive",
           skills: ["Computers"],
-          skillsGranted: ["1 General Skill +2 ranks or add to Group Skill for Minion"],
+          skillsGranted: ["1 General Skill +2 ranks"],
           talentsGranted: [],
           time: "8 hours"
       },
@@ -408,7 +408,7 @@
           difficulty: 2,
           name: "Combat Directive",
           skills: ["Computers"],
-          skillsGranted: ["3 Combat Skills +1 rank or add to Group Skills for Minion"],
+          skillsGranted: ["3 Combat Skills +1 rank"],
           talentsGranted: ["Body Guard 1"],
           time: "16 hours"
       },
@@ -417,7 +417,7 @@
           difficulty: 3,
           name: "Translation Directive",
           skills: ["Computers"],
-          skillsGranted: ["3 Knowledge Skills +1 rank or add to Group Skills for Minion", "Charm 1"],
+          skillsGranted: ["3 Knowledge Skills +1 rank", "Charm 1"],
           talentsGranted: ["Convincing Demeanor 1", "Kill with Kindness 1"],
           time: "24 hours"
       },
