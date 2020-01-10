@@ -56,9 +56,3 @@
 
 // #CraftAcquire
 !swrpg-craft-acquire #CraftTemplate #TradeRegion #TradeProximity #TradePopulation
-
-// #CraftGadget
-!swrpg-craft-gadget #CraftGadgetTemplate
-
-// #CraftWeapon
-!swrpg-craft-weapon #CraftWeaponTemplate

@@ -105,9 +105,12 @@ function execute(command, input) {
         "craft-weapon": Craft.weapon,
         "repair": Repair.item,
         "trade": Trade.item,
+        "ui-armor": CraftUI.armor,
         "ui-craft": CraftUI.main,
+        "ui-droid": CraftUI.droid,
         "ui-gadget": CraftUI.gadget,
         "ui-set-template": CraftUI.template,
+        "ui-vehicle": CraftUI.vehicle,
         "ui-weapon": CraftUI.weapon
     };
 
