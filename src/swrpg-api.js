@@ -104,6 +104,7 @@ function execute(command, input) {
         "craft-directive": Craft.directive,
         "craft-droid": Craft.droid,
         "craft-gadget": Craft.gadget,
+        "craft-vehicle": Craft.vehicle,
         "craft-weapon": Craft.weapon,
         "repair": Repair.item,
         "trade": Trade.item,

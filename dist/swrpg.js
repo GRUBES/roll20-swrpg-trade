@@ -389,6 +389,35 @@
           NAVIGATION: 28,
           HEALING: 29,
           ELIMINATION: 30
+      },
+      Frame: {
+          BIKE: 31,
+          LANDSPEEDER: 32,
+          AIRSPEEDER: 33,
+          WALKER: 34,
+          STARFIGHTER: 35,
+          FREIGHTER: 36,
+          SHUTTLE: 37,
+          CORVETTE: 38,
+          FRIGATE: 39,
+          HEAVY_CRUISER: 40,
+          DESTROYER: 41,
+          STATION: 42
+      },
+      Engine: {
+          SINGLE_COIL: 43,
+          BAFFLED: 44,
+          ION_TURBINE: 45,
+          FUSIAL: 46,
+          REPULSOR: 47,
+          DRIVE_ARRAY: 48
+      },
+      Hull: {
+          SLEEK: 49,
+          HOLDS: 50,
+          LIGHT: 51,
+          DEFLECTIVE: 52,
+          COMBAT: 53
       }
   };
 
@@ -921,6 +950,8 @@
       sendPrivate(speakingAs$2, content);
   };
 
+  const constructVehicle = (templateType) => {};
+
   const constructWeapon = (templateType) => {
       let tmpl = Template[templateType];
 
@@ -1053,7 +1084,26 @@
       sendPrivate(speakingAs$3, content);
   };
 
-  const displayVehicle = () => {};
+  const displayVehicle = () => {
+      currentMode = Mode.VEHICLE;
+      let content = {
+          title: "Vehicle Construction",
+          flavor: `Current Template: ${Template[currentTemplate] ?
+            Template[currentTemplate].name : "- None -"}`,
+          "Step 1": "[Select a Frame](!swrpg-ui-set-template #CraftFrameTemplate)",
+          "Step 2": `[Acquire Frame Materials](!swrpg-craft-acquire ${currentTemplate} ${tradeMacros})`,
+          "Step 3": `[Construct Frame](!swrpg-craft-vehicle ${currentTemplate})`,
+          "Step 4": "[Select an Engine](!swrpg-ui-set-template #CraftEngineTemplate)",
+          "Step 5": `[Acquire Engine Materials](!swrpg-craft-acquire ${currentTemplate} ${tradeMacros})`,
+          "Step 6": `[Construct Engine](!swrpg-craft-vehicle ${currentTemplate})`,
+          "Step 7": "[Select a Hull](!swrpg-ui-set-template #CraftHullTemplate)",
+          "Step 8": `[Acquire Hull Materials](!swrpg-craft-acquire ${currentTemplate} ${tradeMacros})`,
+          "Step 9": `[Construct Hull](!swrpg-craft-vehicle ${currentTemplate})`,
+          "Step 10": `[Assemble Vehicle](!swrpg-craft-assemble ${currentTemplate})`,
+          "Back to": craftingStation
+      };
+      sendPrivate(speakingAs$3, content);
+  };
 
   const displayWeapon = () => {
       currentMode = Mode.WEAPON;
@@ -1236,6 +1286,7 @@
           "craft-directive": programDroid,
           "craft-droid": constructDroid,
           "craft-gadget": constructGadget,
+          "craft-vehicle": constructVehicle,
           "craft-weapon": constructWeapon,
           "repair": display$2,
           "trade": display$1,

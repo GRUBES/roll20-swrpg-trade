@@ -95,7 +95,26 @@ const displayGadget = () => {
     sendPrivate(speakingAs, content);
 };
 
-const displayVehicle = () => {};
+const displayVehicle = () => {
+    currentMode = Mode.VEHICLE;
+    let content = {
+        title: "Vehicle Construction",
+        flavor: `Current Template: ${Craft.Template[currentTemplate] ?
+            Craft.Template[currentTemplate].name : "- None -"}`,
+        "Step 1": "[Select a Frame](!swrpg-ui-set-template #CraftFrameTemplate)",
+        "Step 2": `[Acquire Frame Materials](!swrpg-craft-acquire ${currentTemplate} ${tradeMacros})`,
+        "Step 3": `[Construct Frame](!swrpg-craft-vehicle ${currentTemplate})`,
+        "Step 4": "[Select an Engine](!swrpg-ui-set-template #CraftEngineTemplate)",
+        "Step 5": `[Acquire Engine Materials](!swrpg-craft-acquire ${currentTemplate} ${tradeMacros})`,
+        "Step 6": `[Construct Engine](!swrpg-craft-vehicle ${currentTemplate})`,
+        "Step 7": "[Select a Hull](!swrpg-ui-set-template #CraftHullTemplate)",
+        "Step 8": `[Acquire Hull Materials](!swrpg-craft-acquire ${currentTemplate} ${tradeMacros})`,
+        "Step 9": `[Construct Hull](!swrpg-craft-vehicle ${currentTemplate})`,
+        "Step 10": `[Assemble Vehicle](!swrpg-craft-assemble ${currentTemplate})`,
+        "Back to": craftingStation
+    };
+    sendPrivate(speakingAs, content);
+};
 
 const displayWeapon = () => {
     currentMode = Mode.WEAPON;

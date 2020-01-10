@@ -62,3 +62,14 @@
 ?{Select a Template|Fist Weapon, 0|Blunt Weapon, 1|Shield, 2|Bladed Weapon, 3|Vibro Weapon, 4|Powered Weapon, 5|
     Simple Projectile, 6|Projectile Pistol, 7|Projectile Rifle, 8|Energy Pistol, 9|Energy Rifle, 10|Heavy Rifle, 11|
     Launcher, 12|Missile, 13|Grenade, 14|Mine, 15}
+
+// #CraftEngineTemplate
+?{Select an Engine|Single Ion Coil, 43|Electron Baffled, 44|Ion Turbine, 45|Fusial Thrust, 46|Repulsor Cluster, 47|
+    Ion Drive Array, 48}
+
+// #CraftFrameTemplate
+?{Select a Frame|Speeder Bike, 31|Landspeeder, 32|Airspeeder, 33|Walker, 34|Starfighter, 35|Freighter, 36|Shuttle, 37|
+    Corvette, 38|Frigate, 39|Heavy Cruiser, 40|Destroyer, 41|Space Station, 42}
+
+// #CraftHullTemplate
+?{Select a Hull|Sleek Carapace, 49|Expanded Holds, 50|Lightly Armored, 51|Deflective Plating, 52|Combat Plating, 52}

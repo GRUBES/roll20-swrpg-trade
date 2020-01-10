@@ -127,6 +127,35 @@ const TemplateType = {
         NAVIGATION: 28,
         HEALING: 29,
         ELIMINATION: 30
+    },
+    Frame: {
+        BIKE: 31,
+        LANDSPEEDER: 32,
+        AIRSPEEDER: 33,
+        WALKER: 34,
+        STARFIGHTER: 35,
+        FREIGHTER: 36,
+        SHUTTLE: 37,
+        CORVETTE: 38,
+        FRIGATE: 39,
+        HEAVY_CRUISER: 40,
+        DESTROYER: 41,
+        STATION: 42
+    },
+    Engine: {
+        SINGLE_COIL: 43,
+        BAFFLED: 44,
+        ION_TURBINE: 45,
+        FUSIAL: 46,
+        REPULSOR: 47,
+        DRIVE_ARRAY: 48
+    },
+    Hull: {
+        SLEEK: 49,
+        HOLDS: 50,
+        LIGHT: 51,
+        DEFLECTIVE: 52,
+        COMBAT: 53
     }
 };
 
@@ -659,6 +688,8 @@ const constructGadget = (templateType) => {
     sendPrivate(speakingAs, content);
 };
 
+const constructVehicle = (templateType) => {};
+
 const constructWeapon = (templateType) => {
     let tmpl = Template[templateType];
 
@@ -703,6 +734,7 @@ export {
     acquireMaterials,
     constructDroid as droid,
     constructGadget as gadget,
+    constructVehicle as vehicle,
     constructWeapon as weapon,
     programDroid as directive
 }
