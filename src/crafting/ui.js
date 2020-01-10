@@ -70,7 +70,7 @@ const displayDroid = () => {
     currentMode = Mode.DROID;
     let content = {
         title: "Droid Construction",
-        flavor: `Current Template: ${Craft.Template[currentTemplate] ?
+        flavor: `Current Chassis: ${Craft.Template[currentTemplate] ?
             Craft.Template[currentTemplate].name : "- None -"}`,
         wide: "Step 1: [Select a Chassis](!swrpg-ui-set-template #CraftDroidTemplate)",
         wide2: `Step 2: [Acquire Materials](!swrpg-craft-acquire ${currentTemplate} ${tradeMacros})`,
@@ -128,5 +128,14 @@ export {
     displayMain as main,
     displayVehicle as vehicle,
     displayWeapon as weapon,
+    /**
+     * Set the current Crafting Template
+     *
+     * @param t {TemplateType} The Template to set
+     *
+     * @returns {void}
+     *
+     * @function
+     */
     setTemplate as template
 };

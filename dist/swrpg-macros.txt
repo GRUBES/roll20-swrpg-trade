@@ -54,5 +54,11 @@
 // #CraftGadgetTemplate
 ?{Select a Template|Simple Tool, 16|Specialist Tool, 17|Precision Tool, 18}
 
+// #CraftDirectiveTemplate
+?{Select a Directive|Labor, 24|Combat, 25|Translation, 26|Repair, 27|Navigation, 28|Healing, 29|Elimination, 30}
+
+// #CraftDroidTemplate
+?{Select a Chassis|Monotask, 19|Labor, 20|Combat, 21|Specialist, 22|Advanced Combat, 23}
+
 // #CraftAcquire
 !swrpg-craft-acquire #CraftTemplate #TradeRegion #TradeProximity #TradePopulation
