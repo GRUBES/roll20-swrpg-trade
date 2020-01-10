@@ -40,6 +40,18 @@
 // #PartyLocation
 /w gm @{-DicePool|grouplocation}
 
+// #CraftAcquire
+!swrpg-craft-acquire #CraftTemplate #TradeRegion #TradeProximity #TradePopulation
+
+// #CraftDirectiveTemplate
+?{Select a Directive|Labor, 24|Combat, 25|Translation, 26|Repair, 27|Navigation, 28|Healing, 29|Elimination, 30}
+
+// #CraftDroidTemplate
+?{Select a Chassis|Monotask, 19|Labor, 20|Combat, 21|Specialist, 22|Advanced Combat, 23}
+
+// #CraftGadgetTemplate
+?{Select a Template|Simple Tool, 16|Specialist Tool, 17|Precision Tool, 18}
+
 // #CraftTemplate
 ?{Select a Template|[W] Fist, 0|[W] Blunt, 1|[W] Shield, 2|[W] Bladed, 3|[W] Vibro, 4|[W] Powered, 5|
     [W] Simple Projectile, 6|[W] Projectile Pistol, 7|[W] Projectile Rifle, 8|[W] Energy Pistol, 9|[W] Energy Rifle, 10|
@@ -50,15 +62,3 @@
 ?{Select a Template|Fist Weapon, 0|Blunt Weapon, 1|Shield, 2|Bladed Weapon, 3|Vibro Weapon, 4|Powered Weapon, 5|
     Simple Projectile, 6|Projectile Pistol, 7|Projectile Rifle, 8|Energy Pistol, 9|Energy Rifle, 10|Heavy Rifle, 11|
     Launcher, 12|Missile, 13|Grenade, 14|Mine, 15}
-
-// #CraftGadgetTemplate
-?{Select a Template|Simple Tool, 16|Specialist Tool, 17|Precision Tool, 18}
-
-// #CraftDirectiveTemplate
-?{Select a Directive|Labor, 24|Combat, 25|Translation, 26|Repair, 27|Navigation, 28|Healing, 29|Elimination, 30}
-
-// #CraftDroidTemplate
-?{Select a Chassis|Monotask, 19|Labor, 20|Combat, 21|Specialist, 22|Advanced Combat, 23}
-
-// #CraftAcquire
-!swrpg-craft-acquire #CraftTemplate #TradeRegion #TradeProximity #TradePopulation

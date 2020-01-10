@@ -137,7 +137,7 @@ const Template = {
         difficulty: 1,
         name: "Labor Directive",
         skills: ["Computers"],
-        skillsGranted: ["1 General Skill +2 ranks or add to Group Skill for Minion"],
+        skillsGranted: ["1 General Skill +2 ranks"],
         talentsGranted: [],
         time: "8 hours"
     },
@@ -146,7 +146,7 @@ const Template = {
         difficulty: 2,
         name: "Combat Directive",
         skills: ["Computers"],
-        skillsGranted: ["3 Combat Skills +1 rank or add to Group Skills for Minion"],
+        skillsGranted: ["3 Combat Skills +1 rank"],
         talentsGranted: ["Body Guard 1"],
         time: "16 hours"
     },
@@ -155,7 +155,7 @@ const Template = {
         difficulty: 3,
         name: "Translation Directive",
         skills: ["Computers"],
-        skillsGranted: ["3 Knowledge Skills +1 rank or add to Group Skills for Minion", "Charm 1"],
+        skillsGranted: ["3 Knowledge Skills +1 rank", "Charm 1"],
         talentsGranted: ["Convincing Demeanor 1", "Kill with Kindness 1"],
         time: "24 hours"
     },
@@ -618,7 +618,6 @@ const Template = {
     }
 };
 
-/* Step 2: Acquire Materials */
 const acquireMaterials = (templateType, region, tradeProximity, population) => {
     let diff = Trade.difficulty(Template[templateType].rarity, region, tradeProximity, population);
     let buy = Trade.purchasePrice(diff, Template[templateType].price);
@@ -630,7 +629,23 @@ const acquireMaterials = (templateType, region, tradeProximity, population) => {
     sendPrivate(speakingAs, content);
 };
 
-/* Step 3: Construction */
+const constructDroid = (templateType) => {
+    let tmpl = Template[templateType];
+    let content = {
+        title: "Droid Chassis Construction",
+        subtitle: `${tmpl.name} (${tmpl.rank})`,
+        flavor: `${tmpl.skills.join(", ")} (${tmpl.difficulty})`,
+        prewide: `Time Required: ${tmpl.time}, -2 hours for each additional success`,
+        Characteristics: tmpl.characteristics.join("/"),
+        Defense: `${tmpl.rangedDefense} | ${tmpl.meleeDefense}`,
+        Soak: tmpl.soak,
+        Qualities: tmpl.special,
+        "Wound Threshold": tmpl.wounds,
+        "Strain Threshold": tmpl.strain
+    };
+    sendPrivate(speakingAs, content);
+};
+
 const constructGadget = (templateType) => {
     let tmpl = Template[templateType];
     let content = {
@@ -644,7 +659,6 @@ const constructGadget = (templateType) => {
     sendPrivate(speakingAs, content);
 };
 
-/* Step 3: Construction */
 const constructWeapon = (templateType) => {
     let tmpl = Template[templateType];
 
@@ -670,10 +684,25 @@ const constructWeapon = (templateType) => {
     sendPrivate(speakingAs, itemContent);
 };
 
+const programDroid = (templateType) => {
+    let tmpl = Template[templateType];
+    let content = {
+        title: "Droid Directive Programming",
+        subtitle: tmpl.name,
+        flavor: `${tmpl.skills.join(", ")} (${tmpl.difficulty})`,
+        prewide: `Time Required: ${tmpl.time}, -2 hours for each additional success`,
+        Skills: tmpl.skillsGranted.join("; "),
+        Talents: tmpl.talentsGranted.join("; ")
+    };
+    sendPrivate(speakingAs, content);
+};
+
 export {
     Template,
     TemplateType,
     acquireMaterials,
+    constructDroid as droid,
     constructGadget as gadget,
-    constructWeapon as weapon
+    constructWeapon as weapon,
+    programDroid as directive
 }

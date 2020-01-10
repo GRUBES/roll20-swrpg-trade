@@ -880,7 +880,6 @@
       }
   };
 
-  /* Step 2: Acquire Materials */
   const acquireMaterials = (templateType, region, tradeProximity, population) => {
       let diff = difficulty$1(Template[templateType].rarity, region, tradeProximity, population);
       let buy = purchasePrice(diff, Template[templateType].price);
@@ -892,7 +891,23 @@
       sendPrivate(speakingAs$2, content);
   };
 
-  /* Step 3: Construction */
+  const constructDroid = (templateType) => {
+      let tmpl = Template[templateType];
+      let content = {
+          title: "Droid Chassis Construction",
+          subtitle: `${tmpl.name} (${tmpl.rank})`,
+          flavor: `${tmpl.skills.join(", ")} (${tmpl.difficulty})`,
+          prewide: `Time Required: ${tmpl.time}, -2 hours for each additional success`,
+          Characteristics: tmpl.characteristics.join("/"),
+          Defense: `${tmpl.rangedDefense} | ${tmpl.meleeDefense}`,
+          Soak: tmpl.soak,
+          Qualities: tmpl.special,
+          "Wound Threshold": tmpl.wounds,
+          "Strain Threshold": tmpl.strain
+      };
+      sendPrivate(speakingAs$2, content);
+  };
+
   const constructGadget = (templateType) => {
       let tmpl = Template[templateType];
       let content = {
@@ -906,7 +921,6 @@
       sendPrivate(speakingAs$2, content);
   };
 
-  /* Step 3: Construction */
   const constructWeapon = (templateType) => {
       let tmpl = Template[templateType];
 
@@ -930,6 +944,19 @@
 
       sendPrivate(speakingAs$2, craftContent);
       sendPrivate(speakingAs$2, itemContent);
+  };
+
+  const programDroid = (templateType) => {
+      let tmpl = Template[templateType];
+      let content = {
+          title: "Droid Directive Programming",
+          subtitle: tmpl.name,
+          flavor: `${tmpl.skills.join(", ")} (${tmpl.difficulty})`,
+          prewide: `Time Required: ${tmpl.time}, -2 hours for each additional success`,
+          Skills: tmpl.skillsGranted.join("; "),
+          Talents: tmpl.talentsGranted.join("; ")
+      };
+      sendPrivate(speakingAs$2, content);
   };
 
   /**
@@ -1001,12 +1028,12 @@
       currentMode = Mode.DROID;
       let content = {
           title: "Droid Construction",
-          flavor: `Current Chassis: ${Template[currentTemplate] ?
+          flavor: `Current Chassis/Directive: ${Template[currentTemplate] ?
             Template[currentTemplate].name : "- None -"}`,
           wide: "Step 1: [Select a Chassis](!swrpg-ui-set-template #CraftDroidTemplate)",
           wide2: `Step 2: [Acquire Materials](!swrpg-craft-acquire ${currentTemplate} ${tradeMacros})`,
           wide3: `Step 3: [Construct Chassis](!swrpg-craft-droid ${currentTemplate})`,
-          wide4: `Step 4: [Program Directives](!swrpg-craft-directives ${currentTemplate})`,
+          wide4: `Step 4: [Program Directives](!swrpg-craft-directive #CraftDirectiveTemplate)`,
           "Back to": craftingStation
       };
       sendPrivate(speakingAs$3, content);
@@ -1206,6 +1233,8 @@
       const routes = {
           "contact": display,
           "craft-acquire": acquireMaterials,
+          "craft-directive": programDroid,
+          "craft-droid": constructDroid,
           "craft-gadget": constructGadget,
           "craft-weapon": constructWeapon,
           "repair": display$2,

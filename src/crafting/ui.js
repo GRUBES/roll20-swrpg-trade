@@ -70,12 +70,12 @@ const displayDroid = () => {
     currentMode = Mode.DROID;
     let content = {
         title: "Droid Construction",
-        flavor: `Current Chassis: ${Craft.Template[currentTemplate] ?
+        flavor: `Current Chassis/Directive: ${Craft.Template[currentTemplate] ?
             Craft.Template[currentTemplate].name : "- None -"}`,
         wide: "Step 1: [Select a Chassis](!swrpg-ui-set-template #CraftDroidTemplate)",
         wide2: `Step 2: [Acquire Materials](!swrpg-craft-acquire ${currentTemplate} ${tradeMacros})`,
         wide3: `Step 3: [Construct Chassis](!swrpg-craft-droid ${currentTemplate})`,
-        wide4: `Step 4: [Program Directives](!swrpg-craft-directives ${currentTemplate})`,
+        wide4: `Step 4: [Program Directives](!swrpg-craft-directive #CraftDirectiveTemplate)`,
         "Back to": craftingStation
     };
     sendPrivate(speakingAs, content);

@@ -101,6 +101,8 @@ function execute(command, input) {
     const routes = {
         "contact": Contact.investigate,
         "craft-acquire": Craft.acquireMaterials,
+        "craft-directive": Craft.directive,
+        "craft-droid": Craft.droid,
         "craft-gadget": Craft.gadget,
         "craft-weapon": Craft.weapon,
         "repair": Repair.item,
