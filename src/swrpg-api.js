@@ -10,6 +10,7 @@
 
 import { version } from "../package.json";
 import * as Contact from "./contacts/contacts";
+import * as CraftUI from "./crafting/ui";
 import * as Craft from "./crafting/craft";
 import * as Repair from "./repair/repair";
 import * as Trade from "./trade/trade";
@@ -94,16 +95,20 @@ function parseInput(msg) {
  * @returns {void}
  *
  * @private
- * @function display
+ * @function execute
  */
 function execute(command, input) {
     const routes = {
-        "trade": Trade.item,
-        "repair": Repair.item,
         "contact": Contact.investigate,
         "craft-acquire": Craft.acquireMaterials,
         "craft-gadget": Craft.gadget,
-        "craft-weapon": Craft.weapon
+        "craft-weapon": Craft.weapon,
+        "repair": Repair.item,
+        "trade": Trade.item,
+        "ui-craft": CraftUI.main,
+        "ui-gadget": CraftUI.gadget,
+        "ui-set-template": CraftUI.template,
+        "ui-weapon": CraftUI.weapon
     };
 
     if (!(routes[command] && (typeof routes[command] === "function"))) {

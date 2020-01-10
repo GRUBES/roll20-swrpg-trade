@@ -687,10 +687,10 @@
       let content = {
           title: "Gadget Construction",
           subtitle: tmpl.name,
-          Difficulty: tmpl.difficulty,
-          Skills: tmpl.skills.join(", "),
-          "Time Required": `${tmpl.time}, -2 hours for each additional success`,
-          Effect: tmpl.special
+          flavor: `${tmpl.skills.join(", ")} (${tmpl.difficulty})`,
+          prewide: `Time Required: ${tmpl.time}, -2 hours for each additional success`,
+          Effect: tmpl.special,
+          Encumbrance: tmpl.encumbrance
       };
       sendPrivate(speakingAs$2, content);
   };
@@ -701,9 +701,8 @@
 
       let craftContent = {
           title: "Weapon Construction",
-          Difficulty: tmpl.difficulty,
-          Skills: tmpl.skills.join(", "),
-          "Time Required": `${tmpl.time}, -2 hours for each additional success`
+          flavor: `${tmpl.skills.join(", ")} (${tmpl.difficulty})`,
+          prewide: `Time Required: ${tmpl.time}, -2 hours for each additional success`
       };
 
       let itemContent = {
@@ -723,6 +722,56 @@
   };
 
   /**
+   * Chat UI for the Crafting system
+   *
+   * @module swrpg/craft/ui
+   *
+   * @author Draico Dorath
+   * @copyright 2019
+   * @license MIT
+   */
+
+  /* Sender of chat messages */
+  const speakingAs$3 = "Crafting Droid";
+
+
+  /**
+   * Cache of the currently selected TemplateType
+   * @type {TemplateType}
+   */
+  let currentTemplate;
+  const setTemplate = (t) => {
+      currentTemplate = t;
+      displayGadget();
+  };
+
+  const displayMain = () => {
+      let content = {
+          title: "Crafting Station",
+          // wide: "[Create Armor](!&#13;#CraftArmor)",
+          // wide2: "[Create Droid](!&#13;#CraftDroid)",
+          wide3: "[Create Gadget](!swrpg-ui-gadget)",
+          // wide4: "[Create Vehicle](!&#13;#CraftVehicle)",
+          wide5: "[Create Weapon](!swrpg-ui-weapon)"
+      };
+      sendPrivate(speakingAs$3, content);
+  };
+
+  const displayGadget = () => {
+      let content = {
+          title: "Gadget Construction",
+          flavor: `Current Template: ${Template[currentTemplate] ?
+            Template[currentTemplate].name : "- None -"}`,
+          wide: "Step 1: [Select a Template](!swrpg-ui-set-template #CraftGadgetTemplate)",
+          wide2: `Step 2: [Acquire Materials](!swrpg-craft-acquire ${currentTemplate} #TradeLocation #TradeProximity #TradePopulation)`,
+          wide3: `Step 3: [Create Gadget](!swrpg-craft-gadget ${currentTemplate})`
+      };
+      sendPrivate(speakingAs$3, content);
+  };
+
+  const displayWeapon = () => {};
+
+  /**
    * Core logic for item repair
    *
    * @module swrpg/repair/core
@@ -733,7 +782,7 @@
    */
 
   /* Sender of chat messages */
-  const speakingAs$3 = "Repair Droid";
+  const speakingAs$4 = "Repair Droid";
 
   /**
    * Enumeration of Item Conditions
@@ -771,7 +820,7 @@
           "Repair Cost": price,
           "Adv or Thr": "modifies cost accordingly by 10% each for self repair"
       };
-      sendPrivate(speakingAs$3, content);
+      sendPrivate(speakingAs$4, content);
   };
 
   // Calculate the Difficulty of the repair check
@@ -870,16 +919,20 @@
    * @returns {void}
    *
    * @private
-   * @function display
+   * @function execute
    */
   function execute(command, input) {
       const routes = {
-          "trade": display$1,
-          "repair": display$2,
           "contact": display,
           "craft-acquire": acquireMaterials,
           "craft-gadget": constructGadget,
-          "craft-weapon": constructWeapon
+          "craft-weapon": constructWeapon,
+          "repair": display$2,
+          "trade": display$1,
+          "ui-craft": displayMain,
+          "ui-gadget": displayGadget,
+          "ui-set-template": setTemplate,
+          "ui-weapon": displayWeapon
       };
 
       if (!(routes[command] && (typeof routes[command] === "function"))) {

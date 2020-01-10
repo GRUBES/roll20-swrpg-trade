@@ -425,10 +425,10 @@ const constructGadget = (templateType) => {
     let content = {
         title: "Gadget Construction",
         subtitle: tmpl.name,
-        Difficulty: tmpl.difficulty,
-        Skills: tmpl.skills.join(", "),
-        "Time Required": `${tmpl.time}, -2 hours for each additional success`,
-        Effect: tmpl.special
+        flavor: `${tmpl.skills.join(", ")} (${tmpl.difficulty})`,
+        prewide: `Time Required: ${tmpl.time}, -2 hours for each additional success`,
+        Effect: tmpl.special,
+        Encumbrance: tmpl.encumbrance
     };
     sendPrivate(speakingAs, content);
 };
@@ -439,9 +439,8 @@ const constructWeapon = (templateType) => {
 
     let craftContent = {
         title: "Weapon Construction",
-        Difficulty: tmpl.difficulty,
-        Skills: tmpl.skills.join(", "),
-        "Time Required": `${tmpl.time}, -2 hours for each additional success`
+        flavor: `${tmpl.skills.join(", ")} (${tmpl.difficulty})`,
+        prewide: `Time Required: ${tmpl.time}, -2 hours for each additional success`
     };
 
     let itemContent = {
@@ -468,6 +467,8 @@ const constructWeapon = (templateType) => {
  * @property hands {string} Description of hands needed to wield the weapon
  */
 export {
+    Template,
+    TemplateType,
     acquireMaterials,
     constructGadget as gadget,
     constructWeapon as weapon
