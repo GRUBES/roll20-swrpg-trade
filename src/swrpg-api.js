@@ -10,7 +10,6 @@
 
 import { version } from "../package.json";
 import * as Contact from "./contacts/contacts";
-import * as CraftUI from "./crafting/ui";
 import * as Craft from "./crafting/craft";
 import * as Repair from "./repair/repair";
 import * as Trade from "./trade/trade";
@@ -100,7 +99,7 @@ function parseInput(msg) {
 function execute(command, input) {
     const routes = {
         "contact": Contact.investigate,
-        "craft-acquire": Craft.acquireMaterials,
+        "craft-acquire": Craft.acquire,
         "craft-directive": Craft.directive,
         "craft-droid": Craft.droid,
         "craft-gadget": Craft.gadget,
@@ -108,13 +107,13 @@ function execute(command, input) {
         "craft-weapon": Craft.weapon,
         "repair": Repair.item,
         "trade": Trade.item,
-        "ui-armor": CraftUI.armor,
-        "ui-craft": CraftUI.main,
-        "ui-droid": CraftUI.droid,
-        "ui-gadget": CraftUI.gadget,
-        "ui-set-template": CraftUI.template,
-        "ui-vehicle": CraftUI.vehicle,
-        "ui-weapon": CraftUI.weapon
+        "ui-armor": Craft.displayArmor,
+        "ui-craft": Craft.main,
+        "ui-droid": Craft.displayDroid,
+        "ui-gadget": Craft.displayGadget,
+        "ui-set-template": Craft.template,
+        "ui-vehicle": Craft.displayVehicle,
+        "ui-weapon": Craft.displayWeapon
     };
 
     if (!(routes[command] && (typeof routes[command] === "function"))) {
