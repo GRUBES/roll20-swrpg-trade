@@ -74,7 +74,10 @@ const construct = (templateType) => {
 };
 
 const display = (templateType) => {
-    let tmpl = Template[templateType] || {};
+    let tmpl = Template[templateType];
+    if (!tmpl) {
+        return;
+    }
     let content = {
         title: "Vehicle Construction",
         flavor: `Current Template: ${tmpl.name || "- None -"}`,

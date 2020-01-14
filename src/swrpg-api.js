@@ -13,6 +13,8 @@ import * as Contact from "./contacts/contacts";
 import * as Craft from "./crafting/craft";
 import * as Repair from "./repair/repair";
 import * as Trade from "./trade/trade";
+import { program } from "./crafting/droid";
+import { assemble } from "./crafting/vehicle";
 
 // API Command prefix
 const prefix = "swrpg-";
@@ -100,8 +102,10 @@ function execute(command, input) {
     const routes = {
         "contact": Contact.investigate,
         "craft-acquire": Craft.acquire,
+        "craft-assemble": assemble,
         "craft-construct": Craft.construct,
         "craft-mode": Craft.mode,
+        "craft-program": program,
         "craft-template": Craft.template,
         "craft-ui": Craft.main,
         "repair": Repair.item,

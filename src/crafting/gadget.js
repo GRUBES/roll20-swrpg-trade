@@ -81,6 +81,9 @@ const Template = {
 
 const construct = (templateType) => {
     let tmpl = Template[templateType];
+    if (!tmpl) {
+        return;
+    }
     let content = {
         title: "Gadget Construction",
         subtitle: tmpl.name,
@@ -95,7 +98,10 @@ const construct = (templateType) => {
 };
 
 const display = (templateType) => {
-    let tmpl = Template[templateType] || {};
+    let tmpl = Template[templateType];
+    if (!tmpl) {
+        return;
+    }
     let content = {
         title: "Gadget Construction",
         flavor: `Current Template: ${tmpl.name || "- None -"}`,

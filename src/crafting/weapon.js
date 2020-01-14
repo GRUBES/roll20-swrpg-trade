@@ -350,7 +350,9 @@ const Template = {
 
 const construct = (templateType) => {
     let tmpl = Template[templateType];
-
+    if (!tmpl) {
+        return;
+    }
     let craftContent = {
         title: "Weapon Construction",
         flavor: `${tmpl.skills.join(", ")} (${tmpl.difficulty})`,
@@ -374,7 +376,10 @@ const construct = (templateType) => {
 };
 
 const display = (templateType) => {
-    let tmpl = Template[templateType] || {};
+    let tmpl = Template[templateType];
+    if (!tmpl) {
+        return;
+    }
     let content = {
         title: "Weapon Construction",
         flavor: `Current Template: ${tmpl.name || "- None -"}`,

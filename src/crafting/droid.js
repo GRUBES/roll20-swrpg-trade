@@ -235,6 +235,9 @@ const Template = {
 
 const construct = (templateType) => {
     let tmpl = Template[templateType];
+    if (!tmpl) {
+        return;
+    }
     let content = {
         title: "Droid Chassis Construction",
         subtitle: `${tmpl.name} (${tmpl.rank})`,
@@ -251,14 +254,17 @@ const construct = (templateType) => {
 };
 
 const display = (templateType) => {
-    let tmpl = Template[templateType] || {};
+    let tmpl = Template[templateType];
+    if (!tmpl) {
+        return;
+    }
     let content = {
         title: "Droid Construction",
         flavor: `Current Chassis/Directive: ${tmpl.name || "- None -"}`,
         wide: "Step 1: [Select a Chassis](!swrpg-craft-template #CraftDroidTemplate)",
         wide2: `Step 2: [Acquire Materials](!swrpg-craft-acquire ${tmpl.rarity} ${tmpl.price} ${Macros.tradeLocation})`,
         wide3: `Step 3: [Construct Chassis](!swrpg-craft-construct ${templateType})`,
-        wide4: `Step 4: [Program Directives](!swrpg-craft-directive #CraftDirectiveTemplate)`,
+        wide4: `Step 4: [Program Directives](!swrpg-craft-program #CraftDirectiveTemplate)`,
         "Back to": Macros.craftingMain
     };
     sendPrivate(speakingAs, content);
@@ -266,6 +272,9 @@ const display = (templateType) => {
 
 const program = (templateType) => {
     let tmpl = Template[templateType];
+    if (!tmpl) {
+        return;
+    }
     let content = {
         title: "Droid Directive Programming",
         subtitle: tmpl.name,
