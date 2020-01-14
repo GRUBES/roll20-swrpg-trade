@@ -8,37 +8,27 @@
  * @license MIT
  */
 
-import { display as displayArmor } from "./armor";
-import { display as displayDroid } from "./droid";
-import { display as displayGadget } from "./gadget";
-import { display as displayLightsaber } from "./lightsaber";
-import { display as displayVehicle } from "./vehicle";
-import { display as displayWeapon } from "./weapon";
+import * as Armor from "./armor";
+import * as Droid from "./droid";
+import * as Gadget from "./gadget";
+import * as Lightsaber from "./lightsaber";
+import * as Vehicle from "./vehicle";
+import * as Weapon from "./weapon";
 import * as Trade from "../trade/trade";
 import { sendPrivate } from "../util/chat";
+import { CraftingMode, Macros } from "../util/enums";
 
 /* Sender of chat messages */
 const speakingAs = "Crafting Droid";
 
-// Crafting modes
-const Mode = {
-    NONE: -1,
-    ARMOR: 0,
-    DROID: 1,
-    GADGET: 2,
-    VEHICLE: 3,
-    WEAPON: 4,
-    LIGHTSABER: 5
-};
-
-// Maps a Mode to its appropriate callback to redisplay correct chat prompt
-const ModeCallback = {
-    [Mode.ARMOR]: displayArmor,
-    [Mode.DROID]: displayDroid,
-    [Mode.GADGET]: displayGadget,
-    [Mode.LIGHTSABER]: displayLightsaber,
-    [Mode.VEHICLE]: displayVehicle,
-    [Mode.WEAPON]: displayWeapon
+// Maps a Mode to its Module
+const ModeToModule = {
+    [CraftingMode.ARMOR]: Armor,
+    [CraftingMode.DROID]: Droid,
+    [CraftingMode.GADGET]: Gadget,
+    [CraftingMode.LIGHTSABER]: Lightsaber,
+    [CraftingMode.VEHICLE]: Vehicle,
+    [CraftingMode.WEAPON]: Weapon
 };
 
 /**
@@ -46,6 +36,10 @@ const ModeCallback = {
  * @type {Mode}
  */
 let currentMode;
+const setMode = (m) => {
+    currentMode = m;
+    ModeToModule[m] ? ModeToModule[m].display() : display();
+};
 
 /**
  * Cache of the currently selected TemplateType
@@ -54,11 +48,10 @@ let currentMode;
 let currentTemplate;
 const setTemplate = (t) => {
     currentTemplate = t;
-    if (typeof ModeCallback[currentMode] === "function") {
-        ModeCallback[currentMode]();
-    }
+    ModeToModule[currentMode] ? ModeToModule[currentMode].display(currentTemplate) : display();
 };
 
+// Step 2: Acquire Materials
 const acquire = (rarity, basePrice, region, tradeProximity, population) => {
     let diff = Trade.difficulty(rarity, region, tradeProximity, population);
     let buy = Trade.purchasePrice(diff, basePrice);
@@ -70,25 +63,69 @@ const acquire = (rarity, basePrice, region, tradeProximity, population) => {
     sendPrivate(speakingAs, content);
 };
 
+// Step 3: Construct
+const construct = () => {
+    (currentTemplate && ModeToModule[currentMode]) ?
+        ModeToModule[currentMode].construct(currentTemplate) :
+        display();
+};
+
 // Render the entry point chat UI for the crafting system
-const displayMain = () => {
-    currentMode = Mode.NONE;
-    setTemplate();
+const display = () => {
+    currentMode = CraftingMode.NONE;
+    currentTemplate = undefined;
     let content = {
         title: "Crafting Station",
-        wide: "[Create Armor](!swrpg-ui-armor)",
-        wide2: "[Create Droid](!swrpg-ui-droid)",
-        wide3: "[Create Gadget](!swrpg-ui-gadget)",
-        wide4: "[Create Vehicle](!swrpg-ui-vehicle)",
-        wide5: "[Create Weapon](!swrpg-ui-weapon)"
+        wide: `${Macros.craftArmor} ${Macros.craftDroid}`,
+        wide2: `${Macros.craftGadget} ${Macros.craftLightsaber}`,
+        wide3: `${Macros.craftVehicle} ${Macros.craftWeapon}`
     };
     sendPrivate(speakingAs, content);
 };
 
 // local exports
 export {
+    /**
+     * Calculate difficulty and price for acquiring materials to craft an item
+     *
+     * @param rarity {number} the Rarity of the item being crafted
+     * @param basePrice {number} the standard value of the item being crafted
+     * @param region {Region} the Region where materials will be acquired
+     * @param tradeProximity {Proximity} the proximity to a major trade route
+     * @param population {Population} the population of the area
+     *
+     * @returns {void} outputs results to chat
+     *
+     * @function
+     */
     acquire,
-    displayMain as main,
+    /**
+     * Display difficulty and cost for constructing an item
+     *
+     * @param templateType {Template} the Template of the item being crafted
+     *
+     * @returns {void} outputs results to chat
+     * @function
+     */
+    construct,
+    /**
+     * Display the primary crafting UI in chat
+     *
+     * @returns {void} outputs results to chat
+     *
+     * @function
+     */
+    display as main,
+    /**
+     * Set the current Crafting Mode
+     *
+     * @param m {CraftingMode} the Mode to set
+     *
+     * @returns {void}
+     *
+     * @function
+     */
+    setMode as mode,
     /**
      * Set the current Crafting Template
      *
@@ -100,10 +137,3 @@ export {
      */
     setTemplate as template
 }
-// alias exports for other crafting modules
-export { construct as droid, program as directive, display as displayDroid } from "./droid";
-export { construct as gadget, display as displayGadget } from "./gadget";
-export { construct as vehicle, display as displayVehicle } from "./vehicle";
-export { construct as weapon, display as displayWeapon } from "./weapon";
-export { construct as lightsaber, display as displayLightsaber } from "./lightsaber";
-export { construct as armor, display as displayArmor } from "./armor"

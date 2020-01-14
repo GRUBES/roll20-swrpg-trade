@@ -74,20 +74,19 @@ const construct = (templateType) => {
 };
 
 const display = (templateType) => {
-    currentMode = Mode.VEHICLE;
-    let tmpl = TemplateType[templateType];
+    let tmpl = Template[templateType] || {};
     let content = {
         title: "Vehicle Construction",
-        flavor: `Current Template: ${tmpl ? tmpl.name : "- None -"}`,
-        "Step 1": "[Select a Frame](!swrpg-ui-set-template #CraftFrameTemplate)",
+        flavor: `Current Template: ${tmpl.name || "- None -"}`,
+        "Step 1": "[Select a Frame](!swrpg-craft-template #CraftFrameTemplate)",
         "Step 2": `[Acquire Frame Materials](!swrpg-craft-acquire ${tmpl.rarity} ${tmpl.price} ${Macros.tradeLocation})`,
-        "Step 3": `[Construct Frame](!swrpg-craft-vehicle ${templateType})`,
-        "Step 4": "[Select an Engine](!swrpg-ui-set-template #CraftEngineTemplate)",
+        "Step 3": `[Construct Frame](!swrpg-craft-construct ${templateType})`,
+        "Step 4": "[Select an Engine](!swrpg-craft-template #CraftEngineTemplate)",
         "Step 5": `[Acquire Engine Materials](!swrpg-craft-acquire ${tmpl.rarity} ${tmpl.price} ${Macros.tradeLocation})`,
-        "Step 6": `[Construct Engine](!swrpg-craft-vehicle ${templateType})`,
-        "Step 7": "[Select a Hull](!swrpg-ui-set-template #CraftHullTemplate)",
+        "Step 6": `[Construct Engine](!swrpg-craft-construct ${templateType})`,
+        "Step 7": "[Select a Hull](!swrpg-craft-template #CraftHullTemplate)",
         "Step 8": `[Acquire Hull Materials](!swrpg-craft-acquire ${tmpl.rarity} ${tmpl.price} ${Macros.tradeLocation})`,
-        "Step 9": `[Construct Hull](!swrpg-craft-vehicle ${templateType})`,
+        "Step 9": `[Construct Hull](!swrpg-craft-construct ${templateType})`,
         "Step 10": `[Assemble Vehicle](!swrpg-craft-assemble ${templateType})`,
         "Back to": Macros.craftingMain
     };

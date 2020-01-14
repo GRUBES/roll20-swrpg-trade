@@ -1,14 +1,14 @@
 /**
- * Core logic for the Crafting system
+ * Core logic for crafting tools and gadgets
  *
- * @module swrpg/craft/core
+ * @module swrpg/craft/gadget
  *
  * @author Draico Dorath
  * @copyright 2020
  * @license MIT
  */
 
-import {Macros} from "../util/enums";
+import {Macros, CraftingMode} from "../util/enums";
 import {sendPrivate} from "../util/chat";
 
 /**
@@ -27,17 +27,19 @@ import {sendPrivate} from "../util/chat";
  * @property time {string} the time required to craft the gadget
  */
 
-/* Sender of chat messages */
-const speakingAs = "Engineering Droid";
+// Sender of chat messages
+const SpeakingAs = "Engineering Droid";
 
-/* Types of templates which can be crafted */
+// Types of templates which can be crafted
 const TemplateType = {
     SIMPLE: 16,
     SPECIALIST: 17,
     PRECISION: 18
 };
 
-/* Maps a TemplateType to its Template */
+const Mode = CraftingMode.GADGET;
+
+// Maps a TemplateType to its Template
 const Template = {
     /** @type {GadgetTemplate} */
     [TemplateType.SIMPLE]: {
@@ -87,21 +89,22 @@ const construct = (templateType) => {
         Effect: tmpl.special,
         Encumbrance: tmpl.encumbrance
     };
-    sendPrivate(speakingAs, content);
+    sendPrivate(SpeakingAs, content);
+
+    return {mode: Mode, template: templateType};
 };
 
 const display = (templateType) => {
-    currentMode = Mode.GADGET;
-    let tmpl = TemplateType[templateType];
+    let tmpl = Template[templateType] || {};
     let content = {
         title: "Gadget Construction",
-        flavor: `Current Template: ${tmpl ? tmpl.name : "- None -"}`,
-        wide: "Step 1: [Select a Template](!swrpg-ui-set-template #CraftGadgetTemplate)",
+        flavor: `Current Template: ${tmpl.name || "- None -"}`,
+        wide: "Step 1: [Select a Template](!swrpg-craft-template #CraftGadgetTemplate)",
         wide2: `Step 2: [Acquire Materials](!swrpg-craft-acquire ${tmpl.rarity} ${tmpl.price} ${Macros.tradeLocation})`,
-        wide3: `Step 3: [Construct Gadget](!swrpg-craft-gadget ${templateType})`,
+        wide3: `Step 3: [Construct Gadget](!swrpg-craft-construct ${templateType})`,
         "Back to": Macros.craftingMain
     };
-    sendPrivate(speakingAs, content);
+    sendPrivate(SpeakingAs, content);
 };
 
 export { construct, display }

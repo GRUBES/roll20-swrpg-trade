@@ -374,14 +374,13 @@ const construct = (templateType) => {
 };
 
 const display = (templateType) => {
-    currentMode = Mode.WEAPON;
-    let tmpl = TemplateType[templateType];
+    let tmpl = Template[templateType] || {};
     let content = {
         title: "Weapon Construction",
-        flavor: `Current Template: ${tmpl ? tmpl.name : "- None -"}`,
-        wide: "Step 1: [Select a Template](!swrpg-ui-set-template #CraftWeaponTemplate)",
+        flavor: `Current Template: ${tmpl.name || "- None -"}`,
+        wide: "Step 1: [Select a Template](!swrpg-craft-template #CraftWeaponTemplate)",
         wide2: `Step 2: [Acquire Materials](!swrpg-craft-acquire ${tmpl.rarity} ${tmpl.price} ${Macros.tradeLocation})`,
-        wide3: `Step 3: [Construct Weapon](!swrpg-craft-weapon ${templateType})`,
+        wide3: `Step 3: [Construct Weapon](!swrpg-craft-construct ${templateType})`,
         "Back to": Macros.craftingMain
     };
     sendPrivate(speakingAs, content);

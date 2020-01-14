@@ -251,14 +251,13 @@ const construct = (templateType) => {
 };
 
 const display = (templateType) => {
-    currentMode = Mode.DROID;
-    let tmpl = TemplateType[templateType];
+    let tmpl = Template[templateType] || {};
     let content = {
         title: "Droid Construction",
-        flavor: `Current Chassis/Directive: ${tmpl ? tmpl.name : "- None -"}`,
-        wide: "Step 1: [Select a Chassis](!swrpg-ui-set-template #CraftDroidTemplate)",
+        flavor: `Current Chassis/Directive: ${tmpl.name || "- None -"}`,
+        wide: "Step 1: [Select a Chassis](!swrpg-craft-template #CraftDroidTemplate)",
         wide2: `Step 2: [Acquire Materials](!swrpg-craft-acquire ${tmpl.rarity} ${tmpl.price} ${Macros.tradeLocation})`,
-        wide3: `Step 3: [Construct Chassis](!swrpg-craft-droid ${templateType})`,
+        wide3: `Step 3: [Construct Chassis](!swrpg-craft-construct ${templateType})`,
         wide4: `Step 4: [Program Directives](!swrpg-craft-directive #CraftDirectiveTemplate)`,
         "Back to": Macros.craftingMain
     };

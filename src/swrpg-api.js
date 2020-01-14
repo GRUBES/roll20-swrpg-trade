@@ -100,20 +100,12 @@ function execute(command, input) {
     const routes = {
         "contact": Contact.investigate,
         "craft-acquire": Craft.acquire,
-        "craft-directive": Craft.directive,
-        "craft-droid": Craft.droid,
-        "craft-gadget": Craft.gadget,
-        "craft-vehicle": Craft.vehicle,
-        "craft-weapon": Craft.weapon,
+        "craft-construct": Craft.construct,
+        "craft-mode": Craft.mode,
+        "craft-template": Craft.template,
+        "craft-ui": Craft.main,
         "repair": Repair.item,
-        "trade": Trade.item,
-        "ui-armor": Craft.displayArmor,
-        "ui-craft": Craft.main,
-        "ui-droid": Craft.displayDroid,
-        "ui-gadget": Craft.displayGadget,
-        "ui-set-template": Craft.template,
-        "ui-vehicle": Craft.displayVehicle,
-        "ui-weapon": Craft.displayWeapon
+        "trade": Trade.item
     };
 
     if (!(routes[command] && (typeof routes[command] === "function"))) {
