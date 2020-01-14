@@ -421,6 +421,9 @@
 
   const construct$1 = (templateType) => {
       let tmpl = Template[templateType];
+      if (!tmpl) {
+          return;
+      }
       let content = {
           title: "Droid Chassis Construction",
           subtitle: `${tmpl.name} (${tmpl.rank})`,
@@ -437,14 +440,17 @@
   };
 
   const display$2 = (templateType) => {
-      let tmpl = Template[templateType] || {};
+      let tmpl = Template[templateType];
+      if (!tmpl) {
+          return;
+      }
       let content = {
           title: "Droid Construction",
           flavor: `Current Chassis/Directive: ${tmpl.name || "- None -"}`,
           wide: "Step 1: [Select a Chassis](!swrpg-craft-template #CraftDroidTemplate)",
           wide2: `Step 2: [Acquire Materials](!swrpg-craft-acquire ${tmpl.rarity} ${tmpl.price} ${Macros.tradeLocation})`,
           wide3: `Step 3: [Construct Chassis](!swrpg-craft-construct ${templateType})`,
-          wide4: `Step 4: [Program Directives](!swrpg-craft-directive #CraftDirectiveTemplate)`,
+          wide4: `Step 4: [Program Directives](!swrpg-craft-program #CraftDirectiveTemplate)`,
           "Back to": Macros.craftingMain
       };
       sendPrivate(speakingAs$1, content);
@@ -452,6 +458,9 @@
 
   const program = (templateType) => {
       let tmpl = Template[templateType];
+      if (!tmpl) {
+          return;
+      }
       let content = {
           title: "Droid Directive Programming",
           subtitle: tmpl.name,
@@ -550,6 +559,9 @@
 
   const construct$2 = (templateType) => {
       let tmpl = Template$1[templateType];
+      if (!tmpl) {
+          return;
+      }
       let content = {
           title: "Gadget Construction",
           subtitle: tmpl.name,
@@ -564,7 +576,10 @@
   };
 
   const display$3 = (templateType) => {
-      let tmpl = Template$1[templateType] || {};
+      let tmpl = Template$1[templateType];
+      if (!tmpl) {
+          return;
+      }
       let content = {
           title: "Gadget Construction",
           flavor: `Current Template: ${tmpl.name || "- None -"}`,
@@ -646,7 +661,10 @@
   };
 
   const display$5 = (templateType) => {
-      let tmpl = Template$2[templateType] || {};
+      let tmpl = Template$2[templateType];
+      if (!tmpl) {
+          return;
+      }
       let content = {
           title: "Vehicle Construction",
           flavor: `Current Template: ${tmpl.name || "- None -"}`,
@@ -665,10 +683,15 @@
       sendPrivate(speakingAs$2, content);
   };
 
+  const assemble = (templateType) => {
+      // TODO
+  };
+
   var Vehicle = /*#__PURE__*/Object.freeze({
     __proto__: null,
     construct: construct$4,
-    display: display$5
+    display: display$5,
+    assemble: assemble
   });
 
   /**
@@ -1020,7 +1043,9 @@
 
   const construct$5 = (templateType) => {
       let tmpl = Template$3[templateType];
-
+      if (!tmpl) {
+          return;
+      }
       let craftContent = {
           title: "Weapon Construction",
           flavor: `${tmpl.skills.join(", ")} (${tmpl.difficulty})`,
@@ -1044,7 +1069,10 @@
   };
 
   const display$6 = (templateType) => {
-      let tmpl = Template$3[templateType] || {};
+      let tmpl = Template$3[templateType];
+      if (!tmpl) {
+          return;
+      }
       let content = {
           title: "Weapon Construction",
           flavor: `Current Template: ${tmpl.name || "- None -"}`,
@@ -1423,8 +1451,10 @@
       const routes = {
           "contact": display,
           "craft-acquire": acquire,
+          "craft-assemble": assemble,
           "craft-construct": construct$6,
           "craft-mode": setMode,
+          "craft-program": program,
           "craft-template": setTemplate,
           "craft-ui": display$8,
           "repair": display$9,

@@ -96,4 +96,8 @@ const display = (templateType) => {
     sendPrivate(speakingAs, content);
 };
 
-export { construct, display }
+const assemble = (templateType) => {
+    // TODO
+};
+
+export { construct, display, assemble }
