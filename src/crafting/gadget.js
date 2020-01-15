@@ -93,8 +93,6 @@ const construct = (templateType) => {
         Encumbrance: tmpl.encumbrance
     };
     sendPrivate(SpeakingAs, content);
-
-    return {mode: Mode, template: templateType};
 };
 
 const display = (templateType) => {

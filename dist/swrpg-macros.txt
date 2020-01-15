@@ -68,8 +68,9 @@
     Ion Drive Array, 48}
 
 // #CraftFrameTemplate
-?{Select a Frame|Speeder Bike, 31|Landspeeder, 32|Airspeeder, 33|Walker, 34|Starfighter, 35|Freighter, 36|Gunship, 54|
-    Corvette, 38|Frigate, 39|Carrier, 55|Heavy Cruiser, 40|Destroyer, 41|Space Station, 42}
+?{Select a Frame|Speeder Bike, 31|Landspeeder, 32|Airspeeder, 33|Walker, 34|Starfighter, 35|Transport, 36|
+    Corvette, 38|Patrol Ship, 54|Carrier, 55|Frigate, 39|Heavy Cruiser, 40|Destroyer, 41|Small Station, 42|
+    Medium Station, 56|Large Station, 57|Massive Station, 58|Small Moon, 59}
 
 // #CraftHullTemplate
-?{Select a Hull|Sleek Carapace, 49|Expanded Holds, 50|Lightly Armored, 51|Deflective Plating, 52|Combat Plating, 52}
+?{Select a Hull|Basic, 49|Race Ship, 50|Bulk Freighter, 51|Transport, 52|Scout, 53|Gunship, 60|Ship of the Line, 61}

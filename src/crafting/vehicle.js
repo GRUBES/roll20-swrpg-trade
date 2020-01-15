@@ -1,23 +1,29 @@
 /**
- * Core logic for crafting vehicles
+ * Core logic for crafting vehicles. Based on the Nubian Design Collective's Whole Vehicle Crafting
+ * Handbook
  *
  * @module swrpg/craft/vehicle
  *
  * @author Draico Dorath
  * @copyright 2020
  * @license MIT
+ *
+ * @see https://community.fantasyflightgames.com/topic/272869-the-nubian-design-collectives-whole-vehicle-crafting-handbook/
  */
 
 import {Macros} from "../util/enums";
 import {sendPrivate} from "../util/chat";
 
 /**
- * Crafting template for a vehicle
+ * Crafting template for a vehicle frame
  *
- * @typedef {Object} VehicleTemplate
+ * @typedef {Object} FrameTemplate
  *
  * @property altitude {number} Maximum altitude of the vehicle, in meters
+ * @property assemblyCost {number} Cost for supplies needed to assemble the vehicle
  * @property assemblyCrew {number} Number of crew needed to assemble the vehicle
+ * @property assemblyDifficulty {number} Difficulty of check to assemble the vehicle
+ * @property assemblyTime {string} Time required to assemble the vehicle
  * @property crew {string} Description of vehicle crew complement
  * @property difficulty {number} Difficulty of the crafting check for the template
  * @property encumbrance {number} Encumbrance capacity of the vehicle
@@ -34,10 +40,47 @@ import {sendPrivate} from "../util/chat";
  * @property speed {number} Maximum speed of the vehicle
  * @property time {string} the time required to craft the vehicle
  * @property type {string} the type of vehicle
+ * @property vsl {number} Vehicle Scaling Law
+ */
+
+/**
+ * Crafting template for an engine
+ *
+ * @typedef {Object} EngineTemplate
+ *
+ * @property defense {string} Defense Ratings of the vehicle upon installing this Engine
+ * @property difficulty {number} Difficulty of the crafting check for the template
+ * @property hardpoints {number} Hard Point cost of installing this Engine
+ * @property name {string} the name of the engine being crafted
+ * @property price {number} base price of materials for crafting the engine
+ * @property rarity {number} Rarity rating of the materials for the engine
+ * @property skills {string[]} Skills that can be used to craft the engine
+ * @property speed {number} the Max Speed of the vehicle upon installing this Engine
+ * @property strain {string} System Strain Threshold of the vehicle upon installing this Engine
+ * @property time {string} the time required to craft the engine
+ */
+
+/**
+ * Crafting template for a hull
+ *
+ * @typedef {Object} HullTemplate
+ *
+ * @property armor {number} Armor of the vehicle upon installing this Hull
+ * @property difficulty {number} Difficulty of the crafting check for the template
+ * @property handling {number} Handling of the vehicle upon installing this Hull
+ * @property hardpoints {number} Hard Point change upon installing this Hull
+ * @property hull {string} Hull Trauma Threshold change upon installing this Hull
+ * @property name {string} the name of the Hull being crafted
+ * @property price {number} base price of materials for crafting the Hull
+ * @property rarity {number} Rarity rating of the materials for the Hull
+ * @property skills {string[]} Skills that can be used to craft the Hull
+ * @property speed {number} the Max Speed change upon installing this Hull
+ * @property strain {string} System Strain Threshold change upon installing this Hull
+ * @property time {string} the time required to craft the Hull
  */
 
 /* Sender of chat messages */
-const speakingAs = "Mechanics Droid";
+const SpeakingAs = "Mechanics Droid";
 
 /* Types of vehicle templates which can be crafted */
 const TemplateType = {
@@ -47,15 +90,18 @@ const TemplateType = {
         AIRSPEEDER: 33,
         WALKER: 34,
         STARFIGHTER: 35,
-        FREIGHTER: 36,
-        GUNSHIP: 54,
-        SHUTTLE: 37,
+        TRANSPORT: 36,
         CORVETTE: 38,
+        PATROL_SHIP: 54,
+        CARRIER: 55,
         FRIGATE: 39,
         HEAVY_CRUISER: 40,
         DESTROYER: 41,
-        STATION: 42,
-        CARRIER: 55
+        SMALL_STATION: 42,
+        MEDIUM_STATION: 56,
+        LARGE_STATION: 57,
+        MASSIVE_STATION: 58,
+        SMALL_MOON: 59
     },
     Engine: {
         SINGLE_COIL: 43,
@@ -66,20 +112,25 @@ const TemplateType = {
         DRIVE_ARRAY: 48
     },
     Hull: {
-        SLEEK: 49,
-        HOLDS: 50,
-        LIGHT: 51,
-        DEFLECTIVE: 52,
-        COMBAT: 53
+        BASIC: 49,
+        RACE: 50,
+        BULK: 51,
+        TRANSPORT: 52,
+        SCOUT: 53,
+        GUNSHIP: 60,
+        LINE: 61
     }
 };
 
 /* Maps a TemplateType to its Template */
 const Template = {
-    /** @type {VehicleTemplate} */
+    /** @type {FrameTemplate} */
     [TemplateType.Frame.BIKE]: {
         altitude: 15,
+        assemblyCost: 1000,
         assemblyCrew: 1,
+        assemblyDifficulty: 3,
+        assemblyTime: "48 hours",
         crew: "One pilot",
         difficulty: 2,
         encumbrance: 1,
@@ -94,12 +145,16 @@ const Template = {
         skills: ["Mechanics"],
         special: "",
         speed: 4,
-        time: "12 hours"
+        time: "12 hours",
+        vsl: 5
     },
-    /** @type {VehicleTemplate} */
+    /** @type {FrameTemplate} */
     [TemplateType.Frame.LANDSPEEDER]: {
         altitude: 20,
+        assemblyCost: 1000,
         assemblyCrew: 1,
+        assemblyDifficulty: 3,
+        assemblyTime: "48 hours",
         crew: "One pilot",
         difficulty: 2,
         encumbrance: 5,
@@ -114,12 +169,16 @@ const Template = {
         skills: ["Mechanics"],
         special: "",
         speed: 4,
-        time: "24 hours"
+        time: "24 hours",
+        vsl: 5
     },
-    /** @type {VehicleTemplate} */
+    /** @type {FrameTemplate} */
     [TemplateType.Frame.AIRSPEEDER]: {
         altitude: 100000,
+        assemblyCost: 1000,
         assemblyCrew: 1,
+        assemblyDifficulty: 3,
+        assemblyTime: "48 hours",
         crew: "One pilot",
         difficulty: 3,
         encumbrance: 5,
@@ -134,12 +193,16 @@ const Template = {
         skills: ["Mechanics"],
         special: "Can receive 'Larger Scope' upgrade twice",
         speed: 4,
-        time: "24 hours"
+        time: "24 hours",
+        vsl: 5
     },
-    /** @type {VehicleTemplate} */
+    /** @type {FrameTemplate} */
     [TemplateType.Frame.WALKER]: {
         altitude: 0,
+        assemblyCost: 10000,
         assemblyCrew: 1,
+        assemblyDifficulty: 3,
+        assemblyTime: "120 hours",
         crew: "One pilot",
         difficulty: 3,
         encumbrance: 5,
@@ -154,12 +217,16 @@ const Template = {
         skills: ["Mechanics"],
         special: "All-Terrain Legs (SM65); Race Hull has base speed 3",
         speed: 5,
-        time: "72 hours"
+        time: "72 hours",
+        vsl: 10
     },
-    /** @type {VehicleTemplate} */
+    /** @type {FrameTemplate} */
     [TemplateType.Frame.STARFIGHTER]: {
         altitude: -1,
+        assemblyCost: 10000,
         assemblyCrew: 1,
+        assemblyDifficulty: 3,
+        assemblyTime: "120 hours",
         crew: "One pilot",
         difficulty: 3,
         encumbrance: 5,
@@ -174,12 +241,16 @@ const Template = {
         skills: ["Mechanics"],
         special: "",
         speed: 5,
-        time: "72 hours"
+        time: "72 hours",
+        vsl: 10
     },
-    /** @type {VehicleTemplate} */
-    [TemplateType.Frame.FREIGHTER]: {
+    /** @type {FrameTemplate} */
+    [TemplateType.Frame.TRANSPORT]: {
         altitude: -1,
+        assemblyCost: 25000,
         assemblyCrew: 5,
+        assemblyDifficulty: 3,
+        assemblyTime: "240 hours",
         crew: "One pilot, one co-pilot",
         difficulty: 3,
         encumbrance: 20,
@@ -194,12 +265,16 @@ const Template = {
         skills: ["Mechanics"],
         special: "Cargo Bays and Passenger Berths cost -1HP; can receive 'Integrated Improvements' twice",
         speed: 4,
-        time: "240 hours"
+        time: "240 hours",
+        vsl: 15
     },
-    /** @type {VehicleTemplate} */
+    /** @type {FrameTemplate} */
     [TemplateType.Frame.CORVETTE]: {
         altitude: -1,
+        assemblyCost: 125000,
         assemblyCrew: 100,
+        assemblyDifficulty: 4,
+        assemblyTime: "1200 hours",
         crew: "80 officers, pilots, and crew",
         difficulty: 4,
         encumbrance: 215,
@@ -214,12 +289,16 @@ const Template = {
         skills: ["Mechanics"],
         special: "Can receive 'Integrated Improvements' twice",
         speed: 3,
-        time: "480 hours"
+        time: "480 hours",
+        vsl: 25
     },
-    /** @type {VehicleTemplate} */
-    [TemplateType.Frame.GUNSHIP]: {
+    /** @type {FrameTemplate} */
+    [TemplateType.Frame.PATROL_SHIP]: {
         altitude: -1,
+        assemblyCost: 125000,
         assemblyCrew: 100,
+        assemblyDifficulty: 4,
+        assemblyTime: "1200 hours",
         crew: 8,
         difficulty: 4,
         encumbrance: 20,
@@ -234,12 +313,16 @@ const Template = {
         skills: ["Mechanics"],
         special: "Can receive 'Integrated Improvements' twice; spend Triumph during crafting to gain 'Unusually Agile'",
         speed: 4,
-        time: "480 hours"
+        time: "480 hours",
+        vsl: 25
     },
-    /** @type {VehicleTemplate} */
+    /** @type {FrameTemplate} */
     [TemplateType.Frame.CARRIER]: {
         altitude: -1,
+        assemblyCost: 125000,
         assemblyCrew: 100,
+        assemblyDifficulty: 4,
+        assemblyTime: "1200 hours",
         crew: 800,
         difficulty: 4,
         encumbrance: 100,
@@ -254,12 +337,16 @@ const Template = {
         skills: ["Mechanics"],
         special: "Hangar and Repair Bays cost -1HP; can receive 'Larger Scope' and 'Integrated Improvements' twice",
         speed: 3,
-        time: "480 hours"
+        time: "480 hours",
+        vsl: 35
     },
-    /** @type {VehicleTemplate} */
+    /** @type {FrameTemplate} */
     [TemplateType.Frame.FRIGATE]: {
         altitude: -1,
+        assemblyCost: 125000,
         assemblyCrew: 100,
+        assemblyDifficulty: 4,
+        assemblyTime: "1200 hours",
         crew: 1000,
         difficulty: 4,
         encumbrance: 0,
@@ -274,12 +361,16 @@ const Template = {
         skills: ["Mechanics"],
         special: "Medical Bays cost 1HP",
         speed: 3,
-        time: "480 hours"
+        time: "480 hours",
+        vsl: 35
     },
-    /** @type {VehicleTemplate} */
+    /** @type {FrameTemplate} */
     [TemplateType.Frame.HEAVY_CRUISER]: {
         altitude: -1,
+        assemblyCost: 1250000,
         assemblyCrew: 5000,
+        assemblyDifficulty: 5,
+        assemblyTime: "2400 hours",
         crew: 3000,
         difficulty: 4,
         encumbrance: 0,
@@ -294,12 +385,16 @@ const Template = {
         skills: ["Mechanics"],
         special: "Medical Bays and Weapon Banks cost 1HP",
         speed: 3,
-        time: "1200 hours"
+        time: "1200 hours",
+        vsl: 50
     },
-    /** @type {VehicleTemplate} */
+    /** @type {FrameTemplate} */
     [TemplateType.Frame.DESTROYER]: {
         altitude: -1,
+        assemblyCost: 1250000,
         assemblyCrew: 5000,
+        assemblyDifficulty: 5,
+        assemblyTime: "2400 hours",
         crew: 8000,
         difficulty: 5,
         encumbrance: 0,
@@ -314,32 +409,327 @@ const Template = {
         skills: ["Mechanics"],
         special: "Medical Bays and Weapon Banks cost 1HP; Cargo Bays, Hangar Bays, Repair Bays, Passenger Berths cost -1HP",
         speed: 2,
-        time: "1200 hours"
+        time: "1200 hours",
+        vsl: 65
     },
-    /** @type {VehicleTemplate} */
-    [TemplateType.Frame.STATION]: {
+    /** @type {FrameTemplate} */
+    [TemplateType.Frame.SMALL_STATION]: {
         altitude: -1,
-        assemblyCrew: 5000,
+        assemblyCost: 125000,
+        assemblyCrew: 100,
+        assemblyDifficulty: 4,
+        assemblyTime: "1200 hours",
         crew: 0,
         difficulty: 5,
         encumbrance: 0,
         hardpoints: 90,
         hull: 150,
         isRestricted: false,
-        name: "Space Station",
+        name: "Small Station",
         passenger: 0,
-        price: 50000000,
+        price: 750000,
+        rarity: 5,
+        silhouette: 6,
+        skills: ["Mechanics"],
+        special: "Crafting Rules p5",
+        speed: 0,
+        time: "2400 hours",
+        vsl: 35
+    },
+    /** @type {FrameTemplate} */
+    [TemplateType.Frame.MEDIUM_STATION]: {
+        altitude: -1,
+        assemblyCost: 1250000,
+        assemblyCrew: 5000,
+        assemblyDifficulty: 5,
+        assemblyTime: "2400 hours",
+        crew: 0,
+        difficulty: 5,
+        encumbrance: 0,
+        hardpoints: 90,
+        hull: 150,
+        isRestricted: false,
+        name: "Medium Station",
+        passenger: 0,
+        price: 2000000,
+        rarity: 5,
+        silhouette: 7,
+        skills: ["Mechanics"],
+        special: "Crafting Rules p5",
+        speed: 0,
+        time: "2400 hours",
+        vsl: 50
+    },
+    /** @type {FrameTemplate} */
+    [TemplateType.Frame.LARGE_STATION]: {
+        altitude: -1,
+        assemblyCost: 3250000,
+        assemblyCrew: 5000,
+        assemblyDifficulty: 5,
+        assemblyTime: "2400 hours",
+        crew: 0,
+        difficulty: 5,
+        encumbrance: 0,
+        hardpoints: 90,
+        hull: 150,
+        isRestricted: false,
+        name: "Large Station",
+        passenger: 0,
+        price: 7500000,
         rarity: 5,
         silhouette: 8,
         skills: ["Mechanics"],
         special: "Crafting Rules p5",
         speed: 0,
-        time: "2400 hours"
+        time: "2400 hours",
+        vsl: 65
+    },
+    /** @type {FrameTemplate} */
+    [TemplateType.Frame.MASSIVE_STATION]: {
+        altitude: -1,
+        assemblyCost: 4000000,
+        assemblyCrew: 5000,
+        assemblyDifficulty: 5,
+        assemblyTime: "2400 hours",
+        crew: 0,
+        difficulty: 5,
+        encumbrance: 0,
+        hardpoints: 90,
+        hull: 150,
+        isRestricted: false,
+        name: "Massive Station",
+        passenger: 0,
+        price: 20000000,
+        rarity: 5,
+        silhouette: 9,
+        skills: ["Mechanics"],
+        special: "Crafting Rules p5",
+        speed: 0,
+        time: "2400 hours",
+        vsl: 80
+    },
+    /** @type {FrameTemplate} */
+    [TemplateType.Frame.SMALL_MOON]: {
+        altitude: -1,
+        assemblyCost: 10000000,
+        assemblyCrew: 50000,
+        assemblyDifficulty: 5,
+        assemblyTime: "6000 hours",
+        crew: 0,
+        difficulty: 5,
+        encumbrance: 0,
+        hardpoints: 90,
+        hull: 150,
+        isRestricted: false,
+        name: "That's no Moon...",
+        passenger: 0,
+        price: 75000000,
+        rarity: 5,
+        silhouette: 10,
+        skills: ["Mechanics"],
+        special: "Crafting Rules p5",
+        speed: 0,
+        time: "2400 hours",
+        vsl: 100
+    },
+    /** @type {EngineTemplate} */
+    [TemplateType.Engine.SINGLE_COIL]: {
+        defense: "0/0/0/0",
+        difficulty: 1,
+        hardpoints: 2,
+        name: "Single Ion Coil",
+        price: 500,
+        rarity: 2,
+        skills: ["Mechanics"],
+        speed: 1,
+        strain: "2*Silhouette",
+        time: "24 hours"
+    },
+    /** @type {EngineTemplate} */
+    [TemplateType.Engine.BAFFLED]: {
+        defense: "0/0/0/2",
+        difficulty: 2,
+        hardpoints: 4,
+        name: "Electron Baffle",
+        price: 1000,
+        rarity: 3,
+        skills: ["Mechanics"],
+        speed: 2,
+        strain: "4*Silhouette",
+        time: "48 hours"
+    },
+    /** @type {EngineTemplate} */
+    [TemplateType.Engine.ION_TURBINE]: {
+        defense: "1/0/0/0",
+        difficulty: 2,
+        hardpoints: 3,
+        name: "Ion Turbine",
+        price: 2000,
+        rarity: 2,
+        skills: ["Mechanics"],
+        speed: 1,
+        strain: "1*VSL",
+        time: "48 hours"
+    },
+    /** @type {EngineTemplate} */
+    [TemplateType.Engine.FUSIAL]: {
+        defense: "1/0/0/0",
+        difficulty: 3,
+        hardpoints: 3,
+        name: "Fusial Thrust",
+        price: 2500,
+        rarity: 4,
+        skills: ["Mechanics"],
+        speed: 3,
+        strain: "4*Silhouette",
+        time: "60 hours"
+    },
+    /** @type {EngineTemplate} */
+    [TemplateType.Engine.REPULSOR]: {
+        defense: "1/1/1/1",
+        difficulty: 3,
+        hardpoints: 4,
+        name: "Repulsor Cluster",
+        price: 3000,
+        rarity: 4,
+        skills: ["Mechanics"],
+        speed: 4,
+        strain: "4*Silhouette",
+        time: "120 hours"
+    },
+    /** @type {EngineTemplate} */
+    [TemplateType.Engine.DRIVE_ARRAY]: {
+        defense: "0/0/0/0",
+        difficulty: 4,
+        hardpoints: 4,
+        name: "Ion Drive Array",
+        price: 5250,
+        rarity: 5,
+        skills: ["Mechanics"],
+        speed: 4,
+        strain: "2*Silhouette",
+        time: "120 hours"
+    },
+    /** @type {HullTemplate} */
+    [TemplateType.Hull.BASIC]: {
+        armor: 1,
+        difficulty: 2,
+        handling: -2,
+        hardpoints: "No change",
+        hull: "No change",
+        name: "Basic Hull",
+        price: "500*VSL",
+        rarity: 2,
+        skills: ["Mechanics"],
+        speed: "No change",
+        strain: "No change",
+        time: "48*Silhouette hours"
+    },
+    /** @type {HullTemplate} */
+    [TemplateType.Hull.RACE]: {
+        armor: 1,
+        difficulty: 2,
+        handling: 1,
+        hardpoints: -1,
+        hull: "-1*Silhouette",
+        name: "Race Ship",
+        price: "500*VSL",
+        rarity: 2,
+        skills: ["Mechanics"],
+        speed: "+1 regardless of Silhouette",
+        strain: "-1*Silhouette",
+        time: "48*Silhouette hours"
+    },
+    /** @type {HullTemplate} */
+    [TemplateType.Hull.BULK]: {
+        armor: 1,
+        difficulty: 3,
+        handling: -4,
+        hardpoints: "No change",
+        hull: "No change",
+        name: "Bulk Freighter",
+        price: "1000*VSL",
+        rarity: 3,
+        skills: ["Mechanics"],
+        speed: "No change",
+        strain: "No change",
+        time: "72*Silhouette hours"
+    },
+    /** @type {HullTemplate} */
+    [TemplateType.Hull.TRANSPORT]: {
+        armor: 1,
+        difficulty: 3,
+        handling: -2,
+        hardpoints: "No change",
+        hull: "No change",
+        name: "Transport",
+        price: "1000*VSL",
+        rarity: 3,
+        skills: ["Mechanics"],
+        speed: "No change",
+        strain: "No change",
+        time: "72*Silhouette hours"
+    },
+    /** @type {HullTemplate} */
+    [TemplateType.Hull.SCOUT]: {
+        armor: 2,
+        difficulty: 3,
+        handling: 1,
+        hardpoints: "No change",
+        hull: "No change",
+        name: "Scout Ship",
+        price: "1000*VSL",
+        rarity: 5,
+        skills: ["Mechanics"],
+        speed: "No change",
+        strain: "No change",
+        time: "72*Silhouette hours"
+    },
+    /** @type {HullTemplate} */
+    [TemplateType.Hull.GUNSHIP]: {
+        armor: 3,
+        difficulty: 4,
+        handling: -2,
+        hardpoints: "No change",
+        hull: "No change",
+        name: "Gunship",
+        price: "2000*VSL",
+        rarity: 5,
+        skills: ["Mechanics"],
+        speed: "No change",
+        strain: "No change",
+        time: "96*Silhouette hours"
+    },
+    /** @type {HullTemplate} */
+    [TemplateType.Hull.LINE]: {
+        armor: 5,
+        difficulty: 4,
+        handling: -2,
+        hardpoints: "No change",
+        hull: "No change",
+        name: "Gunship",
+        price: "3000*VSL",
+        rarity: 7,
+        skills: ["Mechanics"],
+        speed: "No change",
+        strain: "No change",
+        time: "96*Silhouette hours"
     }
 };
 
 const construct = (templateType) => {
-    // TODO
+    let tmpl = Template[templateType];
+    if (!tmpl) {
+        return;
+    }
+    let content = {
+        title: "Vehicle Construction",
+        subtitle: tmpl.name,
+        flavor: `${tmpl.skills.join(", ")} (${tmpl.difficulty})`,
+        prewide: `Time Required: ${tmpl.time}, ${-2*tmpl.vsl} hours for each additional success`,
+        Effect: tmpl.special
+    };
+    sendPrivate(SpeakingAs, content);
 };
 
 const display = (templateType) => {
@@ -362,11 +752,23 @@ const display = (templateType) => {
         "Step 10": `[Assemble Vehicle](!swrpg-craft-assemble ${templateType})`,
         "Back to": Macros.craftingMain
     };
-    sendPrivate(speakingAs, content);
+    sendPrivate(SpeakingAs, content);
 };
 
 const assemble = (templateType) => {
-    // TODO
+    let tmpl = Template[templateType];
+    if (!tmpl) {
+        return;
+    }
+    // FIXME This won't work without selecting the Frame template again before Assembling
+    let assembleContent = {
+        title: "Vehicle Assembly",
+        flavor: `${tmpl.skills.join(", ")} (${tmpl.assemblyDifficulty})`,
+        prewide: `Time Required: ${tmpl.assemblyTime}, ${-5*tmpl.vsl} hours per additional success`,
+        wide: `Crew Required: ${tmpl.assemblyCrew}`,
+        wide2: `Supply Cost: ${tmpl.assemblyCost}`
+    };
+    sendPrivate(SpeakingAs, assembleContent);
 };
 
 export { construct, display, assemble }
