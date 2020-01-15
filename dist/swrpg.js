@@ -132,141 +132,65 @@
   const clamp5 = clamp(0, 5);
 
   /**
-   * Core logic for the Galactic Economy system
+   * Core logic for crafting armor
    *
-   * @module swrpg/trade/core
+   * @module swrpg/craft/armor
    *
    * @author Draico Dorath
-   * @copyright 2019
+   * @copyright 2020
    * @license MIT
    */
 
-  /* Sender of chat messages */
-  const speakingAs$1 = "Trade Representative";
+  const construct = (templateType) => {
+      // TODO
+  };
+
+  const display$1 = (templateType) => {
+      // TODO
+  };
+
+  var Armor = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    construct: construct,
+    display: display$1
+  });
 
   /**
-   * Enumeration of proximity to major trade route
+   * Common enumerations
    *
-   * @enum {number}
-   * @readonly
+   * @module swrpg/util/enum
+   *
+   * @author Draico Dorath
+   * @copyright 2020
+   * @license MIT
    */
-  const Proximity = {
-      ON: 0,
-      NEAR: 1,
-      FAR: 2
+
+  const CraftingMode = {
+      NONE: -1,
+      ARMOR: 0,
+      DROID: 1,
+      GADGET: 2,
+      VEHICLE: 3,
+      WEAPON: 4,
+      LIGHTSABER: 5
+  };
+
+  // Commonly referenced macros
+  const Macros = {
+      tradeLocation: "#TradeLocation #TradeProximity #TradePopulation",
+      craftingMain: "[Crafting Station](!swrpg-craft-ui)",
+      craftArmor: `[Create Armor](!swrpg-craft-mode ${CraftingMode.ARMOR})`,
+      craftDroid: `[Create Droid](!swrpg-craft-mode ${CraftingMode.DROID})`,
+      craftGadget: `[Create Gadget](!swrpg-craft-mode ${CraftingMode.GADGET})`,
+      craftLightsaber: `[Create Lightsaber](!swrpg-craft-mode ${CraftingMode.LIGHTSABER})`,
+      craftVehicle: `[Create Vehicle](!swrpg-craft-mode ${CraftingMode.VEHICLE})`,
+      craftWeapon: `[Create Weapon](!swrpg-craft-mode ${CraftingMode.WEAPON})`
   };
 
   /**
-   * Enumeration of population values for the trade location
+   * Core logic for crafting droids
    *
-   * @enum {number}
-   * @readonly
-   */
-  const Population = {
-      HIGH: 0,
-      AVERAGE: 1,
-      LOW: 2,
-      NONE: 3
-  };
-
-  /**
-   * Enumeration of the Regions of the Galaxy
-   *
-   * @enum {number}
-   * @readonly
-   */
-  const Region = {
-      CORE: 0,
-      COLONIES: 1,
-      INNER_RIM: 2,
-      MID_RIM: 3,
-      OUTER_RIM: 4,
-      EXPANSION: 5,
-      WILD: 6,
-      UNKNOWN: 7
-  };
-
-  /**
-   * Maps a population value to its rarity modifier
-   *
-   * @enum {number}
-   * @readonly
-   */
-  const PopulationToModifier = {
-      [Population.HIGH]: -1,
-      [Population.AVERAGE]: 0,
-      [Population.LOW]: 1,
-      [Population.NONE]: 4
-  };
-
-  /**
-   * Maps a trade route proximity value to its rarity modifier
-   *
-   * @enum {number}
-   * @readonly
-   */
-  const ProximityToModifier = {
-      [Proximity.ON]: -1,
-      [Proximity.NEAR]: 0,
-      [Proximity.FAR]: 1
-  };
-
-  /**
-   * Maps a galactic Region to its rarity modifier
-   *
-   * @enum {number}
-   * @readonly
-   */
-  const RegionToModifier = {
-      [Region.CORE]: -1,
-      [Region.COLONIES]: 0,
-      [Region.INNER_RIM]: 0,
-      [Region.MID_RIM]: 1,
-      [Region.OUTER_RIM]: 2,
-      [Region.EXPANSION]: 2,
-      [Region.WILD]: 3,
-      [Region.UNKNOWN]: 4
-  };
-
-  // Calculate trade values and display to GM
-  const display$1 = (rarity, region, tradeProximity, population, basePrice) => {
-      let diff = difficulty$1(rarity, region, tradeProximity, population);
-      let buy = purchasePrice(diff, basePrice);
-      let sell = sellPrices(buy).join(" | ");
-      let content = {
-          title: "Trade Negotiations",
-          Difficulty: diff,
-          "Purchase Price": buy,
-          "Sell Prices": sell
-      };
-      sendPrivate(speakingAs$1, content);
-  };
-
-  // Calculate the Difficulty of the Negotiation or Streetwise roll
-  const difficulty$1 = (rarity, region, tradeProximity, population) => clampDifficulty([
-      rarityToDifficulty(rarity),
-      RegionToModifier[region],
-      ProximityToModifier[tradeProximity],
-      PopulationToModifier[population]
-  ].reduce((t, v) => t + v));
-
-  // Calculate recommended Purchase Price
-  const purchasePrice = (diff, basePrice) => clampModifier(diff) * basePrice;
-
-  // Calculate recommended Sale Prices based on number of Successes
-  const sellPrices = (purchasePrice) => [purchasePrice / 4, purchasePrice / 2, purchasePrice * 0.75];
-
-  // Maps an item's Rarity to the appropriate Difficulty
-  const rarityToDifficulty = (r = 0) => Math.floor(clampRarity(r) / 2);
-
-  const clampDifficulty = clamp(0, 5);
-  const clampModifier = clamp(1, 4);
-  const clampRarity = clamp(0, 10);
-
-  /**
-   * Core logic for the Crafting system
-   *
-   * @module swrpg/craft/core
+   * @module swrpg/craft/droid
    *
    * @author Draico Dorath
    * @copyright 2020
@@ -308,72 +232,11 @@
    * @property wounds {number} Wound Threshold of the crafted droid
    */
 
-  /**
-   * Crafting template for a gadget
-   *
-   * @typedef {Object} GadgetTemplate
-   *
-   * @property difficulty {number} Difficulty of the crafting check for the template
-   * @property encumbrance {number} Encumbrance rating of the gadget
-   * @property isRestricted {boolean} whether the gadget is Restricted
-   * @property name {string} the name of the gadget being crafted
-   * @property price {number} base price of materials for crafting the gadget
-   * @property rarity {number} Rarity rating of the materials for the gadget
-   * @property skills {string[]} Skills that can be used to craft the gadget
-   * @property special {string} Qualities of the crafted gadget
-   * @property time {string} the time required to craft the gadget
-   */
-
-  /**
-   * Crafting template for a weapon
-   *
-   * @typedef {Object} WeaponTemplate
-   *
-   * @property critical {number} Critical Rating of the weapon
-   * @property damage {string|number} Damage of the weapon. Number for Ranged weapons; string for Melee
-   * @property difficulty {number} Difficulty of the crafting check for the template
-   * @property encumbrance {number} Encumbrance rating of the weapon
-   * @property hands {string} Description of hands needed to wield the weapon
-   * @property hardpoints {number} Customization Hard Points on the weapon
-   * @property isRestricted {boolean} whether the weapon is Restricted
-   * @property name {string} the name of the weapon being crafted
-   * @property price {number} base price of materials for crafting the weapon
-   * @property range {string} Range Band of the weapon
-   * @property rarity {number} Rarity rating of the materials for the weapon
-   * @property skills {string[]} Skills that can be used to craft the weapon
-   * @property special {string} Qualities of the crafted weapon
-   * @property time {string} the time required to craft the weapon
-   * @property type {string} the type of weapon
-   */
-
   /* Sender of chat messages */
-  const speakingAs$2 = "Crafting Droid";
+  const speakingAs$1 = "Droid Mechanic";
 
-  /* Types of templates which can be crafted */
+  /* Types of droid templates which can be crafted */
   const TemplateType = {
-      Weapon: {
-          FIST: 0,
-          BLUNT: 1,
-          SHIELD: 2,
-          BLADED: 3,
-          VIBRO: 4,
-          POWERED: 5,
-          SIMPLE: 6,
-          SOLID_PISTOL: 7,
-          SOLID_RIFLE: 8,
-          ENERGY_PISTOL: 9,
-          ENERGY_RIFLE: 10,
-          HEAVY_RIFLE: 11,
-          LAUNCHER: 12,
-          MISSILE: 13,
-          GRENADE: 14,
-          MINE: 15
-      },
-      Gadget: {
-          SIMPLE: 16,
-          SPECIALIST: 17,
-          PRECISION: 18
-      },
       Droid: {
           MONOTASK: 19,
           LABOR: 20,
@@ -392,7 +255,7 @@
       }
   };
 
-  /* Step 1: Select Template. Maps a TemplateType to its Template */
+  /* Maps a TemplateType to its Template */
   const Template = {
       /** @type {DirectiveTemplate} */
       [TemplateType.Directive.LABOR]: {
@@ -553,9 +416,109 @@
           strain: 10,
           time: "240 hours",
           wounds: 19
-      },
+      }
+  };
+
+  const construct$1 = (templateType) => {
+      let tmpl = Template[templateType];
+      if (!tmpl) {
+          return;
+      }
+      let content = {
+          title: "Droid Chassis Construction",
+          subtitle: `${tmpl.name} (${tmpl.rank})`,
+          flavor: `${tmpl.skills.join(", ")} (${tmpl.difficulty})`,
+          prewide: `Time Required: ${tmpl.time}, -2 hours for each additional success`,
+          Characteristics: tmpl.characteristics.join("/"),
+          Defense: `${tmpl.rangedDefense} | ${tmpl.meleeDefense}`,
+          Soak: tmpl.soak,
+          Qualities: tmpl.special,
+          "Wound Threshold": tmpl.wounds,
+          "Strain Threshold": tmpl.strain
+      };
+      sendPrivate(speakingAs$1, content);
+  };
+
+  const display$2 = (templateType) => {
+      let tmpl = Template[templateType];
+      if (!tmpl) {
+          return;
+      }
+      let content = {
+          title: "Droid Construction",
+          flavor: `Current Chassis/Directive: ${tmpl.name || "- None -"}`,
+          wide: "Step 1: [Select a Chassis](!swrpg-craft-template #CraftDroidTemplate)",
+          wide2: `Step 2: [Acquire Materials](!swrpg-craft-acquire ${tmpl.rarity} ${tmpl.price} ${Macros.tradeLocation})`,
+          wide3: `Step 3: [Construct Chassis](!swrpg-craft-construct ${templateType})`,
+          wide4: `Step 4: [Program Directives](!swrpg-craft-program #CraftDirectiveTemplate)`,
+          "Back to": Macros.craftingMain
+      };
+      sendPrivate(speakingAs$1, content);
+  };
+
+  const program = (templateType) => {
+      let tmpl = Template[templateType];
+      if (!tmpl) {
+          return;
+      }
+      let content = {
+          title: "Droid Directive Programming",
+          subtitle: tmpl.name,
+          flavor: `${tmpl.skills.join(", ")} (${tmpl.difficulty})`,
+          prewide: `Time Required: ${tmpl.time}, -2 hours for each additional success`,
+          Skills: tmpl.skillsGranted.join("; "),
+          Talents: tmpl.talentsGranted.join("; ")
+      };
+      sendPrivate(speakingAs$1, content);
+  };
+
+  var Droid = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    construct: construct$1,
+    display: display$2,
+    program: program
+  });
+
+  /**
+   * Core logic for crafting tools and gadgets
+   *
+   * @module swrpg/craft/gadget
+   *
+   * @author Draico Dorath
+   * @copyright 2020
+   * @license MIT
+   */
+
+  /**
+   * Crafting template for a gadget
+   *
+   * @typedef {Object} GadgetTemplate
+   *
+   * @property difficulty {number} Difficulty of the crafting check for the template
+   * @property encumbrance {number} Encumbrance rating of the gadget
+   * @property isRestricted {boolean} whether the gadget is Restricted
+   * @property name {string} the name of the gadget being crafted
+   * @property price {number} base price of materials for crafting the gadget
+   * @property rarity {number} Rarity rating of the materials for the gadget
+   * @property skills {string[]} Skills that can be used to craft the gadget
+   * @property special {string} Qualities of the crafted gadget
+   * @property time {string} the time required to craft the gadget
+   */
+
+  // Sender of chat messages
+  const SpeakingAs = "Engineering Droid";
+
+  // Types of templates which can be crafted
+  const TemplateType$1 = {
+      SIMPLE: 16,
+      SPECIALIST: 17,
+      PRECISION: 18
+  };
+
+  // Maps a TemplateType to its Template
+  const Template$1 = {
       /** @type {GadgetTemplate} */
-      [TemplateType.Gadget.SIMPLE]: {
+      [TemplateType$1.SIMPLE]: {
           difficulty: 1,
           encumbrance: 4,
           isRestricted: false,
@@ -567,7 +530,7 @@
           time: "2 hours"
       },
       /** @type {GadgetTemplate} */
-      [TemplateType.Gadget.SPECIALIST]: {
+      [TemplateType$1.SPECIALIST]: {
           difficulty: 2,
           encumbrance: 8,
           isRestricted: false,
@@ -579,7 +542,7 @@
           time: "10 hours"
       },
       /** @type {GadgetTemplate} */
-      [TemplateType.Gadget.PRECISION]: {
+      [TemplateType$1.PRECISION]: {
           difficulty: 3,
           encumbrance: 5,
           isRestricted: false,
@@ -589,9 +552,907 @@
           skills: ["Mechanics"],
           special: "Remove 2blk from checks with chosen skill",
           time: "16 hours"
+      }
+  };
+
+  const construct$2 = (templateType) => {
+      let tmpl = Template$1[templateType];
+      if (!tmpl) {
+          return;
+      }
+      let content = {
+          title: "Gadget Construction",
+          subtitle: tmpl.name,
+          flavor: `${tmpl.skills.join(", ")} (${tmpl.difficulty})`,
+          prewide: `Time Required: ${tmpl.time}, -2 hours for each additional success`,
+          Effect: tmpl.special,
+          Encumbrance: tmpl.encumbrance
+      };
+      sendPrivate(SpeakingAs, content);
+  };
+
+  const display$3 = (templateType) => {
+      let tmpl = Template$1[templateType];
+      if (!tmpl) {
+          return;
+      }
+      let content = {
+          title: "Gadget Construction",
+          flavor: `Current Template: ${tmpl.name || "- None -"}`,
+          wide: "Step 1: [Select a Template](!swrpg-craft-template #CraftGadgetTemplate)",
+          wide2: `Step 2: [Acquire Materials](!swrpg-craft-acquire ${tmpl.rarity} ${tmpl.price} ${Macros.tradeLocation})`,
+          wide3: `Step 3: [Construct Gadget](!swrpg-craft-construct ${templateType})`,
+          "Back to": Macros.craftingMain
+      };
+      sendPrivate(SpeakingAs, content);
+  };
+
+  var Gadget = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    construct: construct$2,
+    display: display$3
+  });
+
+  /**
+   * Core logic for crafting lightsabers
+   *
+   * @module swrpg/craft/lightsaber
+   *
+   * @author Draico Dorath
+   * @copyright 2020
+   * @license MIT
+   */
+
+  const construct$3 = (templateType) => {
+      // TODO
+  };
+
+  const display$4 = (templateType) => {
+      // TODO
+  };
+
+  var Lightsaber = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    construct: construct$3,
+    display: display$4
+  });
+
+  /**
+   * Core logic for crafting vehicles. Based on the Nubian Design Collective's Whole Vehicle Crafting
+   * Handbook
+   *
+   * @module swrpg/craft/vehicle
+   *
+   * @author Draico Dorath
+   * @copyright 2020
+   * @license MIT
+   *
+   * @see https://community.fantasyflightgames.com/topic/272869-the-nubian-design-collectives-whole-vehicle-crafting-handbook/
+   */
+
+  /**
+   * Crafting template for a vehicle frame
+   *
+   * @typedef {Object} FrameTemplate
+   *
+   * @property altitude {number} Maximum altitude of the vehicle, in meters
+   * @property assemblyCost {number} Cost for supplies needed to assemble the vehicle
+   * @property assemblyCrew {number} Number of crew needed to assemble the vehicle
+   * @property assemblyDifficulty {number} Difficulty of check to assemble the vehicle
+   * @property assemblyTime {string} Time required to assemble the vehicle
+   * @property crew {string} Description of vehicle crew complement
+   * @property difficulty {number} Difficulty of the crafting check for the template
+   * @property encumbrance {number} Encumbrance capacity of the vehicle
+   * @property hardpoints {number} Customization Hard Points on the vehicle
+   * @property hull {number} Hull Trauma Threshold of the vehicle
+   * @property isRestricted {boolean} whether the vehicle is Restricted
+   * @property name {string} the name of the vehicle being crafted
+   * @property passenger {number} Passenger capacity of the vehicle
+   * @property price {number} base price of materials for crafting the vehicle
+   * @property rarity {number} Rarity rating of the materials for the vehicle
+   * @property silhouette {number} Vehicle Silhouette
+   * @property skills {string[]} Skills that can be used to craft the vehicle
+   * @property special {string} Qualities of the crafted vehicle
+   * @property speed {number} Maximum speed of the vehicle
+   * @property time {string} the time required to craft the vehicle
+   * @property type {string} the type of vehicle
+   * @property vsl {number} Vehicle Scaling Law
+   */
+
+  /**
+   * Crafting template for an engine
+   *
+   * @typedef {Object} EngineTemplate
+   *
+   * @property defense {string} Defense Ratings of the vehicle upon installing this Engine
+   * @property difficulty {number} Difficulty of the crafting check for the template
+   * @property hardpoints {number} Hard Point cost of installing this Engine
+   * @property name {string} the name of the engine being crafted
+   * @property price {number} base price of materials for crafting the engine
+   * @property rarity {number} Rarity rating of the materials for the engine
+   * @property skills {string[]} Skills that can be used to craft the engine
+   * @property speed {number} the Max Speed of the vehicle upon installing this Engine
+   * @property strain {string} System Strain Threshold of the vehicle upon installing this Engine
+   * @property time {string} the time required to craft the engine
+   */
+
+  /**
+   * Crafting template for a hull
+   *
+   * @typedef {Object} HullTemplate
+   *
+   * @property armor {number} Armor of the vehicle upon installing this Hull
+   * @property difficulty {number} Difficulty of the crafting check for the template
+   * @property handling {number} Handling of the vehicle upon installing this Hull
+   * @property hardpoints {number} Hard Point change upon installing this Hull
+   * @property hull {string} Hull Trauma Threshold change upon installing this Hull
+   * @property name {string} the name of the Hull being crafted
+   * @property price {number} base price of materials for crafting the Hull
+   * @property rarity {number} Rarity rating of the materials for the Hull
+   * @property skills {string[]} Skills that can be used to craft the Hull
+   * @property special {string} special effects upon installing this Hull
+   * @property speed {number} the Max Speed change upon installing this Hull
+   * @property strain {string} System Strain Threshold change upon installing this Hull
+   * @property time {string} the time required to craft the Hull
+   */
+
+  /* Sender of chat messages */
+  const SpeakingAs$1 = "Mechanics Droid";
+
+  /* Types of vehicle templates which can be crafted */
+  const TemplateType$2 = {
+      Frame: {
+          BIKE: 31,
+          LANDSPEEDER: 32,
+          AIRSPEEDER: 33,
+          WALKER: 34,
+          STARFIGHTER: 35,
+          TRANSPORT: 36,
+          CORVETTE: 38,
+          PATROL_SHIP: 54,
+          CARRIER: 55,
+          FRIGATE: 39,
+          HEAVY_CRUISER: 40,
+          DESTROYER: 41,
+          SMALL_STATION: 42,
+          MEDIUM_STATION: 56,
+          LARGE_STATION: 57,
+          MASSIVE_STATION: 58,
+          SMALL_MOON: 59
       },
+      Engine: {
+          SINGLE_COIL: 43,
+          BAFFLED: 44,
+          ION_TURBINE: 45,
+          FUSIAL: 46,
+          REPULSOR: 47,
+          DRIVE_ARRAY: 48
+      },
+      Hull: {
+          BASIC: 49,
+          RACE: 50,
+          BULK: 51,
+          TRANSPORT: 52,
+          SCOUT: 53,
+          GUNSHIP: 60,
+          LINE: 61
+      }
+  };
+
+  /* Maps a TemplateType to its Template */
+  const Template$2 = {
+      /** @type {FrameTemplate} */
+      [TemplateType$2.Frame.BIKE]: {
+          altitude: 15,
+          assemblyCost: 1000,
+          assemblyCrew: 1,
+          assemblyDifficulty: 3,
+          assemblyTime: "48 hours",
+          crew: "One pilot",
+          difficulty: 2,
+          encumbrance: 1,
+          hardpoints: 4,
+          hull: 2,
+          isRestricted: false,
+          name: "Speeder Bike",
+          passenger: 0,
+          price: 250,
+          rarity: 1,
+          silhouette: 2,
+          skills: ["Mechanics"],
+          special: "",
+          speed: 4,
+          time: "12 hours",
+          vsl: 5
+      },
+      /** @type {FrameTemplate} */
+      [TemplateType$2.Frame.LANDSPEEDER]: {
+          altitude: 20,
+          assemblyCost: 1000,
+          assemblyCrew: 1,
+          assemblyDifficulty: 3,
+          assemblyTime: "48 hours",
+          crew: "One pilot",
+          difficulty: 2,
+          encumbrance: 5,
+          hardpoints: 5,
+          hull: 7,
+          isRestricted: false,
+          name: "Landspeeder",
+          passenger: 2,
+          price: 500,
+          rarity: 1,
+          silhouette: 2,
+          skills: ["Mechanics"],
+          special: "",
+          speed: 4,
+          time: "24 hours",
+          vsl: 5
+      },
+      /** @type {FrameTemplate} */
+      [TemplateType$2.Frame.AIRSPEEDER]: {
+          altitude: 100000,
+          assemblyCost: 1000,
+          assemblyCrew: 1,
+          assemblyDifficulty: 3,
+          assemblyTime: "48 hours",
+          crew: "One pilot",
+          difficulty: 3,
+          encumbrance: 5,
+          hardpoints: 6,
+          hull: 5,
+          isRestricted: false,
+          name: "Airspeeder",
+          passenger: 2,
+          price: 1000,
+          rarity: 2,
+          silhouette: 2,
+          skills: ["Mechanics"],
+          special: "Can receive 'Larger Scope' upgrade twice",
+          speed: 4,
+          time: "24 hours",
+          vsl: 5
+      },
+      /** @type {FrameTemplate} */
+      [TemplateType$2.Frame.WALKER]: {
+          altitude: 0,
+          assemblyCost: 10000,
+          assemblyCrew: 1,
+          assemblyDifficulty: 3,
+          assemblyTime: "120 hours",
+          crew: "One pilot",
+          difficulty: 3,
+          encumbrance: 5,
+          hardpoints: 8,
+          hull: 10,
+          isRestricted: false,
+          name: "Walker",
+          passenger: 0,
+          price: 5000,
+          rarity: 2,
+          silhouette: 3,
+          skills: ["Mechanics"],
+          special: "All-Terrain Legs (SM65); Race Hull has base speed 3",
+          speed: 5,
+          time: "72 hours",
+          vsl: 10
+      },
+      /** @type {FrameTemplate} */
+      [TemplateType$2.Frame.STARFIGHTER]: {
+          altitude: -1,
+          assemblyCost: 10000,
+          assemblyCrew: 1,
+          assemblyDifficulty: 3,
+          assemblyTime: "120 hours",
+          crew: "One pilot",
+          difficulty: 3,
+          encumbrance: 5,
+          hardpoints: 11,
+          hull: 10,
+          isRestricted: false,
+          name: "Starfighter",
+          passenger: 0,
+          price: 10000,
+          rarity: 4,
+          silhouette: 3,
+          skills: ["Mechanics"],
+          special: "",
+          speed: 5,
+          time: "72 hours",
+          vsl: 10
+      },
+      /** @type {FrameTemplate} */
+      [TemplateType$2.Frame.TRANSPORT]: {
+          altitude: -1,
+          assemblyCost: 25000,
+          assemblyCrew: 5,
+          assemblyDifficulty: 3,
+          assemblyTime: "240 hours",
+          crew: "One pilot, one co-pilot",
+          difficulty: 3,
+          encumbrance: 20,
+          hardpoints: 17,
+          hull: 20,
+          isRestricted: false,
+          name: "Transport",
+          passenger: 4,
+          price: 75000,
+          rarity: 3,
+          silhouette: 4,
+          skills: ["Mechanics"],
+          special: "Cargo Bays and Passenger Berths cost -1HP; can receive 'Integrated Improvements' twice",
+          speed: 4,
+          time: "240 hours",
+          vsl: 15
+      },
+      /** @type {FrameTemplate} */
+      [TemplateType$2.Frame.CORVETTE]: {
+          altitude: -1,
+          assemblyCost: 125000,
+          assemblyCrew: 100,
+          assemblyDifficulty: 4,
+          assemblyTime: "1200 hours",
+          crew: "80 officers, pilots, and crew",
+          difficulty: 4,
+          encumbrance: 215,
+          hardpoints: 33,
+          hull: 50,
+          isRestricted: false,
+          name: "Corvette",
+          passenger: 160,
+          price: 500000,
+          rarity: 4,
+          silhouette: 5,
+          skills: ["Mechanics"],
+          special: "Can receive 'Integrated Improvements' twice",
+          speed: 3,
+          time: "480 hours",
+          vsl: 25
+      },
+      /** @type {FrameTemplate} */
+      [TemplateType$2.Frame.PATROL_SHIP]: {
+          altitude: -1,
+          assemblyCost: 125000,
+          assemblyCrew: 100,
+          assemblyDifficulty: 4,
+          assemblyTime: "1200 hours",
+          crew: 8,
+          difficulty: 4,
+          encumbrance: 20,
+          hardpoints: 27,
+          hull: 40,
+          isRestricted: false,
+          name: "Patrol Ship",
+          passenger: 10,
+          price: 500000,
+          rarity: 4,
+          silhouette: 5,
+          skills: ["Mechanics"],
+          special: "Can receive 'Integrated Improvements' twice; spend Triumph during crafting to gain 'Unusually Agile'",
+          speed: 4,
+          time: "480 hours",
+          vsl: 25
+      },
+      /** @type {FrameTemplate} */
+      [TemplateType$2.Frame.CARRIER]: {
+          altitude: -1,
+          assemblyCost: 125000,
+          assemblyCrew: 100,
+          assemblyDifficulty: 4,
+          assemblyTime: "1200 hours",
+          crew: 800,
+          difficulty: 4,
+          encumbrance: 100,
+          hardpoints: 37,
+          hull: 60,
+          isRestricted: true,
+          name: "Carrier",
+          passenger: 250,
+          price: 1000000,
+          rarity: 4,
+          silhouette: 6,
+          skills: ["Mechanics"],
+          special: "Hangar and Repair Bays cost -1HP; can receive 'Larger Scope' and 'Integrated Improvements' twice",
+          speed: 3,
+          time: "480 hours",
+          vsl: 35
+      },
+      /** @type {FrameTemplate} */
+      [TemplateType$2.Frame.FRIGATE]: {
+          altitude: -1,
+          assemblyCost: 125000,
+          assemblyCrew: 100,
+          assemblyDifficulty: 4,
+          assemblyTime: "1200 hours",
+          crew: 1000,
+          difficulty: 4,
+          encumbrance: 0,
+          hardpoints: 47,
+          hull: 80,
+          isRestricted: true,
+          name: "Frigate",
+          passenger: 0,
+          price: 1000000,
+          rarity: 4,
+          silhouette: 6,
+          skills: ["Mechanics"],
+          special: "Medical Bays cost 1HP",
+          speed: 3,
+          time: "480 hours",
+          vsl: 35
+      },
+      /** @type {FrameTemplate} */
+      [TemplateType$2.Frame.HEAVY_CRUISER]: {
+          altitude: -1,
+          assemblyCost: 1250000,
+          assemblyCrew: 5000,
+          assemblyDifficulty: 5,
+          assemblyTime: "2400 hours",
+          crew: 3000,
+          difficulty: 4,
+          encumbrance: 0,
+          hardpoints: 65,
+          hull: 95,
+          isRestricted: true,
+          name: "Heavy Cruiser",
+          passenger: 0,
+          price: 2500000,
+          rarity: 5,
+          silhouette: 7,
+          skills: ["Mechanics"],
+          special: "Medical Bays and Weapon Banks cost 1HP",
+          speed: 3,
+          time: "1200 hours",
+          vsl: 50
+      },
+      /** @type {FrameTemplate} */
+      [TemplateType$2.Frame.DESTROYER]: {
+          altitude: -1,
+          assemblyCost: 1250000,
+          assemblyCrew: 5000,
+          assemblyDifficulty: 5,
+          assemblyTime: "2400 hours",
+          crew: 8000,
+          difficulty: 5,
+          encumbrance: 0,
+          hardpoints: 85,
+          hull: 125,
+          isRestricted: true,
+          name: "Destroyer",
+          passenger: 0,
+          price: 10000000,
+          rarity: 6,
+          silhouette: 8,
+          skills: ["Mechanics"],
+          special: "Medical Bays and Weapon Banks cost 1HP; Cargo Bays, Hangar Bays, Repair Bays, Passenger Berths cost -1HP",
+          speed: 2,
+          time: "1200 hours",
+          vsl: 65
+      },
+      /** @type {FrameTemplate} */
+      [TemplateType$2.Frame.SMALL_STATION]: {
+          altitude: -1,
+          assemblyCost: 125000,
+          assemblyCrew: 100,
+          assemblyDifficulty: 4,
+          assemblyTime: "1200 hours",
+          crew: 0,
+          difficulty: 5,
+          encumbrance: 0,
+          hardpoints: 90,
+          hull: 150,
+          isRestricted: false,
+          name: "Small Station",
+          passenger: 0,
+          price: 750000,
+          rarity: 5,
+          silhouette: 6,
+          skills: ["Mechanics"],
+          special: "Crafting Rules p5",
+          speed: 0,
+          time: "2400 hours",
+          vsl: 35
+      },
+      /** @type {FrameTemplate} */
+      [TemplateType$2.Frame.MEDIUM_STATION]: {
+          altitude: -1,
+          assemblyCost: 1250000,
+          assemblyCrew: 5000,
+          assemblyDifficulty: 5,
+          assemblyTime: "2400 hours",
+          crew: 0,
+          difficulty: 5,
+          encumbrance: 0,
+          hardpoints: 90,
+          hull: 150,
+          isRestricted: false,
+          name: "Medium Station",
+          passenger: 0,
+          price: 2000000,
+          rarity: 5,
+          silhouette: 7,
+          skills: ["Mechanics"],
+          special: "Crafting Rules p5",
+          speed: 0,
+          time: "2400 hours",
+          vsl: 50
+      },
+      /** @type {FrameTemplate} */
+      [TemplateType$2.Frame.LARGE_STATION]: {
+          altitude: -1,
+          assemblyCost: 3250000,
+          assemblyCrew: 5000,
+          assemblyDifficulty: 5,
+          assemblyTime: "2400 hours",
+          crew: 0,
+          difficulty: 5,
+          encumbrance: 0,
+          hardpoints: 90,
+          hull: 150,
+          isRestricted: false,
+          name: "Large Station",
+          passenger: 0,
+          price: 7500000,
+          rarity: 5,
+          silhouette: 8,
+          skills: ["Mechanics"],
+          special: "Crafting Rules p5",
+          speed: 0,
+          time: "2400 hours",
+          vsl: 65
+      },
+      /** @type {FrameTemplate} */
+      [TemplateType$2.Frame.MASSIVE_STATION]: {
+          altitude: -1,
+          assemblyCost: 4000000,
+          assemblyCrew: 5000,
+          assemblyDifficulty: 5,
+          assemblyTime: "2400 hours",
+          crew: 0,
+          difficulty: 5,
+          encumbrance: 0,
+          hardpoints: 90,
+          hull: 150,
+          isRestricted: false,
+          name: "Massive Station",
+          passenger: 0,
+          price: 20000000,
+          rarity: 5,
+          silhouette: 9,
+          skills: ["Mechanics"],
+          special: "Crafting Rules p5",
+          speed: 0,
+          time: "2400 hours",
+          vsl: 80
+      },
+      /** @type {FrameTemplate} */
+      [TemplateType$2.Frame.SMALL_MOON]: {
+          altitude: -1,
+          assemblyCost: 10000000,
+          assemblyCrew: 50000,
+          assemblyDifficulty: 5,
+          assemblyTime: "6000 hours",
+          crew: 0,
+          difficulty: 5,
+          encumbrance: 0,
+          hardpoints: 90,
+          hull: 150,
+          isRestricted: false,
+          name: "That's no Moon...",
+          passenger: 0,
+          price: 75000000,
+          rarity: 5,
+          silhouette: 10,
+          skills: ["Mechanics"],
+          special: "Crafting Rules p5",
+          speed: 0,
+          time: "2400 hours",
+          vsl: 100
+      },
+      /** @type {EngineTemplate} */
+      [TemplateType$2.Engine.SINGLE_COIL]: {
+          defense: "0/0/0/0",
+          difficulty: 1,
+          hardpoints: 2,
+          name: "Single Ion Coil",
+          price: 500,
+          rarity: 2,
+          skills: ["Mechanics"],
+          speed: 1,
+          strain: "2*Silhouette",
+          time: "24 hours"
+      },
+      /** @type {EngineTemplate} */
+      [TemplateType$2.Engine.BAFFLED]: {
+          defense: "0/0/0/2",
+          difficulty: 2,
+          hardpoints: 4,
+          name: "Electron Baffle",
+          price: 1000,
+          rarity: 3,
+          skills: ["Mechanics"],
+          speed: 2,
+          strain: "4*Silhouette",
+          time: "48 hours"
+      },
+      /** @type {EngineTemplate} */
+      [TemplateType$2.Engine.ION_TURBINE]: {
+          defense: "1/0/0/0",
+          difficulty: 2,
+          hardpoints: 3,
+          name: "Ion Turbine",
+          price: 2000,
+          rarity: 2,
+          skills: ["Mechanics"],
+          speed: 1,
+          strain: "1xVSL",
+          time: "48 hours"
+      },
+      /** @type {EngineTemplate} */
+      [TemplateType$2.Engine.FUSIAL]: {
+          defense: "1/0/0/0",
+          difficulty: 3,
+          hardpoints: 3,
+          name: "Fusial Thrust",
+          price: 2500,
+          rarity: 4,
+          skills: ["Mechanics"],
+          speed: 3,
+          strain: "4*Silhouette",
+          time: "60 hours"
+      },
+      /** @type {EngineTemplate} */
+      [TemplateType$2.Engine.REPULSOR]: {
+          defense: "1/1/1/1",
+          difficulty: 3,
+          hardpoints: 4,
+          name: "Repulsor Cluster",
+          price: 3000,
+          rarity: 4,
+          skills: ["Mechanics"],
+          speed: 4,
+          strain: "4*Silhouette",
+          time: "120 hours"
+      },
+      /** @type {EngineTemplate} */
+      [TemplateType$2.Engine.DRIVE_ARRAY]: {
+          defense: "0/0/0/0",
+          difficulty: 4,
+          hardpoints: 4,
+          name: "Ion Drive Array",
+          price: 5250,
+          rarity: 5,
+          skills: ["Mechanics"],
+          speed: 4,
+          strain: "2*Silhouette",
+          time: "120 hours"
+      },
+      /** @type {HullTemplate} */
+      [TemplateType$2.Hull.BASIC]: {
+          armor: 1,
+          difficulty: 2,
+          handling: -2,
+          hardpoints: "No change",
+          hull: "No change",
+          name: "Basic Hull",
+          price: 500,
+          rarity: 2,
+          skills: ["Mechanics"],
+          special: "None",
+          speed: "No change",
+          strain: "No change",
+          time: "48*Silhouette hours"
+      },
+      /** @type {HullTemplate} */
+      [TemplateType$2.Hull.RACE]: {
+          armor: 1,
+          difficulty: 2,
+          handling: 1,
+          hardpoints: -1,
+          hull: "-1*Silhouette",
+          name: "Race Ship",
+          price: 500,
+          rarity: 2,
+          skills: ["Mechanics"],
+          special: "None",
+          speed: "+1 regardless of Silhouette",
+          strain: "-1*Silhouette",
+          time: "48*Silhouette hours"
+      },
+      /** @type {HullTemplate} */
+      [TemplateType$2.Hull.BULK]: {
+          armor: 1,
+          difficulty: 3,
+          handling: -4,
+          hardpoints: "No change",
+          hull: "No change",
+          name: "Bulk Freighter",
+          price: 1000,
+          rarity: 3,
+          skills: ["Mechanics"],
+          special: "Cargo Bays have higher capacity",
+          speed: "No change",
+          strain: "No change",
+          time: "72*Silhouette hours"
+      },
+      /** @type {HullTemplate} */
+      [TemplateType$2.Hull.TRANSPORT]: {
+          armor: 1,
+          difficulty: 3,
+          handling: -2,
+          hardpoints: "No change",
+          hull: "No change",
+          name: "Transport",
+          price: 1000,
+          rarity: 3,
+          skills: ["Mechanics"],
+          special: "Cargo Bays, Hangar Bays, Passenger Berths, and Repair Bays cost -1HP",
+          speed: "No change",
+          strain: "No change",
+          time: "72*Silhouette hours"
+      },
+      /** @type {HullTemplate} */
+      [TemplateType$2.Hull.SCOUT]: {
+          armor: 2,
+          difficulty: 3,
+          handling: 1,
+          hardpoints: "No change",
+          hull: "No change",
+          name: "Scout Ship",
+          price: 1000,
+          rarity: 5,
+          skills: ["Mechanics"],
+          special: "Repair Bays cost -1HP",
+          speed: "No change",
+          strain: "No change",
+          time: "72*Silhouette hours"
+      },
+      /** @type {HullTemplate} */
+      [TemplateType$2.Hull.GUNSHIP]: {
+          armor: 3,
+          difficulty: 4,
+          handling: -2,
+          hardpoints: "No change",
+          hull: "No change",
+          name: "Gunship",
+          price: 2000,
+          rarity: 5,
+          skills: ["Mechanics"],
+          special: "Can mount 1 Oversized Weapon",
+          speed: "No change",
+          strain: "No change",
+          time: "96*Silhouette hours"
+      },
+      /** @type {HullTemplate} */
+      [TemplateType$2.Hull.LINE]: {
+          armor: 5,
+          difficulty: 4,
+          handling: -2,
+          hardpoints: "No change",
+          hull: "No change",
+          name: "Gunship",
+          price: 3000,
+          rarity: 7,
+          skills: ["Mechanics"],
+          special: "Can mount Weapon Banks; maximum Armor rating Silhouette+2; Medical Bays cost 1HP",
+          speed: "No change",
+          strain: "No change",
+          time: "96*Silhouette hours"
+      }
+  };
+
+  const construct$4 = (templateType) => {
+      let tmpl = Template$2[templateType] || {};
+      let content = {
+          title: "Vehicle Construction",
+          subtitle: tmpl.name,
+          flavor: `${tmpl.skills.join(", ")} (${tmpl.difficulty})`,
+          prewide: `Time Required: ${tmpl.time}, -2xVSL hours for each additional success`,
+          Effect: tmpl.special || "None"
+      };
+      sendPrivate(SpeakingAs$1, content);
+  };
+
+  const display$5 = (templateType) => {
+      let tmpl = Template$2[templateType] || {};
+      let content = {
+          title: "Vehicle Construction",
+          flavor: `Current Template: ${tmpl.name || "- None -"}`,
+          "Step 1": "[Select a Frame](!swrpg-craft-template #CraftFrameTemplate)",
+          "Step 2": `[Acquire Frame Materials](!swrpg-craft-acquire ${tmpl.rarity} ${tmpl.price} ${Macros.tradeLocation})`,
+          "Step 3": `[Construct Frame](!swrpg-craft-construct ${templateType})`,
+          "Step 4": "[Select an Engine](!swrpg-craft-template #CraftEngineTemplate)",
+          "Step 5": `[Acquire Engine Materials](!swrpg-craft-acquire ${tmpl.rarity} ${tmpl.price} ${Macros.tradeLocation})`,
+          "Step 6": `[Construct Engine](!swrpg-craft-construct ${templateType})`,
+          "Step 7": "[Select a Hull](!swrpg-craft-template #CraftHullTemplate)",
+          "Step 8": `[Acquire Hull Materials (xVSL)](!swrpg-craft-acquire ${tmpl.rarity} ${tmpl.price} ${Macros.tradeLocation})`,
+          "Step 9": `[Construct Hull](!swrpg-craft-construct ${templateType})`,
+          "Step 10": `[Assemble Vehicle](!swrpg-craft-assemble ${templateType})`,
+          "Back to": Macros.craftingMain
+      };
+      sendPrivate(SpeakingAs$1, content);
+  };
+
+  const assemble = (templateType) => {
+      let tmpl = Template$2[templateType] || {};
+
+      // FIXME This won't work without selecting the Frame template again before Assembling
+      let assembleContent = {
+          title: "Vehicle Assembly",
+          flavor: `${tmpl.skills.join(", ")} (${tmpl.assemblyDifficulty})`,
+          prewide: `Time Required: ${tmpl.assemblyTime}, -5xVSL hours per additional success`,
+          wide: `Crew Required: ${tmpl.assemblyCrew}`,
+          wide2: `Supply Cost: ${tmpl.assemblyCost}`
+      };
+      sendPrivate(SpeakingAs$1, assembleContent);
+  };
+
+  var Vehicle = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    construct: construct$4,
+    display: display$5,
+    assemble: assemble
+  });
+
+  /**
+   * Core logic for crafting weapons
+   *
+   * @module swrpg/craft/weapon
+   *
+   * @author Draico Dorath
+   * @copyright 2020
+   * @license MIT
+   */
+
+  /**
+   * Crafting template for a weapon
+   *
+   * @typedef {Object} WeaponTemplate
+   *
+   * @property critical {number} Critical Rating of the weapon
+   * @property damage {string|number} Damage of the weapon. Number for Ranged weapons; string for Melee
+   * @property difficulty {number} Difficulty of the crafting check for the template
+   * @property encumbrance {number} Encumbrance rating of the weapon
+   * @property hands {string} Description of hands needed to wield the weapon
+   * @property hardpoints {number} Customization Hard Points on the weapon
+   * @property isRestricted {boolean} whether the weapon is Restricted
+   * @property name {string} the name of the weapon being crafted
+   * @property price {number} base price of materials for crafting the weapon
+   * @property range {string} Range Band of the weapon
+   * @property rarity {number} Rarity rating of the materials for the weapon
+   * @property skills {string[]} Skills that can be used to craft the weapon
+   * @property special {string} Qualities of the crafted weapon
+   * @property time {string} the time required to craft the weapon
+   * @property type {string} the type of weapon
+   */
+
+  /* Sender of chat messages */
+  const speakingAs$2 = "Weaponsmith Droid";
+
+  /* Types of weapon templates which can be crafted */
+  const TemplateType$3 = {
+      FIST: 0,
+      BLUNT: 1,
+      SHIELD: 2,
+      BLADED: 3,
+      VIBRO: 4,
+      POWERED: 5,
+      SIMPLE: 6,
+      SOLID_PISTOL: 7,
+      SOLID_RIFLE: 8,
+      ENERGY_PISTOL: 9,
+      ENERGY_RIFLE: 10,
+      HEAVY_RIFLE: 11,
+      LAUNCHER: 12,
+      MISSILE: 13,
+      GRENADE: 14,
+      MINE: 15
+  };
+
+  /* Maps a TemplateType to its Template */
+  const Template$3 = {
       /** @type {WeaponTemplate} */
-      [TemplateType.Weapon.FIST]: {
+      [TemplateType$3.FIST]: {
           critical: 4,
           damage: "+1",
           difficulty: 2,
@@ -609,7 +1470,7 @@
           type: "Brawl"
       },
       /** @type {WeaponTemplate} */
-      [TemplateType.Weapon.BLUNT]: {
+      [TemplateType$3.BLUNT]: {
           critical: 5,
           damage: "+2",
           difficulty: 1,
@@ -627,7 +1488,7 @@
           type: "Melee"
       },
       /** @type {WeaponTemplate} */
-      [TemplateType.Weapon.SHIELD]: {
+      [TemplateType$3.SHIELD]: {
           critical: 5,
           damage: "+0",
           difficulty: 2,
@@ -645,7 +1506,7 @@
           type: "Melee"
       },
       /** @type {WeaponTemplate} */
-      [TemplateType.Weapon.BLADED]: {
+      [TemplateType$3.BLADED]: {
           critical: 3,
           damage: "+1",
           difficulty: 2,
@@ -663,7 +1524,7 @@
           type: "Melee"
       },
       /** @type {WeaponTemplate} */
-      [TemplateType.Weapon.VIBRO]: {
+      [TemplateType$3.VIBRO]: {
           critical: 2,
           damage: "+1",
           difficulty: 3,
@@ -681,7 +1542,7 @@
           type: "Melee"
       },
       /** @type {WeaponTemplate} */
-      [TemplateType.Weapon.POWERED]: {
+      [TemplateType$3.POWERED]: {
           critical: 3,
           damage: "+2",
           difficulty: 4,
@@ -699,7 +1560,7 @@
           type: "Melee"
       },
       /** @type {WeaponTemplate} */
-      [TemplateType.Weapon.SIMPLE]: {
+      [TemplateType$3.SIMPLE]: {
           critical: 5,
           damage: 4,
           difficulty: 2,
@@ -717,7 +1578,7 @@
           type: "Ranged (Light)"
       },
       /** @type {WeaponTemplate} */
-      [TemplateType.Weapon.SOLID_PISTOL]: {
+      [TemplateType$3.SOLID_PISTOL]: {
           critical: 5,
           damage: 4,
           difficulty: 2,
@@ -735,7 +1596,7 @@
           type: "Ranged (Light)"
       },
       /** @type {WeaponTemplate} */
-      [TemplateType.Weapon.SOLID_RIFLE]: {
+      [TemplateType$3.SOLID_RIFLE]: {
           critical: 5,
           damage: 7,
           difficulty: 3,
@@ -753,7 +1614,7 @@
           type: "Ranged (Heavy)"
       },
       /** @type {WeaponTemplate} */
-      [TemplateType.Weapon.ENERGY_PISTOL]: {
+      [TemplateType$3.ENERGY_PISTOL]: {
           critical: 3,
           damage: 6,
           difficulty: 3,
@@ -771,7 +1632,7 @@
           type: "Ranged (Light)"
       },
       /** @type {WeaponTemplate} */
-      [TemplateType.Weapon.ENERGY_RIFLE]: {
+      [TemplateType$3.ENERGY_RIFLE]: {
           critical: 3,
           damage: 9,
           difficulty: 3,
@@ -789,7 +1650,7 @@
           type: "Ranged (Heavy)"
       },
       /** @type {WeaponTemplate} */
-      [TemplateType.Weapon.HEAVY_RIFLE]: {
+      [TemplateType$3.HEAVY_RIFLE]: {
           critical: 3,
           damage: 10,
           difficulty: 4,
@@ -807,7 +1668,7 @@
           type: "Gunnery"
       },
       /** @type {WeaponTemplate} */
-      [TemplateType.Weapon.LAUNCHER]: {
+      [TemplateType$3.LAUNCHER]: {
           critical: 0,
           damage: 0,
           difficulty: 4,
@@ -825,7 +1686,7 @@
           type: "Gunnery"
       },
       /** @type {WeaponTemplate} */
-      [TemplateType.Weapon.MISSILE]: {
+      [TemplateType$3.MISSILE]: {
           critical: 2,
           damage: 20,
           difficulty: 3,
@@ -843,7 +1704,7 @@
           type: "Gunnery"
       },
       /** @type {WeaponTemplate} */
-      [TemplateType.Weapon.GRENADE]: {
+      [TemplateType$3.GRENADE]: {
           critical: 4,
           damage: 8,
           difficulty: 3,
@@ -861,7 +1722,7 @@
           type: "Ranged (Light)"
       },
       /** @type {WeaponTemplate} */
-      [TemplateType.Weapon.MINE]: {
+      [TemplateType$3.MINE]: {
           critical: 3,
           damage: 12,
           difficulty: 3,
@@ -880,50 +1741,11 @@
       }
   };
 
-  const acquireMaterials = (templateType, region, tradeProximity, population) => {
-      let diff = difficulty$1(Template[templateType].rarity, region, tradeProximity, population);
-      let buy = purchasePrice(diff, Template[templateType].price);
-      let content = {
-          title: "Acquiring Materials",
-          Difficulty: diff,
-          "Purchase Price": buy
-      };
-      sendPrivate(speakingAs$2, content);
-  };
-
-  const constructDroid = (templateType) => {
-      let tmpl = Template[templateType];
-      let content = {
-          title: "Droid Chassis Construction",
-          subtitle: `${tmpl.name} (${tmpl.rank})`,
-          flavor: `${tmpl.skills.join(", ")} (${tmpl.difficulty})`,
-          prewide: `Time Required: ${tmpl.time}, -2 hours for each additional success`,
-          Characteristics: tmpl.characteristics.join("/"),
-          Defense: `${tmpl.rangedDefense} | ${tmpl.meleeDefense}`,
-          Soak: tmpl.soak,
-          Qualities: tmpl.special,
-          "Wound Threshold": tmpl.wounds,
-          "Strain Threshold": tmpl.strain
-      };
-      sendPrivate(speakingAs$2, content);
-  };
-
-  const constructGadget = (templateType) => {
-      let tmpl = Template[templateType];
-      let content = {
-          title: "Gadget Construction",
-          subtitle: tmpl.name,
-          flavor: `${tmpl.skills.join(", ")} (${tmpl.difficulty})`,
-          prewide: `Time Required: ${tmpl.time}, -2 hours for each additional success`,
-          Effect: tmpl.special,
-          Encumbrance: tmpl.encumbrance
-      };
-      sendPrivate(speakingAs$2, content);
-  };
-
-  const constructWeapon = (templateType) => {
-      let tmpl = Template[templateType];
-
+  const construct$5 = (templateType) => {
+      let tmpl = Template$3[templateType];
+      if (!tmpl) {
+          return;
+      }
       let craftContent = {
           title: "Weapon Construction",
           flavor: `${tmpl.skills.join(", ")} (${tmpl.difficulty})`,
@@ -946,23 +1768,32 @@
       sendPrivate(speakingAs$2, itemContent);
   };
 
-  const programDroid = (templateType) => {
-      let tmpl = Template[templateType];
+  const display$6 = (templateType) => {
+      let tmpl = Template$3[templateType];
+      if (!tmpl) {
+          return;
+      }
       let content = {
-          title: "Droid Directive Programming",
-          subtitle: tmpl.name,
-          flavor: `${tmpl.skills.join(", ")} (${tmpl.difficulty})`,
-          prewide: `Time Required: ${tmpl.time}, -2 hours for each additional success`,
-          Skills: tmpl.skillsGranted.join("; "),
-          Talents: tmpl.talentsGranted.join("; ")
+          title: "Weapon Construction",
+          flavor: `Current Template: ${tmpl.name || "- None -"}`,
+          wide: "Step 1: [Select a Template](!swrpg-craft-template #CraftWeaponTemplate)",
+          wide2: `Step 2: [Acquire Materials](!swrpg-craft-acquire ${tmpl.rarity} ${tmpl.price} ${Macros.tradeLocation})`,
+          wide3: `Step 3: [Construct Weapon](!swrpg-craft-construct ${templateType})`,
+          "Back to": Macros.craftingMain
       };
       sendPrivate(speakingAs$2, content);
   };
 
+  var Weapon = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    construct: construct$5,
+    display: display$6
+  });
+
   /**
-   * Chat UI for the Crafting system
+   * Core logic for the Galactic Economy system
    *
-   * @module swrpg/craft/ui
+   * @module swrpg/trade/core
    *
    * @author Draico Dorath
    * @copyright 2019
@@ -970,22 +1801,148 @@
    */
 
   /* Sender of chat messages */
-  const speakingAs$3 = "Crafting Droid";
+  const speakingAs$3 = "Trade Representative";
 
-  /* Convience alias for common trade macros used by all Acquire Materials stages */
-  const tradeMacros = "#TradeLocation #TradeProximity #TradePopulation";
+  /**
+   * Enumeration of proximity to major trade route
+   *
+   * @enum {number}
+   * @readonly
+   */
+  const Proximity = {
+      ON: 0,
+      NEAR: 1,
+      FAR: 2
+  };
 
-  /* Convenience alias for Back to Crafting Station button */
-  const craftingStation = "[Crafting Station](!swrpg-ui-craft)";
+  /**
+   * Enumeration of population values for the trade location
+   *
+   * @enum {number}
+   * @readonly
+   */
+  const Population = {
+      HIGH: 0,
+      AVERAGE: 1,
+      LOW: 2,
+      NONE: 3
+  };
 
-  // Crafting modes
-  const Mode = {
-      NONE: -1,
-      ARMOR: 0,
-      DROID: 1,
-      GADGET: 2,
-      VEHICLE: 3,
-      WEAPON: 4
+  /**
+   * Enumeration of the Regions of the Galaxy
+   *
+   * @enum {number}
+   * @readonly
+   */
+  const Region = {
+      CORE: 0,
+      COLONIES: 1,
+      INNER_RIM: 2,
+      MID_RIM: 3,
+      OUTER_RIM: 4,
+      EXPANSION: 5,
+      WILD: 6,
+      UNKNOWN: 7
+  };
+
+  /**
+   * Maps a population value to its rarity modifier
+   *
+   * @enum {number}
+   * @readonly
+   */
+  const PopulationToModifier = {
+      [Population.HIGH]: -1,
+      [Population.AVERAGE]: 0,
+      [Population.LOW]: 1,
+      [Population.NONE]: 4
+  };
+
+  /**
+   * Maps a trade route proximity value to its rarity modifier
+   *
+   * @enum {number}
+   * @readonly
+   */
+  const ProximityToModifier = {
+      [Proximity.ON]: -1,
+      [Proximity.NEAR]: 0,
+      [Proximity.FAR]: 1
+  };
+
+  /**
+   * Maps a galactic Region to its rarity modifier
+   *
+   * @enum {number}
+   * @readonly
+   */
+  const RegionToModifier = {
+      [Region.CORE]: -1,
+      [Region.COLONIES]: 0,
+      [Region.INNER_RIM]: 0,
+      [Region.MID_RIM]: 1,
+      [Region.OUTER_RIM]: 2,
+      [Region.EXPANSION]: 2,
+      [Region.WILD]: 3,
+      [Region.UNKNOWN]: 4
+  };
+
+  // Calculate trade values and display to GM
+  const display$7 = (rarity, region, tradeProximity, population, basePrice) => {
+      let diff = difficulty$1(rarity, region, tradeProximity, population);
+      let buy = purchasePrice(diff, basePrice);
+      let sell = sellPrices(buy).join(" | ");
+      let content = {
+          title: "Trade Negotiations",
+          Difficulty: diff,
+          "Purchase Price": buy,
+          "Sell Prices": sell
+      };
+      sendPrivate(speakingAs$3, content);
+  };
+
+  // Calculate the Difficulty of the Negotiation or Streetwise roll
+  const difficulty$1 = (rarity, region, tradeProximity, population) => clampDifficulty([
+      rarityToDifficulty(rarity),
+      RegionToModifier[region],
+      ProximityToModifier[tradeProximity],
+      PopulationToModifier[population]
+  ].reduce((t, v) => t + v));
+
+  // Calculate recommended Purchase Price
+  const purchasePrice = (diff, basePrice) => clampModifier(diff) * basePrice;
+
+  // Calculate recommended Sale Prices based on number of Successes
+  const sellPrices = (purchasePrice) => [purchasePrice / 4, purchasePrice / 2, purchasePrice * 0.75];
+
+  // Maps an item's Rarity to the appropriate Difficulty
+  const rarityToDifficulty = (r = 0) => Math.floor(clampRarity(r) / 2);
+
+  const clampDifficulty = clamp(0, 5);
+  const clampModifier = clamp(1, 4);
+  const clampRarity = clamp(0, 10);
+
+  /**
+   * Core logic for the Crafting system
+   *
+   * @module swrpg/craft/core
+   *
+   * @author Draico Dorath
+   * @copyright 2020
+   * @license MIT
+   */
+
+  /* Sender of chat messages */
+  const speakingAs$4 = "Crafting Droid";
+
+  // Maps a Mode to its Module
+  const ModeToModule = {
+      [CraftingMode.ARMOR]: Armor,
+      [CraftingMode.DROID]: Droid,
+      [CraftingMode.GADGET]: Gadget,
+      [CraftingMode.LIGHTSABER]: Lightsaber,
+      [CraftingMode.VEHICLE]: Vehicle,
+      [CraftingMode.WEAPON]: Weapon
   };
 
   /**
@@ -993,6 +1950,11 @@
    * @type {Mode}
    */
   let currentMode;
+  const setMode = (m) => {
+      currentMode = m;
+      log(`[SWRPG] ${JSON.stringify(ModeToModule)}`);
+      ModeToModule[currentMode] ? ModeToModule[currentMode].display(currentTemplate) : display$8();
+  };
 
   /**
    * Cache of the currently selected TemplateType
@@ -1001,82 +1963,39 @@
   let currentTemplate;
   const setTemplate = (t) => {
       currentTemplate = t;
-      if (typeof ModeCallback[currentMode] === "function") {
-          ModeCallback[currentMode]();
-      }
+      ModeToModule[currentMode] ? ModeToModule[currentMode].display(currentTemplate) : display$8();
   };
 
-  const displayMain = () => {
-      currentMode = Mode.NONE;
-      setTemplate();
+  // Step 2: Acquire Materials
+  const acquire = (rarity, basePrice, region, tradeProximity, population) => {
+      let diff = difficulty$1(rarity, region, tradeProximity, population);
+      let buy = purchasePrice(diff, basePrice);
+      let content = {
+          title: "Acquiring Materials",
+          Difficulty: diff,
+          "Purchase Price": buy
+      };
+      sendPrivate(speakingAs$4, content);
+  };
+
+  // Step 3: Construct
+  const construct$6 = () => {
+      (currentTemplate && ModeToModule[currentMode]) ?
+          ModeToModule[currentMode].construct(currentTemplate) :
+          display$8();
+  };
+
+  // Render the entry point chat UI for the crafting system
+  const display$8 = () => {
+      currentMode = CraftingMode.NONE;
+      currentTemplate = undefined;
       let content = {
           title: "Crafting Station",
-          wide: "[Create Armor](!swrpg-ui-armor)",
-          wide2: "[Create Droid](!swrpg-ui-droid)",
-          wide3: "[Create Gadget](!swrpg-ui-gadget)",
-          wide4: "[Create Vehicle](!swrpg-ui-vehicle)",
-          wide5: "[Create Weapon](!swrpg-ui-weapon)"
+          wide: `${Macros.craftArmor} ${Macros.craftDroid}`,
+          wide2: `${Macros.craftGadget} ${Macros.craftLightsaber}`,
+          wide3: `${Macros.craftVehicle} ${Macros.craftWeapon}`
       };
-      sendPrivate(speakingAs$3, content);
-  };
-
-  // XXX Following methods are annoyingly repetitive
-
-  const displayArmor = () => {};
-
-  const displayDroid = () => {
-      currentMode = Mode.DROID;
-      let content = {
-          title: "Droid Construction",
-          flavor: `Current Chassis/Directive: ${Template[currentTemplate] ?
-            Template[currentTemplate].name : "- None -"}`,
-          wide: "Step 1: [Select a Chassis](!swrpg-ui-set-template #CraftDroidTemplate)",
-          wide2: `Step 2: [Acquire Materials](!swrpg-craft-acquire ${currentTemplate} ${tradeMacros})`,
-          wide3: `Step 3: [Construct Chassis](!swrpg-craft-droid ${currentTemplate})`,
-          wide4: `Step 4: [Program Directives](!swrpg-craft-directive #CraftDirectiveTemplate)`,
-          "Back to": craftingStation
-      };
-      sendPrivate(speakingAs$3, content);
-  };
-
-  const displayGadget = () => {
-      currentMode = Mode.GADGET;
-      let content = {
-          title: "Gadget Construction",
-          flavor: `Current Template: ${Template[currentTemplate] ?
-            Template[currentTemplate].name : "- None -"}`,
-          wide: "Step 1: [Select a Template](!swrpg-ui-set-template #CraftGadgetTemplate)",
-          wide2: `Step 2: [Acquire Materials](!swrpg-craft-acquire ${currentTemplate} ${tradeMacros})`,
-          wide3: `Step 3: [Construct Gadget](!swrpg-craft-gadget ${currentTemplate})`,
-          "Back to": craftingStation
-      };
-      sendPrivate(speakingAs$3, content);
-  };
-
-  const displayVehicle = () => {};
-
-  const displayWeapon = () => {
-      currentMode = Mode.WEAPON;
-      let content = {
-          title: "Weapon Construction",
-          flavor: `Current Template: ${Template[currentTemplate] ?
-            Template[currentTemplate].name : "- None -"}`,
-          wide: "Step 1: [Select a Template](!swrpg-ui-set-template #CraftWeaponTemplate)",
-          wide2: `Step 2: [Acquire Materials](!swrpg-craft-acquire ${currentTemplate} ${tradeMacros})`,
-          wide3: `Step 3: [Construct Weapon](!swrpg-craft-weapon ${currentTemplate})`,
-          "Back to": craftingStation
-      };
-      sendPrivate(speakingAs$3, content);
-  };
-
-  // Maps a Mode to its appropriate callback to redisplay correct chat prompt
-  // XXX Must stay below callback definitions unfortunately
-  const ModeCallback = {
-      [Mode.ARMOR]: displayArmor,
-      [Mode.DROID]: displayDroid,
-      [Mode.GADGET]: displayGadget,
-      [Mode.VEHICLE]: displayVehicle,
-      [Mode.WEAPON]: displayWeapon
+      sendPrivate(speakingAs$4, content);
   };
 
   /**
@@ -1090,7 +2009,7 @@
    */
 
   /* Sender of chat messages */
-  const speakingAs$4 = "Repair Droid";
+  const speakingAs$5 = "Repair Droid";
 
   /**
    * Enumeration of Item Conditions
@@ -1119,7 +2038,7 @@
   };
 
   // Calculate repair values and display to GM
-  const display$2 = (condition, basePrice) => {
+  const display$9 = (condition, basePrice) => {
       let diff = difficulty$2(condition);
       let price = cost(condition, basePrice);
       let content = {
@@ -1128,7 +2047,7 @@
           "Repair Cost": price,
           "Adv or Thr": "modifies cost accordingly by 10% each for self repair"
       };
-      sendPrivate(speakingAs$4, content);
+      sendPrivate(speakingAs$5, content);
   };
 
   // Calculate the Difficulty of the repair check
@@ -1232,20 +2151,15 @@
   function execute(command, input) {
       const routes = {
           "contact": display,
-          "craft-acquire": acquireMaterials,
-          "craft-directive": programDroid,
-          "craft-droid": constructDroid,
-          "craft-gadget": constructGadget,
-          "craft-weapon": constructWeapon,
-          "repair": display$2,
-          "trade": display$1,
-          "ui-armor": displayArmor,
-          "ui-craft": displayMain,
-          "ui-droid": displayDroid,
-          "ui-gadget": displayGadget,
-          "ui-set-template": setTemplate,
-          "ui-vehicle": displayVehicle,
-          "ui-weapon": displayWeapon
+          "craft-acquire": acquire,
+          "craft-assemble": assemble,
+          "craft-construct": construct$6,
+          "craft-mode": setMode,
+          "craft-program": program,
+          "craft-template": setTemplate,
+          "craft-ui": display$8,
+          "repair": display$9,
+          "trade": display$7
       };
 
       if (!(routes[command] && (typeof routes[command] === "function"))) {
