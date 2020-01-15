@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  var version = "0.3.0";
+  var version = "0.4.0";
 
   /**
    * Math utility module
