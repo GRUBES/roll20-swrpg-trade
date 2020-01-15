@@ -74,6 +74,7 @@ import {sendPrivate} from "../util/chat";
  * @property price {number} base price of materials for crafting the Hull
  * @property rarity {number} Rarity rating of the materials for the Hull
  * @property skills {string[]} Skills that can be used to craft the Hull
+ * @property special {string} special effects upon installing this Hull
  * @property speed {number} the Max Speed change upon installing this Hull
  * @property strain {string} System Strain Threshold change upon installing this Hull
  * @property time {string} the time required to craft the Hull
@@ -568,7 +569,7 @@ const Template = {
         rarity: 2,
         skills: ["Mechanics"],
         speed: 1,
-        strain: "1*VSL",
+        strain: "1xVSL",
         time: "48 hours"
     },
     /** @type {EngineTemplate} */
@@ -618,9 +619,10 @@ const Template = {
         hardpoints: "No change",
         hull: "No change",
         name: "Basic Hull",
-        price: "500*VSL",
+        price: 500,
         rarity: 2,
         skills: ["Mechanics"],
+        special: "None",
         speed: "No change",
         strain: "No change",
         time: "48*Silhouette hours"
@@ -633,9 +635,10 @@ const Template = {
         hardpoints: -1,
         hull: "-1*Silhouette",
         name: "Race Ship",
-        price: "500*VSL",
+        price: 500,
         rarity: 2,
         skills: ["Mechanics"],
+        special: "None",
         speed: "+1 regardless of Silhouette",
         strain: "-1*Silhouette",
         time: "48*Silhouette hours"
@@ -648,9 +651,10 @@ const Template = {
         hardpoints: "No change",
         hull: "No change",
         name: "Bulk Freighter",
-        price: "1000*VSL",
+        price: 1000,
         rarity: 3,
         skills: ["Mechanics"],
+        special: "Cargo Bays have higher capacity",
         speed: "No change",
         strain: "No change",
         time: "72*Silhouette hours"
@@ -663,9 +667,10 @@ const Template = {
         hardpoints: "No change",
         hull: "No change",
         name: "Transport",
-        price: "1000*VSL",
+        price: 1000,
         rarity: 3,
         skills: ["Mechanics"],
+        special: "Cargo Bays, Hangar Bays, Passenger Berths, and Repair Bays cost -1HP",
         speed: "No change",
         strain: "No change",
         time: "72*Silhouette hours"
@@ -678,9 +683,10 @@ const Template = {
         hardpoints: "No change",
         hull: "No change",
         name: "Scout Ship",
-        price: "1000*VSL",
+        price: 1000,
         rarity: 5,
         skills: ["Mechanics"],
+        special: "Repair Bays cost -1HP",
         speed: "No change",
         strain: "No change",
         time: "72*Silhouette hours"
@@ -693,9 +699,10 @@ const Template = {
         hardpoints: "No change",
         hull: "No change",
         name: "Gunship",
-        price: "2000*VSL",
+        price: 2000,
         rarity: 5,
         skills: ["Mechanics"],
+        special: "Can mount 1 Oversized Weapon",
         speed: "No change",
         strain: "No change",
         time: "96*Silhouette hours"
@@ -708,9 +715,10 @@ const Template = {
         hardpoints: "No change",
         hull: "No change",
         name: "Gunship",
-        price: "3000*VSL",
+        price: 3000,
         rarity: 7,
         skills: ["Mechanics"],
+        special: "Can mount Weapon Banks; maximum Armor rating Silhouette+2; Medical Bays cost 1HP",
         speed: "No change",
         strain: "No change",
         time: "96*Silhouette hours"
@@ -718,25 +726,19 @@ const Template = {
 };
 
 const construct = (templateType) => {
-    let tmpl = Template[templateType];
-    if (!tmpl) {
-        return;
-    }
+    let tmpl = Template[templateType] || {};
     let content = {
         title: "Vehicle Construction",
         subtitle: tmpl.name,
         flavor: `${tmpl.skills.join(", ")} (${tmpl.difficulty})`,
-        prewide: `Time Required: ${tmpl.time}, ${-2*tmpl.vsl} hours for each additional success`,
-        Effect: tmpl.special
+        prewide: `Time Required: ${tmpl.time}, -2xVSL hours for each additional success`,
+        Effect: tmpl.special || "None"
     };
     sendPrivate(SpeakingAs, content);
 };
 
 const display = (templateType) => {
-    let tmpl = Template[templateType];
-    if (!tmpl) {
-        return;
-    }
+    let tmpl = Template[templateType] || {};
     let content = {
         title: "Vehicle Construction",
         flavor: `Current Template: ${tmpl.name || "- None -"}`,
@@ -747,7 +749,7 @@ const display = (templateType) => {
         "Step 5": `[Acquire Engine Materials](!swrpg-craft-acquire ${tmpl.rarity} ${tmpl.price} ${Macros.tradeLocation})`,
         "Step 6": `[Construct Engine](!swrpg-craft-construct ${templateType})`,
         "Step 7": "[Select a Hull](!swrpg-craft-template #CraftHullTemplate)",
-        "Step 8": `[Acquire Hull Materials](!swrpg-craft-acquire ${tmpl.rarity} ${tmpl.price} ${Macros.tradeLocation})`,
+        "Step 8": `[Acquire Hull Materials (xVSL)](!swrpg-craft-acquire ${tmpl.rarity} ${tmpl.price} ${Macros.tradeLocation})`,
         "Step 9": `[Construct Hull](!swrpg-craft-construct ${templateType})`,
         "Step 10": `[Assemble Vehicle](!swrpg-craft-assemble ${templateType})`,
         "Back to": Macros.craftingMain
@@ -756,15 +758,13 @@ const display = (templateType) => {
 };
 
 const assemble = (templateType) => {
-    let tmpl = Template[templateType];
-    if (!tmpl) {
-        return;
-    }
+    let tmpl = Template[templateType] || {};
+
     // FIXME This won't work without selecting the Frame template again before Assembling
     let assembleContent = {
         title: "Vehicle Assembly",
         flavor: `${tmpl.skills.join(", ")} (${tmpl.assemblyDifficulty})`,
-        prewide: `Time Required: ${tmpl.assemblyTime}, ${-5*tmpl.vsl} hours per additional success`,
+        prewide: `Time Required: ${tmpl.assemblyTime}, -5xVSL hours per additional success`,
         wide: `Crew Required: ${tmpl.assemblyCrew}`,
         wide2: `Supply Cost: ${tmpl.assemblyCost}`
     };
