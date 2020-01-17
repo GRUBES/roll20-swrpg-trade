@@ -132,30 +132,6 @@
   const clamp5 = clamp(0, 5);
 
   /**
-   * Core logic for crafting armor
-   *
-   * @module swrpg/craft/armor
-   *
-   * @author Draico Dorath
-   * @copyright 2020
-   * @license MIT
-   */
-
-  const construct = (templateType) => {
-      // TODO
-  };
-
-  const display$1 = (templateType) => {
-      // TODO
-  };
-
-  var Armor = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    construct: construct,
-    display: display$1
-  });
-
-  /**
    * Common enumerations
    *
    * @module swrpg/util/enum
@@ -190,6 +166,190 @@
   };
 
   /**
+   * Core logic for crafting armor
+   *
+   * @module swrpg/craft/armor
+   *
+   * @author Draico Dorath
+   * @copyright 2020
+   * @license MIT
+   */
+
+  /**
+   * Crafting template for a armor
+   *
+   * @typedef {Object} ArmorTemplate
+   *
+   * @property defense {string} Defense modifier of the crafted armor
+   * @property difficulty {number} Difficulty of the crafting check for the template
+   * @property encumbrance {number} Encumbrance rating of the crafted armor
+   * @property hardpoints {number} Customization Hard Points on the armor
+   * @property isRestricted {boolean} whether the armor is Restricted
+   * @property name {string} the name of the armor being crafted
+   * @property price {number} base price of materials for crafting the armor
+   * @property rarity {number} Rarity rating of the materials for the armor
+   * @property skills {string[]} Skills that can be used to craft the armor
+   * @property soak {string} Soak modifier of the crafted armor
+   * @property time {string} the time required to craft the armor
+   */
+
+  /* Sender of chat messages */
+  const SpeakingAs = "Armorsmith Droid";
+
+  /* Types of armor templates which can be crafted */
+  const TemplateType = {
+      CLOTHING: 1,
+      LIGHT: 2,
+      CUSTOMIZABLE: 3,
+      DEFLECTIVE: 4,
+      COMBAT: 5,
+      SEGMENTED: 6,
+      AUGMENTATIVE: 7
+  };
+
+  /* Maps a TemplateType to its Template */
+  const Template = {
+      /** @type {ArmorTemplate} */
+      [TemplateType.CLOTHING]: {
+          defense: "+0",
+          difficulty: 2,
+          encumbrance: 1,
+          hardpoints: 0,
+          isRestricted: false,
+          name: "Reinforced Clothing",
+          price: 25,
+          rarity: 0,
+          skills: ["Mechanics", "Survival"],
+          soak: "+1",
+          time: "6 hours"
+      },
+      /** @type {ArmorTemplate} */
+      [TemplateType.LIGHT]: {
+          defense: "+0",
+          difficulty: 2,
+          encumbrance: 2,
+          hardpoints: 0,
+          isRestricted: false,
+          name: "Light Armor",
+          price: 250,
+          rarity: 0,
+          skills: ["Mechanics"],
+          soak: "+2",
+          time: "12 hours"
+      },
+      /** @type {ArmorTemplate} */
+      [TemplateType.CUSTOMIZABLE]: {
+          defense: "+0",
+          difficulty: 2,
+          encumbrance: 4,
+          hardpoints: 4,
+          isRestricted: false,
+          name: "Customizable Armor",
+          price: 500,
+          rarity: 4,
+          skills: ["Mechanics"],
+          soak: "+1",
+          time: "16 hours"
+      },
+      /** @type {ArmorTemplate} */
+      [TemplateType.DEFLECTIVE]: {
+          defense: "+1",
+          difficulty: 2,
+          encumbrance: 2,
+          hardpoints: 1,
+          isRestricted: false,
+          name: "Deflective Armor",
+          price: 500,
+          rarity: 5,
+          skills: ["Mechanics"],
+          soak: "+1",
+          time: "24 hours"
+      },
+      /** @type {ArmorTemplate} */
+      [TemplateType.COMBAT]: {
+          defense: "+0",
+          difficulty: 3,
+          encumbrance: 4,
+          hardpoints: 3,
+          isRestricted: false,
+          name: "Combat Armor",
+          price: 1250,
+          rarity: 4,
+          skills: ["Mechanics"],
+          soak: "+2",
+          time: "48 hours"
+      },
+      /** @type {ArmorTemplate} */
+      [TemplateType.SEGMENTED]: {
+          defense: "+1",
+          difficulty: 4,
+          encumbrance: 6,
+          hardpoints: 4,
+          isRestricted: true,
+          name: "Segmented Armor",
+          price: 2500,
+          rarity: 6,
+          skills: ["Mechanics"],
+          soak: "+2",
+          time: "72 hours"
+      },
+      /** @type {ArmorTemplate} */
+      [TemplateType.AUGMENTATIVE]: {
+          defense: "+2",
+          difficulty: 4,
+          encumbrance: 6,
+          hardpoints: 6,
+          isRestricted: true,
+          name: "Augmentative Armor",
+          price: 4500,
+          rarity: 8,
+          skills: ["Mechanics"],
+          soak: "+2",
+          time: "120 hours"
+      }
+  };
+
+  const construct = (templateType) => {
+      let tmpl = Template[templateType] || {};
+      let craftContent = {
+          title: "Armor Construction",
+          subtitle: tmpl.name,
+          flavor: `${tmpl.skills.join(", ")} (${tmpl.difficulty})`,
+          prewide: `Time Required: ${tmpl.time}, -2 hours for each additional success`
+      };
+
+      let itemContent = {
+          title: tmpl.name,
+          Encumbrance: tmpl.encumbrance,
+          "Hard Points": tmpl.hardpoints,
+          "Defense Increase": tmpl.defense,
+          "Soak Increase": tmpl.soak
+      };
+
+      sendPrivate(SpeakingAs, craftContent);
+      sendPrivate(SpeakingAs, itemContent);
+  };
+
+  const display$1 = (templateType) => {
+      let tmpl = Template[templateType] || {};
+      let content = {
+          title: "Armor Construction",
+          flavor: `Current Template: ${tmpl.name || "- None -"}`,
+          "Step 1": "[Select a Template](!swrpg-craft-template #CraftArmorTemplate)",
+          "Step 2": `[Acquire Materials](!swrpg-craft-acquire ${tmpl.rarity} ${tmpl.price} ${Macros.tradeLocation})`,
+          "Step 3": `[Construct Armor](!swrpg-craft-construct ${templateType})`,
+          "Back to": Macros.craftingMain
+      };
+      sendPrivate(SpeakingAs, content);
+  };
+
+  var Armor = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    construct: construct,
+    display: display$1
+  });
+
+  /**
    * Core logic for crafting cybernetics
    *
    * @module swrpg/craft/cybernetic
@@ -215,19 +375,19 @@
    */
 
   /* Sender of chat messages */
-  const SpeakingAs = "Cybernetics Droid";
+  const SpeakingAs$1 = "Cybernetics Droid";
 
   /* Types of cybernetic templates which can be crafted */
-  const TemplateType = {
+  const TemplateType$1 = {
       REPLACEMENT: 1,
       APPENDAGE: 2,
       IMPLANT: 3
   };
 
   /* Maps a TemplateType to its Template */
-  const Template = {
+  const Template$1 = {
       /** @type {CyberneticTemplate} */
-      [TemplateType.REPLACEMENT]: {
+      [TemplateType$1.REPLACEMENT]: {
           difficulty: 3,
           isRestricted: false,
           name: "Prosthetic Replacement",
@@ -238,7 +398,7 @@
           time: "12 hours"
       },
       /** @type {CyberneticTemplate} */
-      [TemplateType.APPENDAGE]: {
+      [TemplateType$1.APPENDAGE]: {
           difficulty: 4,
           isRestricted: false,
           name: "Cybernetic Appendage",
@@ -249,7 +409,7 @@
           time: "48 hours"
       },
       /** @type {CyberneticTemplate} */
-      [TemplateType.IMPLANT]: {
+      [TemplateType$1.IMPLANT]: {
           difficulty: 4,
           isRestricted: false,
           name: "Cybernetic Implant",
@@ -262,7 +422,7 @@
   };
 
   const construct$1 = (templateType) => {
-      let tmpl = Template[templateType] || {};
+      let tmpl = Template$1[templateType] || {};
       let craftContent = {
           title: "Cybernetic Construction",
           subtitle: tmpl.name,
@@ -281,12 +441,12 @@
           wide4: "Despair: Patient suffers Critical Injury"
       };
 
-      sendPrivate(SpeakingAs, craftContent);
-      sendPrivate(SpeakingAs, installContent);
+      sendPrivate(SpeakingAs$1, craftContent);
+      sendPrivate(SpeakingAs$1, installContent);
   };
 
   const display$2 = (templateType) => {
-      let tmpl = Template[templateType] || {};
+      let tmpl = Template$1[templateType] || {};
       let content = {
           title: "Cybernetics Construction",
           flavor: `Current Template: ${tmpl.name || "- None -"}`,
@@ -295,7 +455,7 @@
           "Step 3": `[Construct Cybernetic](!swrpg-craft-construct ${templateType})`,
           "Back to": Macros.craftingMain
       };
-      sendPrivate(SpeakingAs, content);
+      sendPrivate(SpeakingAs$1, content);
   };
 
   var Cybernetic = /*#__PURE__*/Object.freeze({
@@ -353,7 +513,7 @@
   const speakingAs$1 = "Droid Mechanic";
 
   /* Types of droid templates which can be crafted */
-  const TemplateType$1 = {
+  const TemplateType$2 = {
       Droid: {
           MONOTASK: 1,
           LABOR: 2,
@@ -373,9 +533,9 @@
   };
 
   /* Maps a TemplateType to its Template */
-  const Template$1 = {
+  const Template$2 = {
       /** @type {DirectiveTemplate} */
-      [TemplateType$1.Directive.LABOR]: {
+      [TemplateType$2.Directive.LABOR]: {
           difficulty: 1,
           name: "Labor Directive",
           skills: ["Computers"],
@@ -384,7 +544,7 @@
           time: "8 hours"
       },
       /** @type {DirectiveTemplate} */
-      [TemplateType$1.Directive.COMBAT]: {
+      [TemplateType$2.Directive.COMBAT]: {
           difficulty: 2,
           name: "Combat Directive",
           skills: ["Computers"],
@@ -393,7 +553,7 @@
           time: "16 hours"
       },
       /** @type {DirectiveTemplate} */
-      [TemplateType$1.Directive.TRANSLATION]: {
+      [TemplateType$2.Directive.TRANSLATION]: {
           difficulty: 3,
           name: "Translation Directive",
           skills: ["Computers"],
@@ -402,7 +562,7 @@
           time: "24 hours"
       },
       /** @type {DirectiveTemplate} */
-      [TemplateType$1.Directive.REPAIR]: {
+      [TemplateType$2.Directive.REPAIR]: {
           difficulty: 3,
           name: "Repair Directive",
           skills: ["Computers"],
@@ -411,7 +571,7 @@
           time: "24 hours"
       },
       /** @type {DirectiveTemplate} */
-      [TemplateType$1.Directive.NAVIGATION]: {
+      [TemplateType$2.Directive.NAVIGATION]: {
           difficulty: 3,
           name: "Navigation Directive",
           skills: ["Computers"],
@@ -420,7 +580,7 @@
           time: "72 hours"
       },
       /** @type {DirectiveTemplate} */
-      [TemplateType$1.Directive.HEALING]: {
+      [TemplateType$2.Directive.HEALING]: {
           difficulty: 4,
           name: "Healing Directive",
           skills: ["Computers"],
@@ -429,7 +589,7 @@
           time: "72 hours"
       },
       /** @type {DirectiveTemplate} */
-      [TemplateType$1.Directive.ELIMINATION]: {
+      [TemplateType$2.Directive.ELIMINATION]: {
           difficulty: 5,
           name: "Elimination Directive",
           skills: ["Computers"],
@@ -445,7 +605,7 @@
           time: "168 hours"
       },
       /** @type {DroidTemplate} */
-      [TemplateType$1.Droid.MONOTASK]: {
+      [TemplateType$2.Droid.MONOTASK]: {
           characteristics: [1, 1, 1, 1, 1, 1],
           difficulty: 2,
           isRestricted: false,
@@ -463,7 +623,7 @@
           wounds: 3
       },
       /** @type {DroidTemplate} */
-      [TemplateType$1.Droid.LABOR]: {
+      [TemplateType$2.Droid.LABOR]: {
           characteristics: [3, 1, 2, 1, 1, 1],
           difficulty: 2,
           isRestricted: false,
@@ -481,7 +641,7 @@
           wounds: 7
       },
       /** @type {DroidTemplate} */
-      [TemplateType$1.Droid.COMBAT]: {
+      [TemplateType$2.Droid.COMBAT]: {
           characteristics: [2, 2, 1, 1, 1, 1],
           difficulty: 3,
           isRestricted: true,
@@ -499,7 +659,7 @@
           wounds: 4
       },
       /** @type {DroidTemplate} */
-      [TemplateType$1.Droid.SPECIALIST]: {
+      [TemplateType$2.Droid.SPECIALIST]: {
           characteristics: [1, 1, 2, 2, 2, 2],
           difficulty: 4,
           isRestricted: false,
@@ -517,7 +677,7 @@
           wounds: 11
       },
       /** @type {DroidTemplate} */
-      [TemplateType$1.Droid.ADVANCED_COMBAT]: {
+      [TemplateType$2.Droid.ADVANCED_COMBAT]: {
           characteristics: [4, 3, 3, 3, 1, 1],
           difficulty: 5,
           isRestricted: true,
@@ -537,7 +697,7 @@
   };
 
   const construct$2 = (templateType) => {
-      let tmpl = Template$1[templateType];
+      let tmpl = Template$2[templateType];
       if (!tmpl) {
           return;
       }
@@ -557,7 +717,7 @@
   };
 
   const display$3 = (templateType) => {
-      let tmpl = Template$1[templateType] || {};
+      let tmpl = Template$2[templateType] || {};
       let content = {
           title: "Droid Construction",
           flavor: `Current Chassis/Directive: ${tmpl.name || "- None -"}`,
@@ -571,7 +731,7 @@
   };
 
   const program = (templateType) => {
-      let tmpl = Template$1[templateType] || {};
+      let tmpl = Template$2[templateType] || {};
       let content = {
           title: "Droid Directive Programming",
           subtitle: tmpl.name,
@@ -617,19 +777,19 @@
    */
 
   // Sender of chat messages
-  const SpeakingAs$1 = "Engineering Droid";
+  const SpeakingAs$2 = "Engineering Droid";
 
   // Types of templates which can be crafted
-  const TemplateType$2 = {
+  const TemplateType$3 = {
       SIMPLE: 1,
       SPECIALIST: 2,
       PRECISION: 3
   };
 
   // Maps a TemplateType to its Template
-  const Template$2 = {
+  const Template$3 = {
       /** @type {GadgetTemplate} */
-      [TemplateType$2.SIMPLE]: {
+      [TemplateType$3.SIMPLE]: {
           difficulty: 1,
           encumbrance: 4,
           isRestricted: false,
@@ -641,7 +801,7 @@
           time: "2 hours"
       },
       /** @type {GadgetTemplate} */
-      [TemplateType$2.SPECIALIST]: {
+      [TemplateType$3.SPECIALIST]: {
           difficulty: 2,
           encumbrance: 8,
           isRestricted: false,
@@ -653,7 +813,7 @@
           time: "10 hours"
       },
       /** @type {GadgetTemplate} */
-      [TemplateType$2.PRECISION]: {
+      [TemplateType$3.PRECISION]: {
           difficulty: 3,
           encumbrance: 5,
           isRestricted: false,
@@ -667,7 +827,7 @@
   };
 
   const construct$3 = (templateType) => {
-      let tmpl = Template$2[templateType] || {};
+      let tmpl = Template$3[templateType] || {};
       let content = {
           title: "Gadget Construction",
           subtitle: tmpl.name,
@@ -676,11 +836,11 @@
           Effect: tmpl.special,
           Encumbrance: tmpl.encumbrance
       };
-      sendPrivate(SpeakingAs$1, content);
+      sendPrivate(SpeakingAs$2, content);
   };
 
   const display$4 = (templateType) => {
-      let tmpl = Template$2[templateType] || {};
+      let tmpl = Template$3[templateType] || {};
       let content = {
           title: "Gadget Construction",
           flavor: `Current Template: ${tmpl.name || "- None -"}`,
@@ -689,7 +849,7 @@
           wide3: `Step 3: [Construct Gadget](!swrpg-craft-construct ${templateType})`,
           "Back to": Macros.craftingMain
       };
-      sendPrivate(SpeakingAs$1, content);
+      sendPrivate(SpeakingAs$2, content);
   };
 
   var Gadget = /*#__PURE__*/Object.freeze({
@@ -727,10 +887,10 @@
    */
 
   /* Sender of chat messages */
-  const SpeakingAs$2 = "The Living Force";
+  const SpeakingAs$3 = "The Living Force";
 
   /* Types of lightsaber templates which can be crafted */
-  const TemplateType$3 = {
+  const TemplateType$4 = {
       STANDARD: 1,
       PRECISION: 2,
       DEFENSIVE: 3,
@@ -739,9 +899,9 @@
   };
 
   /* Maps a TemplateType to its Template */
-  const Template$3 = {
+  const Template$4 = {
       /** @type {HiltTemplate} */
-      [TemplateType$3.STANDARD]: {
+      [TemplateType$4.STANDARD]: {
           difficulty: 2,
           encumbrance: 1,
           hands: "One-handed",
@@ -755,7 +915,7 @@
           time: "6 hours"
       },
       /** @type {HiltTemplate} */
-      [TemplateType$3.PRECISION]: {
+      [TemplateType$4.PRECISION]: {
           difficulty: 2,
           encumbrance: 1,
           hands: "One-handed",
@@ -769,7 +929,7 @@
           time: "12 hours"
       },
       /** @type {HiltTemplate} */
-      [TemplateType$3.DEFENSIVE]: {
+      [TemplateType$4.DEFENSIVE]: {
           difficulty: 3,
           encumbrance: 1,
           hands: "One-handed",
@@ -783,7 +943,7 @@
           time: "12 hours"
       },
       /** @type {HiltTemplate} */
-      [TemplateType$3.DOUBLE]: {
+      [TemplateType$4.DOUBLE]: {
           difficulty: 3,
           encumbrance: 2,
           hands: "Two-handed",
@@ -797,7 +957,7 @@
           time: "12 hours"
       },
       /** @type {HiltTemplate} */
-      [TemplateType$3.PIKE]: {
+      [TemplateType$4.PIKE]: {
           difficulty: 3,
           encumbrance: 2,
           hands: "Two-handed",
@@ -813,7 +973,7 @@
   };
 
   const construct$4 = (templateType) => {
-      let tmpl = Template$3[templateType] || {};
+      let tmpl = Template$4[templateType] || {};
       let craftContent = {
           title: "Lightsaber Construction",
           flavor: `${tmpl.skills.join(", ")} (${tmpl.difficulty})`,
@@ -828,12 +988,12 @@
           "Hard Points": tmpl.hardpoints
       };
 
-      sendPrivate(SpeakingAs$2, craftContent);
-      sendPrivate(SpeakingAs$2, itemContent);
+      sendPrivate(SpeakingAs$3, craftContent);
+      sendPrivate(SpeakingAs$3, itemContent);
   };
 
   const display$5 = (templateType) => {
-      let tmpl = Template$3[templateType] || {};
+      let tmpl = Template$4[templateType] || {};
       let content = {
           title: "Lightsaber Construction",
           flavor: `Current Template: ${tmpl.name || "- None -"}`,
@@ -842,7 +1002,7 @@
           "Step 3": `[Construct Hilt](!swrpg-craft-construct ${templateType})`,
           "Back to": Macros.craftingMain
       };
-      sendPrivate(SpeakingAs$2, content);
+      sendPrivate(SpeakingAs$3, content);
   };
 
   var Lightsaber = /*#__PURE__*/Object.freeze({
@@ -931,10 +1091,10 @@
    */
 
   /* Sender of chat messages */
-  const SpeakingAs$3 = "Mechanics Droid";
+  const SpeakingAs$4 = "Mechanics Droid";
 
   /* Types of vehicle templates which can be crafted */
-  const TemplateType$4 = {
+  const TemplateType$5 = {
       Frame: {
           BIKE: 30,
           LANDSPEEDER: 1,
@@ -974,9 +1134,9 @@
   };
 
   /* Maps a TemplateType to its Template */
-  const Template$4 = {
+  const Template$5 = {
       /** @type {FrameTemplate} */
-      [TemplateType$4.Frame.BIKE]: {
+      [TemplateType$5.Frame.BIKE]: {
           altitude: 15,
           assemblyCost: 1000,
           assemblyCrew: 1,
@@ -1000,7 +1160,7 @@
           vsl: 5
       },
       /** @type {FrameTemplate} */
-      [TemplateType$4.Frame.LANDSPEEDER]: {
+      [TemplateType$5.Frame.LANDSPEEDER]: {
           altitude: 20,
           assemblyCost: 1000,
           assemblyCrew: 1,
@@ -1024,7 +1184,7 @@
           vsl: 5
       },
       /** @type {FrameTemplate} */
-      [TemplateType$4.Frame.AIRSPEEDER]: {
+      [TemplateType$5.Frame.AIRSPEEDER]: {
           altitude: 100000,
           assemblyCost: 1000,
           assemblyCrew: 1,
@@ -1048,7 +1208,7 @@
           vsl: 5
       },
       /** @type {FrameTemplate} */
-      [TemplateType$4.Frame.WALKER]: {
+      [TemplateType$5.Frame.WALKER]: {
           altitude: 0,
           assemblyCost: 10000,
           assemblyCrew: 1,
@@ -1072,7 +1232,7 @@
           vsl: 10
       },
       /** @type {FrameTemplate} */
-      [TemplateType$4.Frame.STARFIGHTER]: {
+      [TemplateType$5.Frame.STARFIGHTER]: {
           altitude: -1,
           assemblyCost: 10000,
           assemblyCrew: 1,
@@ -1096,7 +1256,7 @@
           vsl: 10
       },
       /** @type {FrameTemplate} */
-      [TemplateType$4.Frame.TRANSPORT]: {
+      [TemplateType$5.Frame.TRANSPORT]: {
           altitude: -1,
           assemblyCost: 25000,
           assemblyCrew: 5,
@@ -1120,7 +1280,7 @@
           vsl: 15
       },
       /** @type {FrameTemplate} */
-      [TemplateType$4.Frame.CORVETTE]: {
+      [TemplateType$5.Frame.CORVETTE]: {
           altitude: -1,
           assemblyCost: 125000,
           assemblyCrew: 100,
@@ -1144,7 +1304,7 @@
           vsl: 25
       },
       /** @type {FrameTemplate} */
-      [TemplateType$4.Frame.PATROL_SHIP]: {
+      [TemplateType$5.Frame.PATROL_SHIP]: {
           altitude: -1,
           assemblyCost: 125000,
           assemblyCrew: 100,
@@ -1168,7 +1328,7 @@
           vsl: 25
       },
       /** @type {FrameTemplate} */
-      [TemplateType$4.Frame.CARRIER]: {
+      [TemplateType$5.Frame.CARRIER]: {
           altitude: -1,
           assemblyCost: 125000,
           assemblyCrew: 100,
@@ -1192,7 +1352,7 @@
           vsl: 35
       },
       /** @type {FrameTemplate} */
-      [TemplateType$4.Frame.FRIGATE]: {
+      [TemplateType$5.Frame.FRIGATE]: {
           altitude: -1,
           assemblyCost: 125000,
           assemblyCrew: 100,
@@ -1216,7 +1376,7 @@
           vsl: 35
       },
       /** @type {FrameTemplate} */
-      [TemplateType$4.Frame.HEAVY_CRUISER]: {
+      [TemplateType$5.Frame.HEAVY_CRUISER]: {
           altitude: -1,
           assemblyCost: 1250000,
           assemblyCrew: 5000,
@@ -1240,7 +1400,7 @@
           vsl: 50
       },
       /** @type {FrameTemplate} */
-      [TemplateType$4.Frame.DESTROYER]: {
+      [TemplateType$5.Frame.DESTROYER]: {
           altitude: -1,
           assemblyCost: 1250000,
           assemblyCrew: 5000,
@@ -1264,7 +1424,7 @@
           vsl: 65
       },
       /** @type {FrameTemplate} */
-      [TemplateType$4.Frame.SMALL_STATION]: {
+      [TemplateType$5.Frame.SMALL_STATION]: {
           altitude: -1,
           assemblyCost: 125000,
           assemblyCrew: 100,
@@ -1288,7 +1448,7 @@
           vsl: 35
       },
       /** @type {FrameTemplate} */
-      [TemplateType$4.Frame.MEDIUM_STATION]: {
+      [TemplateType$5.Frame.MEDIUM_STATION]: {
           altitude: -1,
           assemblyCost: 1250000,
           assemblyCrew: 5000,
@@ -1312,7 +1472,7 @@
           vsl: 50
       },
       /** @type {FrameTemplate} */
-      [TemplateType$4.Frame.LARGE_STATION]: {
+      [TemplateType$5.Frame.LARGE_STATION]: {
           altitude: -1,
           assemblyCost: 3250000,
           assemblyCrew: 5000,
@@ -1336,7 +1496,7 @@
           vsl: 65
       },
       /** @type {FrameTemplate} */
-      [TemplateType$4.Frame.MASSIVE_STATION]: {
+      [TemplateType$5.Frame.MASSIVE_STATION]: {
           altitude: -1,
           assemblyCost: 4000000,
           assemblyCrew: 5000,
@@ -1360,7 +1520,7 @@
           vsl: 80
       },
       /** @type {FrameTemplate} */
-      [TemplateType$4.Frame.SMALL_MOON]: {
+      [TemplateType$5.Frame.SMALL_MOON]: {
           altitude: -1,
           assemblyCost: 10000000,
           assemblyCrew: 50000,
@@ -1384,7 +1544,7 @@
           vsl: 100
       },
       /** @type {EngineTemplate} */
-      [TemplateType$4.Engine.SINGLE_COIL]: {
+      [TemplateType$5.Engine.SINGLE_COIL]: {
           defense: "0/0/0/0",
           difficulty: 1,
           hardpoints: 2,
@@ -1397,7 +1557,7 @@
           time: "24 hours"
       },
       /** @type {EngineTemplate} */
-      [TemplateType$4.Engine.BAFFLED]: {
+      [TemplateType$5.Engine.BAFFLED]: {
           defense: "0/0/0/2",
           difficulty: 2,
           hardpoints: 4,
@@ -1410,7 +1570,7 @@
           time: "48 hours"
       },
       /** @type {EngineTemplate} */
-      [TemplateType$4.Engine.ION_TURBINE]: {
+      [TemplateType$5.Engine.ION_TURBINE]: {
           defense: "1/0/0/0",
           difficulty: 2,
           hardpoints: 3,
@@ -1423,7 +1583,7 @@
           time: "48 hours"
       },
       /** @type {EngineTemplate} */
-      [TemplateType$4.Engine.FUSIAL]: {
+      [TemplateType$5.Engine.FUSIAL]: {
           defense: "1/0/0/0",
           difficulty: 3,
           hardpoints: 3,
@@ -1436,7 +1596,7 @@
           time: "60 hours"
       },
       /** @type {EngineTemplate} */
-      [TemplateType$4.Engine.REPULSOR]: {
+      [TemplateType$5.Engine.REPULSOR]: {
           defense: "1/1/1/1",
           difficulty: 3,
           hardpoints: 4,
@@ -1449,7 +1609,7 @@
           time: "120 hours"
       },
       /** @type {EngineTemplate} */
-      [TemplateType$4.Engine.DRIVE_ARRAY]: {
+      [TemplateType$5.Engine.DRIVE_ARRAY]: {
           defense: "0/0/0/0",
           difficulty: 4,
           hardpoints: 4,
@@ -1462,7 +1622,7 @@
           time: "120 hours"
       },
       /** @type {HullTemplate} */
-      [TemplateType$4.Hull.BASIC]: {
+      [TemplateType$5.Hull.BASIC]: {
           armor: 1,
           difficulty: 2,
           handling: -2,
@@ -1478,7 +1638,7 @@
           time: "48*Silhouette hours"
       },
       /** @type {HullTemplate} */
-      [TemplateType$4.Hull.RACE]: {
+      [TemplateType$5.Hull.RACE]: {
           armor: 1,
           difficulty: 2,
           handling: 1,
@@ -1494,7 +1654,7 @@
           time: "48*Silhouette hours"
       },
       /** @type {HullTemplate} */
-      [TemplateType$4.Hull.BULK]: {
+      [TemplateType$5.Hull.BULK]: {
           armor: 1,
           difficulty: 3,
           handling: -4,
@@ -1510,7 +1670,7 @@
           time: "72*Silhouette hours"
       },
       /** @type {HullTemplate} */
-      [TemplateType$4.Hull.TRANSPORT]: {
+      [TemplateType$5.Hull.TRANSPORT]: {
           armor: 1,
           difficulty: 3,
           handling: -2,
@@ -1526,7 +1686,7 @@
           time: "72*Silhouette hours"
       },
       /** @type {HullTemplate} */
-      [TemplateType$4.Hull.SCOUT]: {
+      [TemplateType$5.Hull.SCOUT]: {
           armor: 2,
           difficulty: 3,
           handling: 1,
@@ -1542,7 +1702,7 @@
           time: "72*Silhouette hours"
       },
       /** @type {HullTemplate} */
-      [TemplateType$4.Hull.GUNSHIP]: {
+      [TemplateType$5.Hull.GUNSHIP]: {
           armor: 3,
           difficulty: 4,
           handling: -2,
@@ -1558,7 +1718,7 @@
           time: "96*Silhouette hours"
       },
       /** @type {HullTemplate} */
-      [TemplateType$4.Hull.LINE]: {
+      [TemplateType$5.Hull.LINE]: {
           armor: 5,
           difficulty: 4,
           handling: -2,
@@ -1576,7 +1736,7 @@
   };
 
   const construct$5 = (templateType) => {
-      let tmpl = Template$4[templateType] || {};
+      let tmpl = Template$5[templateType] || {};
       let content = {
           title: "Vehicle Construction",
           subtitle: tmpl.name,
@@ -1584,11 +1744,11 @@
           prewide: `Time Required: ${tmpl.time}, -2xVSL hours for each additional success`,
           Effect: tmpl.special || "None"
       };
-      sendPrivate(SpeakingAs$3, content);
+      sendPrivate(SpeakingAs$4, content);
   };
 
   const display$6 = (templateType) => {
-      let tmpl = Template$4[templateType] || {};
+      let tmpl = Template$5[templateType] || {};
       let content = {
           title: "Vehicle Construction",
           flavor: `Current Template: ${tmpl.name || "- None -"}`,
@@ -1604,11 +1764,11 @@
           "Step 10": `[Assemble Vehicle](!swrpg-craft-assemble ${templateType})`,
           "Back to": Macros.craftingMain
       };
-      sendPrivate(SpeakingAs$3, content);
+      sendPrivate(SpeakingAs$4, content);
   };
 
   const assemble = (templateType) => {
-      let tmpl = Template$4[templateType] || {};
+      let tmpl = Template$5[templateType] || {};
 
       // FIXME This won't work without selecting the Frame template again before Assembling
       let assembleContent = {
@@ -1618,7 +1778,7 @@
           wide: `Crew Required: ${tmpl.assemblyCrew}`,
           wide2: `Supply Cost: ${tmpl.assemblyCost}`
       };
-      sendPrivate(SpeakingAs$3, assembleContent);
+      sendPrivate(SpeakingAs$4, assembleContent);
   };
 
   var Vehicle = /*#__PURE__*/Object.freeze({
@@ -1664,7 +1824,7 @@
   const speakingAs$2 = "Weaponsmith Droid";
 
   /* Types of weapon templates which can be crafted */
-  const TemplateType$5 = {
+  const TemplateType$6 = {
       FIST: 16,
       BLUNT: 1,
       SHIELD: 2,
@@ -1684,9 +1844,9 @@
   };
 
   /* Maps a TemplateType to its Template */
-  const Template$5 = {
+  const Template$6 = {
       /** @type {WeaponTemplate} */
-      [TemplateType$5.FIST]: {
+      [TemplateType$6.FIST]: {
           critical: 4,
           damage: "+1",
           difficulty: 2,
@@ -1704,7 +1864,7 @@
           type: "Brawl"
       },
       /** @type {WeaponTemplate} */
-      [TemplateType$5.BLUNT]: {
+      [TemplateType$6.BLUNT]: {
           critical: 5,
           damage: "+2",
           difficulty: 1,
@@ -1722,7 +1882,7 @@
           type: "Melee"
       },
       /** @type {WeaponTemplate} */
-      [TemplateType$5.SHIELD]: {
+      [TemplateType$6.SHIELD]: {
           critical: 5,
           damage: "+0",
           difficulty: 2,
@@ -1740,7 +1900,7 @@
           type: "Melee"
       },
       /** @type {WeaponTemplate} */
-      [TemplateType$5.BLADED]: {
+      [TemplateType$6.BLADED]: {
           critical: 3,
           damage: "+1",
           difficulty: 2,
@@ -1758,7 +1918,7 @@
           type: "Melee"
       },
       /** @type {WeaponTemplate} */
-      [TemplateType$5.VIBRO]: {
+      [TemplateType$6.VIBRO]: {
           critical: 2,
           damage: "+1",
           difficulty: 3,
@@ -1776,7 +1936,7 @@
           type: "Melee"
       },
       /** @type {WeaponTemplate} */
-      [TemplateType$5.POWERED]: {
+      [TemplateType$6.POWERED]: {
           critical: 3,
           damage: "+2",
           difficulty: 4,
@@ -1794,7 +1954,7 @@
           type: "Melee"
       },
       /** @type {WeaponTemplate} */
-      [TemplateType$5.SIMPLE]: {
+      [TemplateType$6.SIMPLE]: {
           critical: 5,
           damage: 4,
           difficulty: 2,
@@ -1812,7 +1972,7 @@
           type: "Ranged (Light)"
       },
       /** @type {WeaponTemplate} */
-      [TemplateType$5.SOLID_PISTOL]: {
+      [TemplateType$6.SOLID_PISTOL]: {
           critical: 5,
           damage: 4,
           difficulty: 2,
@@ -1830,7 +1990,7 @@
           type: "Ranged (Light)"
       },
       /** @type {WeaponTemplate} */
-      [TemplateType$5.SOLID_RIFLE]: {
+      [TemplateType$6.SOLID_RIFLE]: {
           critical: 5,
           damage: 7,
           difficulty: 3,
@@ -1848,7 +2008,7 @@
           type: "Ranged (Heavy)"
       },
       /** @type {WeaponTemplate} */
-      [TemplateType$5.ENERGY_PISTOL]: {
+      [TemplateType$6.ENERGY_PISTOL]: {
           critical: 3,
           damage: 6,
           difficulty: 3,
@@ -1866,7 +2026,7 @@
           type: "Ranged (Light)"
       },
       /** @type {WeaponTemplate} */
-      [TemplateType$5.ENERGY_RIFLE]: {
+      [TemplateType$6.ENERGY_RIFLE]: {
           critical: 3,
           damage: 9,
           difficulty: 3,
@@ -1884,7 +2044,7 @@
           type: "Ranged (Heavy)"
       },
       /** @type {WeaponTemplate} */
-      [TemplateType$5.HEAVY_RIFLE]: {
+      [TemplateType$6.HEAVY_RIFLE]: {
           critical: 3,
           damage: 10,
           difficulty: 4,
@@ -1902,7 +2062,7 @@
           type: "Gunnery"
       },
       /** @type {WeaponTemplate} */
-      [TemplateType$5.LAUNCHER]: {
+      [TemplateType$6.LAUNCHER]: {
           critical: 0,
           damage: 0,
           difficulty: 4,
@@ -1920,7 +2080,7 @@
           type: "Gunnery"
       },
       /** @type {WeaponTemplate} */
-      [TemplateType$5.MISSILE]: {
+      [TemplateType$6.MISSILE]: {
           critical: 2,
           damage: 20,
           difficulty: 3,
@@ -1938,7 +2098,7 @@
           type: "Gunnery"
       },
       /** @type {WeaponTemplate} */
-      [TemplateType$5.GRENADE]: {
+      [TemplateType$6.GRENADE]: {
           critical: 4,
           damage: 8,
           difficulty: 3,
@@ -1956,7 +2116,7 @@
           type: "Ranged (Light)"
       },
       /** @type {WeaponTemplate} */
-      [TemplateType$5.MINE]: {
+      [TemplateType$6.MINE]: {
           critical: 3,
           damage: 12,
           difficulty: 3,
@@ -1976,7 +2136,7 @@
   };
 
   const construct$6 = (templateType) => {
-      let tmpl = Template$5[templateType] || {};
+      let tmpl = Template$6[templateType] || {};
       let craftContent = {
           title: "Weapon Construction",
           flavor: `${tmpl.skills.join(", ")} (${tmpl.difficulty})`,
@@ -2000,7 +2160,7 @@
   };
 
   const display$7 = (templateType) => {
-      let tmpl = Template$5[templateType] || {};
+      let tmpl = Template$6[templateType] || {};
       let content = {
           title: "Weapon Construction",
           flavor: `Current Template: ${tmpl.name || "- None -"}`,
@@ -2161,7 +2321,7 @@
    */
 
   /* Sender of chat messages */
-  const SpeakingAs$4 = "Crafting Droid";
+  const SpeakingAs$5 = "Crafting Droid";
 
   // Maps a Mode to its Module
   const ModeToModule = {
@@ -2203,7 +2363,7 @@
           Difficulty: diff,
           "Purchase Price": buy
       };
-      sendPrivate(SpeakingAs$4, content);
+      sendPrivate(SpeakingAs$5, content);
   };
 
   // Step 3: Construct
@@ -2224,7 +2384,7 @@
           wide3: `${Macros.craftVehicle} ${Macros.craftWeapon}`,
           wide4: `${Macros.craftCybernetic}`,
       };
-      sendPrivate(SpeakingAs$4, content);
+      sendPrivate(SpeakingAs$5, content);
   };
 
   /**

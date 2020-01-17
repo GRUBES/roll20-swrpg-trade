@@ -50,6 +50,10 @@ CONTACT NETWORK MODULE:
 
 CRAFTING MODULE:
 
+// #CraftArmorTemplate
+?{Select Armor|Reinforced Clothing, 1|Light Armor, 2|Customizable Armor, 3|Deflective Armor, 4|Combat Armor, 5|
+    Segmented Armor, 6|Augmentative Armor, 7}
+
 // #CraftCyberneticTemplate
 ?{Select a Cybernetic|Prosthetic Replacement, 1|Cybernetic Appendage, 2|Cybernetic Implant, 3}
 
