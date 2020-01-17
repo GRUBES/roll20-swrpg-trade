@@ -38,7 +38,7 @@ const speakingAs = "Weaponsmith Droid";
 
 /* Types of weapon templates which can be crafted */
 const TemplateType = {
-    FIST: 0,
+    FIST: 16,
     BLUNT: 1,
     SHIELD: 2,
     BLADED: 3,
@@ -349,10 +349,7 @@ const Template = {
 };
 
 const construct = (templateType) => {
-    let tmpl = Template[templateType];
-    if (!tmpl) {
-        return;
-    }
+    let tmpl = Template[templateType] || {};
     let craftContent = {
         title: "Weapon Construction",
         flavor: `${tmpl.skills.join(", ")} (${tmpl.difficulty})`,
@@ -376,10 +373,7 @@ const construct = (templateType) => {
 };
 
 const display = (templateType) => {
-    let tmpl = Template[templateType];
-    if (!tmpl) {
-        return;
-    }
+    let tmpl = Template[templateType] || {};
     let content = {
         title: "Weapon Construction",
         flavor: `Current Template: ${tmpl.name || "- None -"}`,
