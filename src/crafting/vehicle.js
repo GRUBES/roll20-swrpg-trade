@@ -86,40 +86,40 @@ const SpeakingAs = "Mechanics Droid";
 /* Types of vehicle templates which can be crafted */
 const TemplateType = {
     Frame: {
-        BIKE: 31,
-        LANDSPEEDER: 32,
-        AIRSPEEDER: 33,
-        WALKER: 34,
-        STARFIGHTER: 35,
-        TRANSPORT: 36,
-        CORVETTE: 38,
-        PATROL_SHIP: 54,
-        CARRIER: 55,
-        FRIGATE: 39,
-        HEAVY_CRUISER: 40,
-        DESTROYER: 41,
-        SMALL_STATION: 42,
-        MEDIUM_STATION: 56,
-        LARGE_STATION: 57,
-        MASSIVE_STATION: 58,
-        SMALL_MOON: 59
+        BIKE: 30,
+        LANDSPEEDER: 1,
+        AIRSPEEDER: 2,
+        WALKER: 3,
+        STARFIGHTER: 4,
+        TRANSPORT: 5,
+        CORVETTE: 6,
+        PATROL_SHIP: 7,
+        CARRIER: 8,
+        FRIGATE: 9,
+        HEAVY_CRUISER: 10,
+        DESTROYER: 11,
+        SMALL_STATION: 12,
+        MEDIUM_STATION: 13,
+        LARGE_STATION: 14,
+        MASSIVE_STATION: 15,
+        SMALL_MOON: 16
     },
     Engine: {
-        SINGLE_COIL: 43,
-        BAFFLED: 44,
-        ION_TURBINE: 45,
-        FUSIAL: 46,
-        REPULSOR: 47,
-        DRIVE_ARRAY: 48
+        SINGLE_COIL: 17,
+        BAFFLED: 18,
+        ION_TURBINE: 19,
+        FUSIAL: 20,
+        REPULSOR: 21,
+        DRIVE_ARRAY: 22
     },
     Hull: {
-        BASIC: 49,
-        RACE: 50,
-        BULK: 51,
-        TRANSPORT: 52,
-        SCOUT: 53,
-        GUNSHIP: 60,
-        LINE: 61
+        BASIC: 23,
+        RACE: 24,
+        BULK: 25,
+        TRANSPORT: 26,
+        SCOUT: 27,
+        GUNSHIP: 28,
+        LINE: 29
     }
 };
 

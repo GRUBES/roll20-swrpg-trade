@@ -32,9 +32,9 @@ const SpeakingAs = "Engineering Droid";
 
 // Types of templates which can be crafted
 const TemplateType = {
-    SIMPLE: 16,
-    SPECIALIST: 17,
-    PRECISION: 18
+    SIMPLE: 1,
+    SPECIALIST: 2,
+    PRECISION: 3
 };
 
 const Mode = CraftingMode.GADGET;
@@ -80,10 +80,7 @@ const Template = {
 };
 
 const construct = (templateType) => {
-    let tmpl = Template[templateType];
-    if (!tmpl) {
-        return;
-    }
+    let tmpl = Template[templateType] || {};
     let content = {
         title: "Gadget Construction",
         subtitle: tmpl.name,
@@ -96,10 +93,7 @@ const construct = (templateType) => {
 };
 
 const display = (templateType) => {
-    let tmpl = Template[templateType];
-    if (!tmpl) {
-        return;
-    }
+    let tmpl = Template[templateType] || {};
     let content = {
         title: "Gadget Construction",
         flavor: `Current Template: ${tmpl.name || "- None -"}`,

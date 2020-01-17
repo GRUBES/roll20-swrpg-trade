@@ -238,20 +238,20 @@
   /* Types of droid templates which can be crafted */
   const TemplateType = {
       Droid: {
-          MONOTASK: 19,
-          LABOR: 20,
-          COMBAT: 21,
-          SPECIALIST: 22,
-          ADVANCED_COMBAT: 23
+          MONOTASK: 1,
+          LABOR: 2,
+          COMBAT: 3,
+          SPECIALIST: 4,
+          ADVANCED_COMBAT: 5
       },
       Directive: {
-          LABOR: 24,
-          COMBAT: 25,
-          TRANSLATION: 26,
-          REPAIR: 27,
-          NAVIGATION: 28,
-          HEALING: 29,
-          ELIMINATION: 30
+          LABOR: 6,
+          COMBAT: 7,
+          TRANSLATION: 8,
+          REPAIR: 9,
+          NAVIGATION: 10,
+          HEALING: 11,
+          ELIMINATION: 12
       }
   };
 
@@ -440,10 +440,7 @@
   };
 
   const display$2 = (templateType) => {
-      let tmpl = Template[templateType];
-      if (!tmpl) {
-          return;
-      }
+      let tmpl = Template[templateType] || {};
       let content = {
           title: "Droid Construction",
           flavor: `Current Chassis/Directive: ${tmpl.name || "- None -"}`,
@@ -457,10 +454,7 @@
   };
 
   const program = (templateType) => {
-      let tmpl = Template[templateType];
-      if (!tmpl) {
-          return;
-      }
+      let tmpl = Template[templateType] || {};
       let content = {
           title: "Droid Directive Programming",
           subtitle: tmpl.name,
@@ -510,9 +504,9 @@
 
   // Types of templates which can be crafted
   const TemplateType$1 = {
-      SIMPLE: 16,
-      SPECIALIST: 17,
-      PRECISION: 18
+      SIMPLE: 1,
+      SPECIALIST: 2,
+      PRECISION: 3
   };
 
   // Maps a TemplateType to its Template
@@ -556,10 +550,7 @@
   };
 
   const construct$2 = (templateType) => {
-      let tmpl = Template$1[templateType];
-      if (!tmpl) {
-          return;
-      }
+      let tmpl = Template$1[templateType] || {};
       let content = {
           title: "Gadget Construction",
           subtitle: tmpl.name,
@@ -572,10 +563,7 @@
   };
 
   const display$3 = (templateType) => {
-      let tmpl = Template$1[templateType];
-      if (!tmpl) {
-          return;
-      }
+      let tmpl = Template$1[templateType] || {};
       let content = {
           title: "Gadget Construction",
           flavor: `Current Template: ${tmpl.name || "- None -"}`,
@@ -603,12 +591,141 @@
    * @license MIT
    */
 
+  /**
+   * Crafting template for a lightsaber
+   *
+   * @typedef {Object} HiltTemplate
+   *
+   * @property difficulty {number} Difficulty of the crafting check for the template
+   * @property encumbrance {number} Encumbrance of the crafted lightsaber
+   * @property hands {string} Hands necessary to wield the lightsaber
+   * @property hardpoints {number} Customization Hard Points on the lightsaber
+   * @property isRestricted {boolean} whether the lightsaber is Restricted
+   * @property name {string} the name of the lightsaber being crafted
+   * @property price {number} base price of materials for crafting the lightsaber
+   * @property rarity {number} Rarity rating of the materials for the lightsaber
+   * @property skills {string[]} Skills that can be used to craft the lightsaber
+   * @property special {string} Qualities of the crafted lightsaber
+   * @property time {string} the time required to craft the lightsaber
+   */
+
+  /* Sender of chat messages */
+  const SpeakingAs$1 = "The Living Force";
+
+  /* Types of lightsaber templates which can be crafted */
+  const TemplateType$2 = {
+      STANDARD: 1,
+      PRECISION: 2,
+      DEFENSIVE: 3,
+      DOUBLE: 4,
+      PIKE: 5
+  };
+
+  /* Maps a TemplateType to its Template */
+  const Template$2 = {
+      /** @type {HiltTemplate} */
+      [TemplateType$2.STANDARD]: {
+          difficulty: 2,
+          encumbrance: 1,
+          hands: "One-handed",
+          hardpoints: 5,
+          isRestricted: false,
+          name: "Standard Hilt",
+          price: 100,
+          rarity: 4,
+          skills: ["Mechanics", "Lore"],
+          special: "None",
+          time: "6 hours"
+      },
+      /** @type {HiltTemplate} */
+      [TemplateType$2.PRECISION]: {
+          difficulty: 2,
+          encumbrance: 1,
+          hands: "One-handed",
+          hardpoints: 3,
+          isRestricted: false,
+          name: "Precision Hilt",
+          price: 150,
+          rarity: 5,
+          skills: ["Mechanics", "Lore"],
+          special: "Accurate 1; Damage -1",
+          time: "12 hours"
+      },
+      /** @type {HiltTemplate} */
+      [TemplateType$2.DEFENSIVE]: {
+          difficulty: 3,
+          encumbrance: 1,
+          hands: "One-handed",
+          hardpoints: 3,
+          isRestricted: false,
+          name: "Defensive Hilt",
+          price: 300,
+          rarity: 6,
+          skills: ["Mechanics", "Lore"],
+          special: "Defensive 1; Damage -1",
+          time: "12 hours"
+      },
+      /** @type {HiltTemplate} */
+      [TemplateType$2.DOUBLE]: {
+          difficulty: 3,
+          encumbrance: 2,
+          hands: "Two-handed",
+          hardpoints: 4,
+          isRestricted: false,
+          name: "Double-bladed Hilt",
+          price: 300,
+          rarity: 5,
+          skills: ["Mechanics", "Lore"],
+          special: "Unwieldy 3; Linked 1; Attachments and Crystals cost double",
+          time: "12 hours"
+      },
+      /** @type {HiltTemplate} */
+      [TemplateType$2.PIKE]: {
+          difficulty: 3,
+          encumbrance: 2,
+          hands: "Two-handed",
+          hardpoints: 4,
+          isRestricted: false,
+          name: "Pole Hilt",
+          price: 150,
+          rarity: 5,
+          skills: ["Mechanics", "Lore"],
+          special: "Cumbersome 3; Defensive 1",
+          time: "12 hours"
+      }
+  };
+
   const construct$3 = (templateType) => {
-      // TODO
+      let tmpl = Template$2[templateType] || {};
+      let craftContent = {
+          title: "Lightsaber Construction",
+          flavor: `${tmpl.skills.join(", ")} (${tmpl.difficulty})`,
+          prewide: `Time Required: ${tmpl.time}, -2 hours for each additional success`
+      };
+
+      let itemContent = {
+          title: tmpl.name,
+          Qualities: tmpl.special,
+          "Hands Required": tmpl.hands,
+          Encumbrance: tmpl.encumbrance,
+          "Hard Points": tmpl.hardpoints
+      };
+
+      sendPrivate(SpeakingAs$1, craftContent);
+      sendPrivate(SpeakingAs$1, itemContent);
   };
 
   const display$4 = (templateType) => {
-      // TODO
+      let tmpl = Template$2[templateType] || {};
+      let content = {
+          title: "Lightsaber Construction",
+          flavor: `Current Template: ${tmpl.name || "- None -"}`,
+          "Step 1": "[Select a Hilt](!swrpg-craft-template #CraftHiltTemplate)",
+          "Step 2": `[Acquire Hilt Materials](!swrpg-craft-acquire ${tmpl.rarity} ${tmpl.price} ${Macros.tradeLocation})`,
+          "Step 3": `[Construct Hilt](!swrpg-craft-construct ${templateType})`,
+          "Back to": Macros.craftingMain
+      };
+      sendPrivate(SpeakingAs$1, content);
   };
 
   var Lightsaber = /*#__PURE__*/Object.freeze({
@@ -697,52 +814,52 @@
    */
 
   /* Sender of chat messages */
-  const SpeakingAs$1 = "Mechanics Droid";
+  const SpeakingAs$2 = "Mechanics Droid";
 
   /* Types of vehicle templates which can be crafted */
-  const TemplateType$2 = {
+  const TemplateType$3 = {
       Frame: {
-          BIKE: 31,
-          LANDSPEEDER: 32,
-          AIRSPEEDER: 33,
-          WALKER: 34,
-          STARFIGHTER: 35,
-          TRANSPORT: 36,
-          CORVETTE: 38,
-          PATROL_SHIP: 54,
-          CARRIER: 55,
-          FRIGATE: 39,
-          HEAVY_CRUISER: 40,
-          DESTROYER: 41,
-          SMALL_STATION: 42,
-          MEDIUM_STATION: 56,
-          LARGE_STATION: 57,
-          MASSIVE_STATION: 58,
-          SMALL_MOON: 59
+          BIKE: 30,
+          LANDSPEEDER: 1,
+          AIRSPEEDER: 2,
+          WALKER: 3,
+          STARFIGHTER: 4,
+          TRANSPORT: 5,
+          CORVETTE: 6,
+          PATROL_SHIP: 7,
+          CARRIER: 8,
+          FRIGATE: 9,
+          HEAVY_CRUISER: 10,
+          DESTROYER: 11,
+          SMALL_STATION: 12,
+          MEDIUM_STATION: 13,
+          LARGE_STATION: 14,
+          MASSIVE_STATION: 15,
+          SMALL_MOON: 16
       },
       Engine: {
-          SINGLE_COIL: 43,
-          BAFFLED: 44,
-          ION_TURBINE: 45,
-          FUSIAL: 46,
-          REPULSOR: 47,
-          DRIVE_ARRAY: 48
+          SINGLE_COIL: 17,
+          BAFFLED: 18,
+          ION_TURBINE: 19,
+          FUSIAL: 20,
+          REPULSOR: 21,
+          DRIVE_ARRAY: 22
       },
       Hull: {
-          BASIC: 49,
-          RACE: 50,
-          BULK: 51,
-          TRANSPORT: 52,
-          SCOUT: 53,
-          GUNSHIP: 60,
-          LINE: 61
+          BASIC: 23,
+          RACE: 24,
+          BULK: 25,
+          TRANSPORT: 26,
+          SCOUT: 27,
+          GUNSHIP: 28,
+          LINE: 29
       }
   };
 
   /* Maps a TemplateType to its Template */
-  const Template$2 = {
+  const Template$3 = {
       /** @type {FrameTemplate} */
-      [TemplateType$2.Frame.BIKE]: {
+      [TemplateType$3.Frame.BIKE]: {
           altitude: 15,
           assemblyCost: 1000,
           assemblyCrew: 1,
@@ -766,7 +883,7 @@
           vsl: 5
       },
       /** @type {FrameTemplate} */
-      [TemplateType$2.Frame.LANDSPEEDER]: {
+      [TemplateType$3.Frame.LANDSPEEDER]: {
           altitude: 20,
           assemblyCost: 1000,
           assemblyCrew: 1,
@@ -790,7 +907,7 @@
           vsl: 5
       },
       /** @type {FrameTemplate} */
-      [TemplateType$2.Frame.AIRSPEEDER]: {
+      [TemplateType$3.Frame.AIRSPEEDER]: {
           altitude: 100000,
           assemblyCost: 1000,
           assemblyCrew: 1,
@@ -814,7 +931,7 @@
           vsl: 5
       },
       /** @type {FrameTemplate} */
-      [TemplateType$2.Frame.WALKER]: {
+      [TemplateType$3.Frame.WALKER]: {
           altitude: 0,
           assemblyCost: 10000,
           assemblyCrew: 1,
@@ -838,7 +955,7 @@
           vsl: 10
       },
       /** @type {FrameTemplate} */
-      [TemplateType$2.Frame.STARFIGHTER]: {
+      [TemplateType$3.Frame.STARFIGHTER]: {
           altitude: -1,
           assemblyCost: 10000,
           assemblyCrew: 1,
@@ -862,7 +979,7 @@
           vsl: 10
       },
       /** @type {FrameTemplate} */
-      [TemplateType$2.Frame.TRANSPORT]: {
+      [TemplateType$3.Frame.TRANSPORT]: {
           altitude: -1,
           assemblyCost: 25000,
           assemblyCrew: 5,
@@ -886,7 +1003,7 @@
           vsl: 15
       },
       /** @type {FrameTemplate} */
-      [TemplateType$2.Frame.CORVETTE]: {
+      [TemplateType$3.Frame.CORVETTE]: {
           altitude: -1,
           assemblyCost: 125000,
           assemblyCrew: 100,
@@ -910,7 +1027,7 @@
           vsl: 25
       },
       /** @type {FrameTemplate} */
-      [TemplateType$2.Frame.PATROL_SHIP]: {
+      [TemplateType$3.Frame.PATROL_SHIP]: {
           altitude: -1,
           assemblyCost: 125000,
           assemblyCrew: 100,
@@ -934,7 +1051,7 @@
           vsl: 25
       },
       /** @type {FrameTemplate} */
-      [TemplateType$2.Frame.CARRIER]: {
+      [TemplateType$3.Frame.CARRIER]: {
           altitude: -1,
           assemblyCost: 125000,
           assemblyCrew: 100,
@@ -958,7 +1075,7 @@
           vsl: 35
       },
       /** @type {FrameTemplate} */
-      [TemplateType$2.Frame.FRIGATE]: {
+      [TemplateType$3.Frame.FRIGATE]: {
           altitude: -1,
           assemblyCost: 125000,
           assemblyCrew: 100,
@@ -982,7 +1099,7 @@
           vsl: 35
       },
       /** @type {FrameTemplate} */
-      [TemplateType$2.Frame.HEAVY_CRUISER]: {
+      [TemplateType$3.Frame.HEAVY_CRUISER]: {
           altitude: -1,
           assemblyCost: 1250000,
           assemblyCrew: 5000,
@@ -1006,7 +1123,7 @@
           vsl: 50
       },
       /** @type {FrameTemplate} */
-      [TemplateType$2.Frame.DESTROYER]: {
+      [TemplateType$3.Frame.DESTROYER]: {
           altitude: -1,
           assemblyCost: 1250000,
           assemblyCrew: 5000,
@@ -1030,7 +1147,7 @@
           vsl: 65
       },
       /** @type {FrameTemplate} */
-      [TemplateType$2.Frame.SMALL_STATION]: {
+      [TemplateType$3.Frame.SMALL_STATION]: {
           altitude: -1,
           assemblyCost: 125000,
           assemblyCrew: 100,
@@ -1054,7 +1171,7 @@
           vsl: 35
       },
       /** @type {FrameTemplate} */
-      [TemplateType$2.Frame.MEDIUM_STATION]: {
+      [TemplateType$3.Frame.MEDIUM_STATION]: {
           altitude: -1,
           assemblyCost: 1250000,
           assemblyCrew: 5000,
@@ -1078,7 +1195,7 @@
           vsl: 50
       },
       /** @type {FrameTemplate} */
-      [TemplateType$2.Frame.LARGE_STATION]: {
+      [TemplateType$3.Frame.LARGE_STATION]: {
           altitude: -1,
           assemblyCost: 3250000,
           assemblyCrew: 5000,
@@ -1102,7 +1219,7 @@
           vsl: 65
       },
       /** @type {FrameTemplate} */
-      [TemplateType$2.Frame.MASSIVE_STATION]: {
+      [TemplateType$3.Frame.MASSIVE_STATION]: {
           altitude: -1,
           assemblyCost: 4000000,
           assemblyCrew: 5000,
@@ -1126,7 +1243,7 @@
           vsl: 80
       },
       /** @type {FrameTemplate} */
-      [TemplateType$2.Frame.SMALL_MOON]: {
+      [TemplateType$3.Frame.SMALL_MOON]: {
           altitude: -1,
           assemblyCost: 10000000,
           assemblyCrew: 50000,
@@ -1150,7 +1267,7 @@
           vsl: 100
       },
       /** @type {EngineTemplate} */
-      [TemplateType$2.Engine.SINGLE_COIL]: {
+      [TemplateType$3.Engine.SINGLE_COIL]: {
           defense: "0/0/0/0",
           difficulty: 1,
           hardpoints: 2,
@@ -1163,7 +1280,7 @@
           time: "24 hours"
       },
       /** @type {EngineTemplate} */
-      [TemplateType$2.Engine.BAFFLED]: {
+      [TemplateType$3.Engine.BAFFLED]: {
           defense: "0/0/0/2",
           difficulty: 2,
           hardpoints: 4,
@@ -1176,7 +1293,7 @@
           time: "48 hours"
       },
       /** @type {EngineTemplate} */
-      [TemplateType$2.Engine.ION_TURBINE]: {
+      [TemplateType$3.Engine.ION_TURBINE]: {
           defense: "1/0/0/0",
           difficulty: 2,
           hardpoints: 3,
@@ -1189,7 +1306,7 @@
           time: "48 hours"
       },
       /** @type {EngineTemplate} */
-      [TemplateType$2.Engine.FUSIAL]: {
+      [TemplateType$3.Engine.FUSIAL]: {
           defense: "1/0/0/0",
           difficulty: 3,
           hardpoints: 3,
@@ -1202,7 +1319,7 @@
           time: "60 hours"
       },
       /** @type {EngineTemplate} */
-      [TemplateType$2.Engine.REPULSOR]: {
+      [TemplateType$3.Engine.REPULSOR]: {
           defense: "1/1/1/1",
           difficulty: 3,
           hardpoints: 4,
@@ -1215,7 +1332,7 @@
           time: "120 hours"
       },
       /** @type {EngineTemplate} */
-      [TemplateType$2.Engine.DRIVE_ARRAY]: {
+      [TemplateType$3.Engine.DRIVE_ARRAY]: {
           defense: "0/0/0/0",
           difficulty: 4,
           hardpoints: 4,
@@ -1228,7 +1345,7 @@
           time: "120 hours"
       },
       /** @type {HullTemplate} */
-      [TemplateType$2.Hull.BASIC]: {
+      [TemplateType$3.Hull.BASIC]: {
           armor: 1,
           difficulty: 2,
           handling: -2,
@@ -1244,7 +1361,7 @@
           time: "48*Silhouette hours"
       },
       /** @type {HullTemplate} */
-      [TemplateType$2.Hull.RACE]: {
+      [TemplateType$3.Hull.RACE]: {
           armor: 1,
           difficulty: 2,
           handling: 1,
@@ -1260,7 +1377,7 @@
           time: "48*Silhouette hours"
       },
       /** @type {HullTemplate} */
-      [TemplateType$2.Hull.BULK]: {
+      [TemplateType$3.Hull.BULK]: {
           armor: 1,
           difficulty: 3,
           handling: -4,
@@ -1276,7 +1393,7 @@
           time: "72*Silhouette hours"
       },
       /** @type {HullTemplate} */
-      [TemplateType$2.Hull.TRANSPORT]: {
+      [TemplateType$3.Hull.TRANSPORT]: {
           armor: 1,
           difficulty: 3,
           handling: -2,
@@ -1292,7 +1409,7 @@
           time: "72*Silhouette hours"
       },
       /** @type {HullTemplate} */
-      [TemplateType$2.Hull.SCOUT]: {
+      [TemplateType$3.Hull.SCOUT]: {
           armor: 2,
           difficulty: 3,
           handling: 1,
@@ -1308,7 +1425,7 @@
           time: "72*Silhouette hours"
       },
       /** @type {HullTemplate} */
-      [TemplateType$2.Hull.GUNSHIP]: {
+      [TemplateType$3.Hull.GUNSHIP]: {
           armor: 3,
           difficulty: 4,
           handling: -2,
@@ -1324,7 +1441,7 @@
           time: "96*Silhouette hours"
       },
       /** @type {HullTemplate} */
-      [TemplateType$2.Hull.LINE]: {
+      [TemplateType$3.Hull.LINE]: {
           armor: 5,
           difficulty: 4,
           handling: -2,
@@ -1342,7 +1459,7 @@
   };
 
   const construct$4 = (templateType) => {
-      let tmpl = Template$2[templateType] || {};
+      let tmpl = Template$3[templateType] || {};
       let content = {
           title: "Vehicle Construction",
           subtitle: tmpl.name,
@@ -1350,11 +1467,11 @@
           prewide: `Time Required: ${tmpl.time}, -2xVSL hours for each additional success`,
           Effect: tmpl.special || "None"
       };
-      sendPrivate(SpeakingAs$1, content);
+      sendPrivate(SpeakingAs$2, content);
   };
 
   const display$5 = (templateType) => {
-      let tmpl = Template$2[templateType] || {};
+      let tmpl = Template$3[templateType] || {};
       let content = {
           title: "Vehicle Construction",
           flavor: `Current Template: ${tmpl.name || "- None -"}`,
@@ -1370,11 +1487,11 @@
           "Step 10": `[Assemble Vehicle](!swrpg-craft-assemble ${templateType})`,
           "Back to": Macros.craftingMain
       };
-      sendPrivate(SpeakingAs$1, content);
+      sendPrivate(SpeakingAs$2, content);
   };
 
   const assemble = (templateType) => {
-      let tmpl = Template$2[templateType] || {};
+      let tmpl = Template$3[templateType] || {};
 
       // FIXME This won't work without selecting the Frame template again before Assembling
       let assembleContent = {
@@ -1384,7 +1501,7 @@
           wide: `Crew Required: ${tmpl.assemblyCrew}`,
           wide2: `Supply Cost: ${tmpl.assemblyCost}`
       };
-      sendPrivate(SpeakingAs$1, assembleContent);
+      sendPrivate(SpeakingAs$2, assembleContent);
   };
 
   var Vehicle = /*#__PURE__*/Object.freeze({
@@ -1430,8 +1547,8 @@
   const speakingAs$2 = "Weaponsmith Droid";
 
   /* Types of weapon templates which can be crafted */
-  const TemplateType$3 = {
-      FIST: 0,
+  const TemplateType$4 = {
+      FIST: 16,
       BLUNT: 1,
       SHIELD: 2,
       BLADED: 3,
@@ -1450,9 +1567,9 @@
   };
 
   /* Maps a TemplateType to its Template */
-  const Template$3 = {
+  const Template$4 = {
       /** @type {WeaponTemplate} */
-      [TemplateType$3.FIST]: {
+      [TemplateType$4.FIST]: {
           critical: 4,
           damage: "+1",
           difficulty: 2,
@@ -1470,7 +1587,7 @@
           type: "Brawl"
       },
       /** @type {WeaponTemplate} */
-      [TemplateType$3.BLUNT]: {
+      [TemplateType$4.BLUNT]: {
           critical: 5,
           damage: "+2",
           difficulty: 1,
@@ -1488,7 +1605,7 @@
           type: "Melee"
       },
       /** @type {WeaponTemplate} */
-      [TemplateType$3.SHIELD]: {
+      [TemplateType$4.SHIELD]: {
           critical: 5,
           damage: "+0",
           difficulty: 2,
@@ -1506,7 +1623,7 @@
           type: "Melee"
       },
       /** @type {WeaponTemplate} */
-      [TemplateType$3.BLADED]: {
+      [TemplateType$4.BLADED]: {
           critical: 3,
           damage: "+1",
           difficulty: 2,
@@ -1524,7 +1641,7 @@
           type: "Melee"
       },
       /** @type {WeaponTemplate} */
-      [TemplateType$3.VIBRO]: {
+      [TemplateType$4.VIBRO]: {
           critical: 2,
           damage: "+1",
           difficulty: 3,
@@ -1542,7 +1659,7 @@
           type: "Melee"
       },
       /** @type {WeaponTemplate} */
-      [TemplateType$3.POWERED]: {
+      [TemplateType$4.POWERED]: {
           critical: 3,
           damage: "+2",
           difficulty: 4,
@@ -1560,7 +1677,7 @@
           type: "Melee"
       },
       /** @type {WeaponTemplate} */
-      [TemplateType$3.SIMPLE]: {
+      [TemplateType$4.SIMPLE]: {
           critical: 5,
           damage: 4,
           difficulty: 2,
@@ -1578,7 +1695,7 @@
           type: "Ranged (Light)"
       },
       /** @type {WeaponTemplate} */
-      [TemplateType$3.SOLID_PISTOL]: {
+      [TemplateType$4.SOLID_PISTOL]: {
           critical: 5,
           damage: 4,
           difficulty: 2,
@@ -1596,7 +1713,7 @@
           type: "Ranged (Light)"
       },
       /** @type {WeaponTemplate} */
-      [TemplateType$3.SOLID_RIFLE]: {
+      [TemplateType$4.SOLID_RIFLE]: {
           critical: 5,
           damage: 7,
           difficulty: 3,
@@ -1614,7 +1731,7 @@
           type: "Ranged (Heavy)"
       },
       /** @type {WeaponTemplate} */
-      [TemplateType$3.ENERGY_PISTOL]: {
+      [TemplateType$4.ENERGY_PISTOL]: {
           critical: 3,
           damage: 6,
           difficulty: 3,
@@ -1632,7 +1749,7 @@
           type: "Ranged (Light)"
       },
       /** @type {WeaponTemplate} */
-      [TemplateType$3.ENERGY_RIFLE]: {
+      [TemplateType$4.ENERGY_RIFLE]: {
           critical: 3,
           damage: 9,
           difficulty: 3,
@@ -1650,7 +1767,7 @@
           type: "Ranged (Heavy)"
       },
       /** @type {WeaponTemplate} */
-      [TemplateType$3.HEAVY_RIFLE]: {
+      [TemplateType$4.HEAVY_RIFLE]: {
           critical: 3,
           damage: 10,
           difficulty: 4,
@@ -1668,7 +1785,7 @@
           type: "Gunnery"
       },
       /** @type {WeaponTemplate} */
-      [TemplateType$3.LAUNCHER]: {
+      [TemplateType$4.LAUNCHER]: {
           critical: 0,
           damage: 0,
           difficulty: 4,
@@ -1686,7 +1803,7 @@
           type: "Gunnery"
       },
       /** @type {WeaponTemplate} */
-      [TemplateType$3.MISSILE]: {
+      [TemplateType$4.MISSILE]: {
           critical: 2,
           damage: 20,
           difficulty: 3,
@@ -1704,7 +1821,7 @@
           type: "Gunnery"
       },
       /** @type {WeaponTemplate} */
-      [TemplateType$3.GRENADE]: {
+      [TemplateType$4.GRENADE]: {
           critical: 4,
           damage: 8,
           difficulty: 3,
@@ -1722,7 +1839,7 @@
           type: "Ranged (Light)"
       },
       /** @type {WeaponTemplate} */
-      [TemplateType$3.MINE]: {
+      [TemplateType$4.MINE]: {
           critical: 3,
           damage: 12,
           difficulty: 3,
@@ -1742,10 +1859,7 @@
   };
 
   const construct$5 = (templateType) => {
-      let tmpl = Template$3[templateType];
-      if (!tmpl) {
-          return;
-      }
+      let tmpl = Template$4[templateType] || {};
       let craftContent = {
           title: "Weapon Construction",
           flavor: `${tmpl.skills.join(", ")} (${tmpl.difficulty})`,
@@ -1769,10 +1883,7 @@
   };
 
   const display$6 = (templateType) => {
-      let tmpl = Template$3[templateType];
-      if (!tmpl) {
-          return;
-      }
+      let tmpl = Template$4[templateType] || {};
       let content = {
           title: "Weapon Construction",
           flavor: `Current Template: ${tmpl.name || "- None -"}`,

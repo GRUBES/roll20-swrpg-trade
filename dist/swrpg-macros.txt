@@ -1,8 +1,17 @@
+UTILITIES:
+
+// #PartyLocation
+/w gm @{-DicePool|grouplocation}
+
+REPAIR MODULE:
+
 // #RepairCondition
 ?{Condition|New, 0|Minor, 1|Moderate, 2|Major, 3}
 
 // #RepairItem
 !swrpg-repair #RepairCondition ?{Base Price}
+
+TRADE MODULE:
 
 // #TradeItem
 !swrpg-trade #TradeRarity #TradeLocation #TradeProximity #TradePopulation ?{Base Price|0}
@@ -18,6 +27,8 @@
 
 // #TradeRarity
 ?{Rarity|0|1|2|3|4|5|6|7|8|9|10}
+
+CONTACT NETWORK MODULE:
 
 // #ContactScope
 ?{Scope|Individual, 0|Small Group, 1|Planet, 2|System, 3|Sector, 4|Vast, 5}
@@ -37,40 +48,33 @@
 // #ContactInvestigate
 !swrpg-contact #ContactScope #ContactExpertise #ContactObscurity #ContactReputation #ContactRelevance
 
-// #PartyLocation
-/w gm @{-DicePool|grouplocation}
-
-// #CraftAcquire
-!swrpg-craft-acquire #CraftTemplate #TradeRegion #TradeProximity #TradePopulation
+CRAFTING MODULE:
 
 // #CraftDirectiveTemplate
-?{Select a Directive|Labor, 24|Combat, 25|Translation, 26|Repair, 27|Navigation, 28|Healing, 29|Elimination, 30}
+?{Select a Directive|Labor, 6|Combat, 7|Translation, 8|Repair, 9|Navigation, 10|Healing, 11|Elimination, 12}
 
 // #CraftDroidTemplate
-?{Select a Chassis|Monotask, 19|Labor, 20|Combat, 21|Specialist, 22|Advanced Combat, 23}
-
-// #CraftGadgetTemplate
-?{Select a Template|Simple Tool, 16|Specialist Tool, 17|Precision Tool, 18}
-
-// #CraftTemplate
-?{Select a Template|[W] Fist, 0|[W] Blunt, 1|[W] Shield, 2|[W] Bladed, 3|[W] Vibro, 4|[W] Powered, 5|
-    [W] Simple Projectile, 6|[W] Projectile Pistol, 7|[W] Projectile Rifle, 8|[W] Energy Pistol, 9|[W] Energy Rifle, 10|
-    [W] Heavy Rifle, 11|[W] Launcher, 12|[W] Missile, 13|[W] Grenade, 14|[W] Mine, 15|[G] Simple Tool, 16|
-    [G] Specialist Tool, 17|[G] Precision Tool, 18}
-
-// #CraftWeaponTemplate
-?{Select a Template|Fist Weapon, 0|Blunt Weapon, 1|Shield, 2|Bladed Weapon, 3|Vibro Weapon, 4|Powered Weapon, 5|
-    Simple Projectile, 6|Projectile Pistol, 7|Projectile Rifle, 8|Energy Pistol, 9|Energy Rifle, 10|Heavy Rifle, 11|
-    Launcher, 12|Missile, 13|Grenade, 14|Mine, 15}
+?{Select a Chassis|Monotask, 1|Labor, 2|Combat, 3|Specialist, 4|Advanced Combat, 5}
 
 // #CraftEngineTemplate
-?{Select an Engine|Single Ion Coil, 43|Electron Baffled, 44|Ion Turbine, 45|Fusial Thrust, 46|Repulsor Cluster, 47|
-    Ion Drive Array, 48}
+?{Select an Engine|Single Ion Coil, 17|Electron Baffled, 18|Ion Turbine, 19|Fusial Thrust, 20|Repulsor Cluster, 21|
+    Ion Drive Array, 22}
 
 // #CraftFrameTemplate
-?{Select a Frame|Speeder Bike, 31|Landspeeder, 32|Airspeeder, 33|Walker, 34|Starfighter, 35|Transport, 36|
-    Corvette, 38|Patrol Ship, 54|Carrier, 55|Frigate, 39|Heavy Cruiser, 40|Destroyer, 41|Small Station, 42|
-    Medium Station, 56|Large Station, 57|Massive Station, 58|Small Moon, 59}
+?{Select a Frame|Speeder Bike, 30|Landspeeder, 1|Airspeeder, 2|Walker, 3|Starfighter, 4|Transport, 5|
+    Corvette, 6|Patrol Ship, 7|Carrier, 8|Frigate, 9|Heavy Cruiser, 10|Destroyer, 11|Small Station, 12|
+    Medium Station, 13|Large Station, 14|Massive Station, 15|Small Moon, 16}
+
+// #CraftGadgetTemplate
+?{Select a Template|Simple Tool, 1|Specialist Tool, 2|Precision Tool, 3}
+
+// #CraftHiltTemplate
+?{Select a Hilt|Standard Hilt, 1|Precision Hilt, 2|Defensive Hilt, 3|Double-bladed Hilt, 4|Pole Hilt, 5}
 
 // #CraftHullTemplate
-?{Select a Hull|Basic, 49|Race Ship, 50|Bulk Freighter, 51|Transport, 52|Scout, 53|Gunship, 60|Ship of the Line, 61}
+?{Select a Hull|Basic, 23|Race Ship, 24|Bulk Freighter, 25|Transport, 26|Scout, 27|Gunship, 28|Ship of the Line, 29}
+
+// #CraftWeaponTemplate
+?{Select a Template|Fist Weapon, 16|Blunt Weapon, 1|Shield, 2|Bladed Weapon, 3|Vibro Weapon, 4|Powered Weapon, 5|
+    Simple Projectile, 6|Projectile Pistol, 7|Projectile Rifle, 8|Energy Pistol, 9|Energy Rifle, 10|Heavy Rifle, 11|
+    Launcher, 12|Missile, 13|Grenade, 14|Mine, 15}

@@ -52,20 +52,20 @@ const speakingAs = "Droid Mechanic";
 /* Types of droid templates which can be crafted */
 const TemplateType = {
     Droid: {
-        MONOTASK: 19,
-        LABOR: 20,
-        COMBAT: 21,
-        SPECIALIST: 22,
-        ADVANCED_COMBAT: 23
+        MONOTASK: 1,
+        LABOR: 2,
+        COMBAT: 3,
+        SPECIALIST: 4,
+        ADVANCED_COMBAT: 5
     },
     Directive: {
-        LABOR: 24,
-        COMBAT: 25,
-        TRANSLATION: 26,
-        REPAIR: 27,
-        NAVIGATION: 28,
-        HEALING: 29,
-        ELIMINATION: 30
+        LABOR: 6,
+        COMBAT: 7,
+        TRANSLATION: 8,
+        REPAIR: 9,
+        NAVIGATION: 10,
+        HEALING: 11,
+        ELIMINATION: 12
     }
 };
 
@@ -254,10 +254,7 @@ const construct = (templateType) => {
 };
 
 const display = (templateType) => {
-    let tmpl = Template[templateType];
-    if (!tmpl) {
-        return;
-    }
+    let tmpl = Template[templateType] || {};
     let content = {
         title: "Droid Construction",
         flavor: `Current Chassis/Directive: ${tmpl.name || "- None -"}`,
@@ -271,10 +268,7 @@ const display = (templateType) => {
 };
 
 const program = (templateType) => {
-    let tmpl = Template[templateType];
-    if (!tmpl) {
-        return;
-    }
+    let tmpl = Template[templateType] || {};
     let content = {
         title: "Droid Directive Programming",
         subtitle: tmpl.name,
