@@ -9,6 +9,7 @@
  */
 
 import * as Armor from "./armor";
+import * as Cybernetic from "./cybernetic";
 import * as Droid from "./droid";
 import * as Gadget from "./gadget";
 import * as Lightsaber from "./lightsaber";
@@ -19,7 +20,7 @@ import { sendPrivate } from "../util/chat";
 import { CraftingMode, Macros } from "../util/enums";
 
 /* Sender of chat messages */
-const speakingAs = "Crafting Droid";
+const SpeakingAs = "Crafting Droid";
 
 // Maps a Mode to its Module
 const ModeToModule = {
@@ -28,7 +29,8 @@ const ModeToModule = {
     [CraftingMode.GADGET]: Gadget,
     [CraftingMode.LIGHTSABER]: Lightsaber,
     [CraftingMode.VEHICLE]: Vehicle,
-    [CraftingMode.WEAPON]: Weapon
+    [CraftingMode.WEAPON]: Weapon,
+    [CraftingMode.CYBERNETIC]: Cybernetic
 };
 
 /**
@@ -38,7 +40,6 @@ const ModeToModule = {
 let currentMode;
 const setMode = (m) => {
     currentMode = m;
-    log(`[SWRPG] ${JSON.stringify(ModeToModule)}`);
     ModeToModule[currentMode] ? ModeToModule[currentMode].display(currentTemplate) : display();
 };
 
@@ -61,7 +62,7 @@ const acquire = (rarity, basePrice, region, tradeProximity, population) => {
         Difficulty: diff,
         "Purchase Price": buy
     };
-    sendPrivate(speakingAs, content);
+    sendPrivate(SpeakingAs, content);
 };
 
 // Step 3: Construct
@@ -79,9 +80,10 @@ const display = () => {
         title: "Crafting Station",
         wide: `${Macros.craftArmor} ${Macros.craftDroid}`,
         wide2: `${Macros.craftGadget} ${Macros.craftLightsaber}`,
-        wide3: `${Macros.craftVehicle} ${Macros.craftWeapon}`
+        wide3: `${Macros.craftVehicle} ${Macros.craftWeapon}`,
+        wide4: `${Macros.craftCybernetic}`,
     };
-    sendPrivate(speakingAs, content);
+    sendPrivate(SpeakingAs, content);
 };
 
 // local exports
