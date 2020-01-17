@@ -38,7 +38,6 @@ const ModeToModule = {
 let currentMode;
 const setMode = (m) => {
     currentMode = m;
-    log(`[SWRPG] ${JSON.stringify(ModeToModule)}`);
     ModeToModule[currentMode] ? ModeToModule[currentMode].display(currentTemplate) : display();
 };
 
