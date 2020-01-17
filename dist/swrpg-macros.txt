@@ -50,6 +50,9 @@ CONTACT NETWORK MODULE:
 
 CRAFTING MODULE:
 
+// #CraftCyberneticTemplate
+?{Select a Cybernetic|Prosthetic Replacement, 1|Cybernetic Appendage, 2|Cybernetic Implant, 3}
+
 // #CraftDirectiveTemplate
 ?{Select a Directive|Labor, 6|Combat, 7|Translation, 8|Repair, 9|Navigation, 10|Healing, 11|Elimination, 12}
 
