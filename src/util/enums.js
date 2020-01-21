@@ -26,6 +26,7 @@ export const CraftingMode = {
 // Dice graphics
 const difficulty = displayDice(eote.defaults.graphics.SymbolicReplacement.difficulty);
 export const Dice = {
+    Boost: displayDice(eote.defaults.graphics.SymbolicReplacement.boost),
     Difficulty: {
         SIMPLE: " - ",
         EASY: difficulty(1),
