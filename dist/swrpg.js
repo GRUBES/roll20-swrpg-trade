@@ -152,6 +152,11 @@
       CYBERNETIC: 6
   };
 
+  // HTML Entities
+  const Entities = {
+      ASTERISK: "&#42;"
+  };
+
   // Commonly referenced macros
   const Macros = {
       tradeLocation: "#TradeLocation #TradeProximity #TradePopulation",
@@ -2446,6 +2451,64 @@
   const cost = (condition, basePrice) => basePrice * CostModifier[condition];
 
   /**
+   * Core logic for slicing encounters
+   *
+   * @module swrpg/slice/core
+   *
+   * @author Draico Dorath
+   * @copyright 2020
+   * @license MIT
+   */
+
+  /* Sender of chat messages */
+  const SpeakingAs$6 = "H4-x0r";
+
+  /* Tracks number of security programs currently running */
+  let SecurityPrograms = 0;
+  const decreaseSecurity = () => {
+      SecurityPrograms = Math.max(SecurityPrograms-1, 0);
+      display$b();
+  };
+  const increaseSecurity = () => {
+      SecurityPrograms++;
+      display$b();
+  };
+  const resetSecurity = () => {
+      SecurityPrograms = 0;
+      display$b();
+  };
+
+  const access = () => {
+      let content = {
+          title: "Access Difficulties",
+          "Unsecured or Access Known": "Simple (-)",
+          "Cantina Terminal, Datapad": "Easy (1p)",
+          "Common Vehicle Computer": "Average (2p)",
+          "Local HoloNet, Military Base, Starship Network": "Hard (3p)",
+          "Regional HoloNet, Imperial Datavault": "Daunting (4p)",
+          "Ancient Archive": "Formidable (5p)",
+          wide: "System Admin with Defensive Slicing adds 1blk per Rank",
+          wide2: "System Admin with Improved Defensive Slicing upgrades difficulty per Rank"
+      };
+      sendPrivate(SpeakingAs$6, content);
+  };
+
+  const display$b = () => {
+      let content = {
+          title: "Slicing Encounter",
+          flavor: "Actions with * may only be executed by an Intruder when no Security Programs are active.",
+          prewide: `Active Security Programs: ${SecurityPrograms}
+            [Increase](!swrpg-slice-increase-security) [Decrease](!swrpg-slice-decrease-security) [Reset](!swrpg-slice-reset-security)`,
+          wide: "[Access System](!swrpg-slice-access)",
+          wide2: "[Activate Security Program](!swrpg-slice-activate) " +
+              "[Disable Security Program](!swrpg-slice-disable)",
+          wide3: `[${Entities.ASTERISK}Enact Command](!swrpg-slice-enact-ui) [${Entities.ASTERISK}Expel User](!swrpg-slice-expel-ui)`,
+          wide4: `[${Entities.ASTERISK}Lockdown](!swrpg-slice-lockdown) [${Entities.ASTERISK}Trace User](!swrpg-slice-trace)`
+      };
+      sendPrivate(SpeakingAs$6, content);
+  };
+
+  /**
    * Entry point module for the Galactic Economy system
    *
    * @module swrpg/trade/api
@@ -2548,6 +2611,13 @@
           "craft-template": setTemplate,
           "craft-ui": display$9,
           "repair": display$a,
+          "slice-access": access,
+          // "slice-activate-security": Slice.activateSecurity,
+          "slice-decrease-security": decreaseSecurity,
+          // "slice-disable-security": Slice.disableSecurity,
+          "slice-increase-security": increaseSecurity,
+          "slice-reset-security": resetSecurity,
+          "slice-ui": display$b,
           "trade": display$8
       };
 

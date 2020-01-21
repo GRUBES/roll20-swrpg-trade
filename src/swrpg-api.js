@@ -12,6 +12,7 @@ import { version } from "../package.json";
 import * as Contact from "./contacts/contacts";
 import * as Craft from "./crafting/craft";
 import * as Repair from "./repair/repair";
+import * as Slice from "./slicing/slice";
 import * as Trade from "./trade/trade";
 import { program } from "./crafting/droid";
 import { assemble } from "./crafting/vehicle";
@@ -109,6 +110,13 @@ function execute(command, input) {
         "craft-template": Craft.template,
         "craft-ui": Craft.main,
         "repair": Repair.item,
+        "slice-access": Slice.access,
+        // "slice-activate-security": Slice.activateSecurity,
+        "slice-decrease-security": Slice.decreaseSecurity,
+        // "slice-disable-security": Slice.disableSecurity,
+        "slice-increase-security": Slice.increaseSecurity,
+        "slice-reset-security": Slice.resetSecurity,
+        "slice-ui": Slice.main,
         "trade": Trade.item
     };
 

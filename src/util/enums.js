@@ -19,6 +19,11 @@ export const CraftingMode = {
     CYBERNETIC: 6
 };
 
+// HTML Entities
+export const Entities = {
+    ASTERISK: "&#42;"
+};
+
 // Commonly referenced macros
 export const Macros = {
     tradeLocation: "#TradeLocation #TradeProximity #TradePopulation",
