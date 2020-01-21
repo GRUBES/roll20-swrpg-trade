@@ -9,7 +9,7 @@
  */
 
 import {sendPrivate} from "../util/chat";
-import {Macros} from "../util/enums";
+import {Dice, DifficultyToDice, Macros} from "../util/enums";
 
 /**
  * Crafting template for a cybernetic device
@@ -78,14 +78,14 @@ const construct = (templateType) => {
     let craftContent = {
         title: "Cybernetic Construction",
         subtitle: tmpl.name,
-        flavor: `${tmpl.skills.join(", ")} (${tmpl.difficulty})`,
+        flavor: `${tmpl.skills.join(", ")} (${DifficultyToDice[tmpl.difficulty]})`,
         prewide: `Time Required: ${tmpl.time}, -2 hours for each additional success`,
         Effect: tmpl.special
     };
 
     let installContent = {
         title: "Cybernetic Installation",
-        flavor: "Medicine (3)",
+        flavor: `Medicine (${Dice.Difficulty.HARD})`,
         prewide: "Time Required: 6 hours",
         wide: "Increase Difficulty twice if installing on self",
         wide2: "Failure: Cybernetic is not installed, suffers minor damage",

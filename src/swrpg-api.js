@@ -128,4 +128,6 @@ function execute(command, input) {
 }
 
 on("chat:message", route);
-on("ready", () => log(`[SWRPG] v${version} loaded.`));
+on("ready", () => {
+    log(`[SWRPG] v${version} loaded.`);
+});

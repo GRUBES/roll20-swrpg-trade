@@ -8,7 +8,7 @@
  * @license MIT
  */
 
-import {Macros, CraftingMode} from "../util/enums";
+import {CraftingMode, DifficultyToDice, Macros} from "../util/enums";
 import {sendPrivate} from "../util/chat";
 
 /**
@@ -84,7 +84,7 @@ const construct = (templateType) => {
     let content = {
         title: "Gadget Construction",
         subtitle: tmpl.name,
-        flavor: `${tmpl.skills.join(", ")} (${tmpl.difficulty})`,
+        flavor: `${tmpl.skills.join(", ")} (${DifficultyToDice[tmpl.difficulty]})`,
         prewide: `Time Required: ${tmpl.time}, -2 hours for each additional success`,
         Effect: tmpl.special,
         Encumbrance: tmpl.encumbrance

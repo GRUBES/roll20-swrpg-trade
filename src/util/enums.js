@@ -8,6 +8,10 @@
  * @license MIT
  */
 
+// Utilities for displaying dice
+const replacer = function () { return this["replacer"]; };
+const displayDice = (s) => (n) => _.times(n, replacer, s).join("");
+
 export const CraftingMode = {
     NONE: -1,
     ARMOR: 0,
@@ -18,6 +22,29 @@ export const CraftingMode = {
     LIGHTSABER: 5,
     CYBERNETIC: 6
 };
+
+// Dice graphics
+const difficulty = displayDice(eote.defaults.graphics.SymbolicReplacement.difficulty);
+export const Dice = {
+    Difficulty: {
+        SIMPLE: " - ",
+        EASY: difficulty(1),
+        AVERAGE: difficulty(2),
+        HARD: difficulty(3),
+        DAUNTING: difficulty(4),
+        FORMIDABLE: difficulty(5)
+    },
+    Setback: displayDice(eote.defaults.graphics.SymbolicReplacement.setback)
+};
+
+export const DifficultyToDice = [
+    Dice.Difficulty.SIMPLE,
+    Dice.Difficulty.EASY,
+    Dice.Difficulty.AVERAGE,
+    Dice.Difficulty.HARD,
+    Dice.Difficulty.DAUNTING,
+    Dice.Difficulty.FORMIDABLE
+];
 
 // HTML Entities
 export const Entities = {

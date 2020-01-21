@@ -8,7 +8,7 @@
  * @license MIT
  */
 
-import {Entities} from "../util/enums";
+import {Dice, Macros} from "../util/enums";
 import {sendPrivate} from "../util/chat";
 
 /* Sender of chat messages */
@@ -32,14 +32,13 @@ const resetSecurity = () => {
 const access = () => {
     let content = {
         title: "Access Difficulties",
-        "Unsecured or Access Known": "Simple (-)",
-        "Cantina Terminal, Datapad": "Easy (1p)",
-        "Common Vehicle Computer": "Average (2p)",
-        "Local HoloNet, Military Base, Starship Network": "Hard (3p)",
-        "Regional HoloNet, Imperial Datavault": "Daunting (4p)",
-        "Ancient Archive": "Formidable (5p)",
-        wide: "System Admin with Defensive Slicing adds 1blk per Rank",
-        wide2: "System Admin with Improved Defensive Slicing upgrades difficulty per Rank"
+        wide: `*Cantina Terminal, Datapad*: ${Dice.Difficulty.EASY}`,
+        wide2: `*Common Vehicle Computer*: ${Dice.Difficulty.AVERAGE}`,
+        wide3: `*Local HoloNet, Military system*: ${Dice.Difficulty.HARD}`,
+        wide4: `*Regional HoloNet, Imperial Datavault*: ${Dice.Difficulty.DAUNTING}`,
+        wide5: `*Ancient Archive*: ${Dice.Difficulty.FORMIDABLE}`,
+        prewide: `**Defensive Slicing** adds ${Dice.Setback(1)} per Rank
+            **Improved Defensive Slicing** upgrades difficulty per Rank`
     };
     sendPrivate(SpeakingAs, content);
 };
@@ -47,21 +46,24 @@ const access = () => {
 const activateSecurity = () => {
     let content = {
         title: "Activate a Security Program",
-        flavor: "Computers (2p)"
+        flavor: `Computers (${Dice.Difficulty.AVERAGE})`
     };
     sendPrivate(SpeakingAs, content);
 };
+
+// Disabling a Security Program has same difficulties as System Access check
+const disableSecurity = access;
 
 const display = () => {
     let content = {
         title: "Slicing Encounter",
         flavor: "Actions with * may only be executed by an Intruder when no Security Programs are active.",
-        prewide: `Active Security Programs: ${SecurityPrograms}
-              ${enums.Macros.sliceIncrease} ${enums.Macros.sliceDecrease} ${enums.Macros.sliceReset}`,
-        wide: enums.Macros.sliceAccess,
-        wide2: `${enums.Macros.sliceActivate} ${enums.Macros.sliceDisable}`,
-        wide3: `${enums.Macros.sliceEnact} ${enums.Macros.sliceLockdown}`,
-        wide4: `${enums.Macros.sliceExpel} ${enums.Macros.sliceTrace}`
+        prewide: `*Active Security Programs: ${SecurityPrograms}*
+              ${Macros.sliceIncrease} ${Macros.sliceDecrease} ${Macros.sliceReset}`,
+        wide: Macros.sliceAccess,
+        wide2: `${Macros.sliceActivate} ${Macros.sliceDisable}`,
+        wide3: `${Macros.sliceEnact} ${Macros.sliceLockdown}`,
+        wide4: `${Macros.sliceExpel} ${Macros.sliceTrace}`
     };
     sendPrivate(SpeakingAs, content);
 };
