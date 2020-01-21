@@ -34,5 +34,15 @@ export const Macros = {
     craftGadget: `[Create Gadget](!swrpg-craft-mode ${CraftingMode.GADGET})`,
     craftLightsaber: `[Create Lightsaber](!swrpg-craft-mode ${CraftingMode.LIGHTSABER})`,
     craftVehicle: `[Create Vehicle](!swrpg-craft-mode ${CraftingMode.VEHICLE})`,
-    craftWeapon: `[Create Weapon](!swrpg-craft-mode ${CraftingMode.WEAPON})`
+    craftWeapon: `[Create Weapon](!swrpg-craft-mode ${CraftingMode.WEAPON})`,
+    sliceAccess: "[Access System](!swrpg-slice-access)",
+    sliceActivate: "[Activate Security](!swrpg-slice-activate)",
+    sliceDisable: "[Disable Security](!swrpg-slice-disable)",
+    sliceDecrease: "[*Decrease*](!swrpg-slice-security-dec)",
+    sliceEnact: `[${Entities.ASTERISK}Enact Command](!swrpg-slice-enact-ui)`,
+    sliceExpel: `[${Entities.ASTERISK}Expel User](!swrpg-slice-expel-ui)`,
+    sliceIncrease: "[*Increase*](!swrpg-slice-security-inc)",
+    sliceLockdown: `[${Entities.ASTERISK}Lockdown](!swrpg-slice-lockdown)`,
+    sliceReset: "[*Reset*](!swrpg-slice-security-reset)",
+    sliceTrace: `[${Entities.ASTERISK}Trace User](!swrpg-slice-trace)`
 };

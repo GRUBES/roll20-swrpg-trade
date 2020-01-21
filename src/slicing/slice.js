@@ -44,22 +44,31 @@ const access = () => {
     sendPrivate(SpeakingAs, content);
 };
 
+const activateSecurity = () => {
+    let content = {
+        title: "Activate a Security Program",
+        flavor: "Computers (2p)"
+    };
+    sendPrivate(SpeakingAs, content);
+};
+
 const display = () => {
     let content = {
         title: "Slicing Encounter",
         flavor: "Actions with * may only be executed by an Intruder when no Security Programs are active.",
         prewide: `Active Security Programs: ${SecurityPrograms}
-            [Increase](!swrpg-slice-increase-security) [Decrease](!swrpg-slice-decrease-security) [Reset](!swrpg-slice-reset-security)`,
-        wide: "[Access System](!swrpg-slice-access)",
-        wide2: "[Activate Security](!swrpg-slice-activate) [Disable Security](!swrpg-slice-disable)",
-        wide3: `[${Entities.ASTERISK}Enact Command](!swrpg-slice-enact-ui) [${Entities.ASTERISK}Lockdown](!swrpg-slice-lockdown)`,
-        wide4: `[${Entities.ASTERISK}Expel User](!swrpg-slice-expel-ui) [${Entities.ASTERISK}Trace User](!swrpg-slice-trace)`
+              ${enums.Macros.sliceIncrease} ${enums.Macros.sliceDecrease} ${enums.Macros.sliceReset}`,
+        wide: enums.Macros.sliceAccess,
+        wide2: `${enums.Macros.sliceActivate} ${enums.Macros.sliceDisable}`,
+        wide3: `${enums.Macros.sliceEnact} ${enums.Macros.sliceLockdown}`,
+        wide4: `${enums.Macros.sliceExpel} ${enums.Macros.sliceTrace}`
     };
     sendPrivate(SpeakingAs, content);
 };
 
 export {
     access,
+    activateSecurity,
     /**
      * Decrease the number of active Security Programs in the current system
      *
@@ -68,6 +77,7 @@ export {
      * @function
      */
     decreaseSecurity,
+    disableSecurity,
     /**
      * Display the primary Slicing UI in chat
      *

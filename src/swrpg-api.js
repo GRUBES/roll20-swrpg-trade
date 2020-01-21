@@ -111,11 +111,11 @@ function execute(command, input) {
         "craft-ui": Craft.main,
         "repair": Repair.item,
         "slice-access": Slice.access,
-        // "slice-activate-security": Slice.activateSecurity,
-        "slice-decrease-security": Slice.decreaseSecurity,
-        // "slice-disable-security": Slice.disableSecurity,
-        "slice-increase-security": Slice.increaseSecurity,
-        "slice-reset-security": Slice.resetSecurity,
+        "slice-activate": Slice.activateSecurity,
+        "slice-disable": Slice.disableSecurity,
+        "slice-security-dec": Slice.decreaseSecurity,
+        "slice-security-inc": Slice.increaseSecurity,
+        "slice-security-reset": Slice.resetSecurity,
         "slice-ui": Slice.main,
         "trade": Trade.item
     };
