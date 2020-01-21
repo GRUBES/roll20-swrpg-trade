@@ -159,6 +159,7 @@
   // Dice graphics
   const difficulty$1 = displayDice(eote.defaults.graphics.SymbolicReplacement.difficulty);
   const Dice = {
+      Boost: displayDice(eote.defaults.graphics.SymbolicReplacement.boost),
       Difficulty: {
           SIMPLE: " - ",
           EASY: difficulty$1(1),
@@ -199,11 +200,12 @@
       sliceActivate: "[Activate Security](!swrpg-slice-activate)",
       sliceDisable: "[Disable Security](!swrpg-slice-disable)",
       sliceDecrease: "[*Decrease*](!swrpg-slice-security-dec)",
-      sliceEnact: `[${Entities.ASTERISK}Enact Command](!swrpg-slice-enact-ui)`,
-      sliceExpel: `[${Entities.ASTERISK}Expel User](!swrpg-slice-expel-ui)`,
+      sliceEnact: `[${Entities.ASTERISK}Enact Command](!swrpg-slice-enact)`,
+      sliceExpel: `[${Entities.ASTERISK}Expel User](!swrpg-slice-expel)`,
       sliceIncrease: "[*Increase*](!swrpg-slice-security-inc)",
       sliceLockdown: `[${Entities.ASTERISK}Lockdown](!swrpg-slice-lockdown)`,
       sliceReset: "[*Reset*](!swrpg-slice-security-reset)",
+      sliceRestart: "[Restart System](!swrpg-slice-restart)",
       sliceTrace: `[${Entities.ASTERISK}Trace User](!swrpg-slice-trace)`
   };
 
@@ -2518,13 +2520,14 @@
   const access = () => {
       let content = {
           title: "Access Difficulties",
+          flavor: "Computers (INT)",
+          prewide: `**Defensive Slicing** adds ${Dice.Setback(1)} per Rank
+            **Improved Defensive Slicing** upgrades difficulty per Rank`,
           wide: `*Cantina Terminal, Datapad*: ${Dice.Difficulty.EASY}`,
           wide2: `*Common Vehicle Computer*: ${Dice.Difficulty.AVERAGE}`,
           wide3: `*Local HoloNet, Military system*: ${Dice.Difficulty.HARD}`,
           wide4: `*Regional HoloNet, Imperial Datavault*: ${Dice.Difficulty.DAUNTING}`,
-          wide5: `*Ancient Archive*: ${Dice.Difficulty.FORMIDABLE}`,
-          prewide: `**Defensive Slicing** adds ${Dice.Setback(1)} per Rank
-            **Improved Defensive Slicing** upgrades difficulty per Rank`
+          wide5: `*Ancient Archive*: ${Dice.Difficulty.FORMIDABLE}`
       };
       sendPrivate(SpeakingAs$6, content);
   };
@@ -2550,6 +2553,48 @@
           wide2: `${Macros.sliceActivate} ${Macros.sliceDisable}`,
           wide3: `${Macros.sliceEnact} ${Macros.sliceLockdown}`,
           wide4: `${Macros.sliceExpel} ${Macros.sliceTrace}`
+      };
+      sendPrivate(SpeakingAs$6, content);
+  };
+
+  const expel = () => {
+      let content = {
+          title: "Expel User",
+          flavor: "Opposed Computers (INT)",
+          prewide: `Add ${Dice.Boost} per known signature fragment`,
+          wide: "If expelled, upgrade the difficulty of further Access System checks by two"
+      };
+      sendPrivate(SpeakingAs$6, content);
+  };
+
+  const lockdown = () => {
+      let content = {
+          title: "Lockdown",
+          flavor: `Computers (${Dice.Difficulty.HARD})`,
+          wide: "Character must have physical access to restart the system"
+      };
+      sendPrivate(SpeakingAs$6, content);
+  };
+
+  const restart = () => {
+      let content = {
+          title: "Restart System",
+          flavor: `Computers (${Dice.Difficulty.AVERAGE})`,
+          wide: "Must have physical access",
+          wide2: "Takes one hour"
+      };
+      sendPrivate(SpeakingAs$6, content);
+  };
+
+  const trace = () => {
+      let content = {
+          title: "Trace User",
+          flavor: "Opposed Computers (INT)",
+          prewide: `Add ${Dice.Boost} per known signature fragment`,
+          header: "On Success, learn one of:",
+          wide: "Target's physical location",
+          wide2: "Portion of slicer's signature",
+          wide3: "Full list of actions target has taken in system this encounter"
       };
       sendPrivate(SpeakingAs$6, content);
   };
@@ -2660,9 +2705,14 @@
           "slice-access": access,
           "slice-activate": activateSecurity,
           "slice-disable": disableSecurity,
+          // "slice-enact": Slice.enact,
+          "slice-expel": expel,
+          "slice-lockdown": lockdown,
+          "slice-restart": restart,
           "slice-security-dec": decreaseSecurity,
           "slice-security-inc": increaseSecurity,
           "slice-security-reset": resetSecurity,
+          "slice-trace": trace,
           "slice-ui": display$b,
           "trade": display$8
       };

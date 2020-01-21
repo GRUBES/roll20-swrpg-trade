@@ -32,13 +32,14 @@ const resetSecurity = () => {
 const access = () => {
     let content = {
         title: "Access Difficulties",
+        flavor: "Computers (INT)",
+        prewide: `**Defensive Slicing** adds ${Dice.Setback(1)} per Rank
+            **Improved Defensive Slicing** upgrades difficulty per Rank`,
         wide: `*Cantina Terminal, Datapad*: ${Dice.Difficulty.EASY}`,
         wide2: `*Common Vehicle Computer*: ${Dice.Difficulty.AVERAGE}`,
         wide3: `*Local HoloNet, Military system*: ${Dice.Difficulty.HARD}`,
         wide4: `*Regional HoloNet, Imperial Datavault*: ${Dice.Difficulty.DAUNTING}`,
-        wide5: `*Ancient Archive*: ${Dice.Difficulty.FORMIDABLE}`,
-        prewide: `**Defensive Slicing** adds ${Dice.Setback(1)} per Rank
-            **Improved Defensive Slicing** upgrades difficulty per Rank`
+        wide5: `*Ancient Archive*: ${Dice.Difficulty.FORMIDABLE}`
     };
     sendPrivate(SpeakingAs, content);
 };
@@ -68,8 +69,64 @@ const display = () => {
     sendPrivate(SpeakingAs, content);
 };
 
+const expel = () => {
+    let content = {
+        title: "Expel User",
+        flavor: "Opposed Computers (INT)",
+        prewide: `Add ${Dice.Boost} per known signature fragment`,
+        wide: "If expelled, upgrade the difficulty of further Access System checks by two"
+    };
+    sendPrivate(SpeakingAs, content);
+};
+
+const lockdown = () => {
+    let content = {
+        title: "Lockdown",
+        flavor: `Computers (${Dice.Difficulty.HARD})`,
+        wide: "Character must have physical access to restart the system"
+    };
+    sendPrivate(SpeakingAs, content);
+};
+
+const restart = () => {
+    let content = {
+        title: "Restart System",
+        flavor: `Computers (${Dice.Difficulty.AVERAGE})`,
+        wide: "Must have physical access",
+        wide2: "Takes one hour"
+    };
+    sendPrivate(SpeakingAs, content);
+};
+
+const trace = () => {
+    let content = {
+        title: "Trace User",
+        flavor: "Opposed Computers (INT)",
+        prewide: `Add ${Dice.Boost} per known signature fragment`,
+        header: "On Success, learn one of:",
+        wide: "Target's physical location",
+        wide2: "Portion of slicer's signature",
+        wide3: "Full list of actions target has taken in system this encounter"
+    };
+    sendPrivate(SpeakingAs, content);
+};
+
 export {
+    /**
+     * Display information on the Access System action
+     *
+     * @returns {void} outputs results to chat
+     *
+     * @function
+     */
     access,
+    /**
+     * Display information on the Activate Security System action
+     *
+     * @returns {void} outputs results to chat
+     *
+     * @function
+     */
     activateSecurity,
     /**
      * Decrease the number of active Security Programs in the current system
@@ -79,6 +136,13 @@ export {
      * @function
      */
     decreaseSecurity,
+    /**
+     * Display information on the Disable Security System action
+     *
+     * @returns {void} outputs results to chat
+     *
+     * @function
+     */
     disableSecurity,
     /**
      * Display the primary Slicing UI in chat
@@ -89,6 +153,14 @@ export {
      */
     display as main,
     /**
+     * Display information on the Expel User action
+     *
+     * @returns {void} outputs results to chat
+     *
+     * @function
+     */
+    expel,
+    /**
      * Increase the number of active Security Programs in the current system
      *
      * @returns {void}
@@ -97,11 +169,35 @@ export {
      */
     increaseSecurity,
     /**
+     * Display information on the Lockdown action
+     *
+     * @returns {void} outputs results to chat
+     *
+     * @function
+     */
+    lockdown,
+    /**
      * Reset the number of active Security Programs in the current system to zero
      *
      * @returns {void}
      *
      * @function
      */
-    resetSecurity
+    resetSecurity,
+    /**
+     * Display information on the Restart System action
+     *
+     * @returns {void} outputs results to chat
+     *
+     * @function
+     */
+    restart,
+    /**
+     * Display information on the Trace User action
+     *
+     * @returns {void} outputs results to chat
+     *
+     * @function
+     */
+    trace
 }

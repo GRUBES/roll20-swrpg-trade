@@ -113,9 +113,14 @@ function execute(command, input) {
         "slice-access": Slice.access,
         "slice-activate": Slice.activateSecurity,
         "slice-disable": Slice.disableSecurity,
+        // "slice-enact": Slice.enact,
+        "slice-expel": Slice.expel,
+        "slice-lockdown": Slice.lockdown,
+        "slice-restart": Slice.restart,
         "slice-security-dec": Slice.decreaseSecurity,
         "slice-security-inc": Slice.increaseSecurity,
         "slice-security-reset": Slice.resetSecurity,
+        "slice-trace": Slice.trace,
         "slice-ui": Slice.main,
         "trade": Trade.item
     };
