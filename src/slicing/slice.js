@@ -52,6 +52,14 @@ const activateSecurity = () => {
     sendPrivate(SpeakingAs, content);
 };
 
+const backdoor = () => {
+    let content = {
+        title: "Create or Locate Backdoor",
+        flavor: `Computers (${Dice.Difficulty.HARD})`
+    };
+    sendPrivate(SpeakingAs, content);
+};
+
 // Disabling a Security Program has same difficulties as System Access check
 const disableSecurity = access;
 
@@ -69,11 +77,20 @@ const display = () => {
     sendPrivate(SpeakingAs, content);
 };
 
+const enact = () => {
+    let content = {
+        title: "Enact Command",
+        flavor: "Computers",
+        wide: "Difficulty is set by similarity of command to the intended function of the system"
+    };
+    sendPrivate(SpeakingAs, content);
+};
+
 const expel = () => {
     let content = {
         title: "Expel User",
-        flavor: "Opposed Computers (INT)",
-        prewide: `Add ${Dice.Boost} per known signature fragment`,
+        flavor: "Opposed Computers",
+        prewide: `Add ${Dice.Boost(1)} per known Signature fragment`,
         wide: "If expelled, upgrade the difficulty of further Access System checks by two"
     };
     sendPrivate(SpeakingAs, content);
@@ -101,11 +118,11 @@ const restart = () => {
 const trace = () => {
     let content = {
         title: "Trace User",
-        flavor: "Opposed Computers (INT)",
-        prewide: `Add ${Dice.Boost} per known signature fragment`,
+        flavor: "Opposed Computers",
+        prewide: `Add ${Dice.Boost(1)} per known Signature fragment`,
         header: "On Success, learn one of:",
         wide: "Target's physical location",
-        wide2: "Portion of slicer's signature",
+        wide2: "One segment of target's Signature",
         wide3: "Full list of actions target has taken in system this encounter"
     };
     sendPrivate(SpeakingAs, content);
@@ -128,6 +145,14 @@ export {
      * @function
      */
     activateSecurity,
+    /**
+     * Display information on identifying a Backdoor in the system
+     *
+     * @returns {void} outputs results to chat
+     *
+     * @function
+     */
+    backdoor,
     /**
      * Decrease the number of active Security Programs in the current system
      *
@@ -152,6 +177,14 @@ export {
      * @function
      */
     display as main,
+    /**
+     * Display information on the Enact Command action
+     *
+     * @returns {void} outputs results to chat
+     *
+     * @function
+     */
+    enact,
     /**
      * Display information on the Expel User action
      *
