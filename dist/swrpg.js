@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  var version = "0.7.0";
+  var version = "0.8.0";
 
   /**
    * Math utility module
@@ -2540,6 +2540,14 @@
       sendPrivate(SpeakingAs$6, content);
   };
 
+  const backdoor = () => {
+      let content = {
+          title: "Create or Locate Backdoor",
+          flavor: `Computers (${Dice.Difficulty.HARD})`
+      };
+      sendPrivate(SpeakingAs$6, content);
+  };
+
   // Disabling a Security Program has same difficulties as System Access check
   const disableSecurity = access;
 
@@ -2557,11 +2565,20 @@
       sendPrivate(SpeakingAs$6, content);
   };
 
+  const enact = () => {
+      let content = {
+          title: "Enact Command",
+          flavor: "Computers",
+          wide: "Difficulty is set by similarity of command to the intended function of the system"
+      };
+      sendPrivate(SpeakingAs$6, content);
+  };
+
   const expel = () => {
       let content = {
           title: "Expel User",
-          flavor: "Opposed Computers (INT)",
-          prewide: `Add ${Dice.Boost} per known signature fragment`,
+          flavor: "Opposed Computers",
+          prewide: `Add ${Dice.Boost(1)} per known Signature fragment`,
           wide: "If expelled, upgrade the difficulty of further Access System checks by two"
       };
       sendPrivate(SpeakingAs$6, content);
@@ -2589,11 +2606,11 @@
   const trace = () => {
       let content = {
           title: "Trace User",
-          flavor: "Opposed Computers (INT)",
-          prewide: `Add ${Dice.Boost} per known signature fragment`,
+          flavor: "Opposed Computers",
+          prewide: `Add ${Dice.Boost(1)} per known Signature fragment`,
           header: "On Success, learn one of:",
           wide: "Target's physical location",
-          wide2: "Portion of slicer's signature",
+          wide2: "One segment of target's Signature",
           wide3: "Full list of actions target has taken in system this encounter"
       };
       sendPrivate(SpeakingAs$6, content);
@@ -2704,8 +2721,9 @@
           "repair": display$a,
           "slice-access": access,
           "slice-activate": activateSecurity,
+          "slice-backdoor": backdoor,
           "slice-disable": disableSecurity,
-          // "slice-enact": Slice.enact,
+          "slice-enact": enact,
           "slice-expel": expel,
           "slice-lockdown": lockdown,
           "slice-restart": restart,
