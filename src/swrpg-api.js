@@ -13,6 +13,7 @@ import * as Contact from "./contacts/contacts";
 import * as Craft from "./crafting/craft";
 import * as Repair from "./repair/repair";
 import * as Slice from "./slicing/slice";
+import * as Social from "./social/social";
 import * as Trade from "./trade/trade";
 import { program } from "./crafting/droid";
 import { assemble } from "./crafting/vehicle";
@@ -123,6 +124,12 @@ function execute(command, input) {
         "slice-security-reset": Slice.resetSecurity,
         "slice-trace": Slice.trace,
         "slice-ui": Slice.main,
+        "social": Social.main,
+        "social-charm": Social.charm,
+        "social-coercion": Social.coercion,
+        "social-deception": Social.deception,
+        "social-leadership": Social.leadership,
+        "social-negotiation": Social.negotation,
         "trade": Trade.item
     };
 

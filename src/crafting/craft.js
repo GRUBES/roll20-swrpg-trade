@@ -81,7 +81,7 @@ const display = () => {
         wide: `${Macros.craftArmor} ${Macros.craftDroid}`,
         wide2: `${Macros.craftGadget} ${Macros.craftLightsaber}`,
         wide3: `${Macros.craftVehicle} ${Macros.craftWeapon}`,
-        wide4: `${Macros.craftCybernetic}`,
+        wide4: `${Macros.craftCybernetic}`
     };
     sendPrivate(SpeakingAs, content);
 };
