@@ -8,7 +8,7 @@
  * @license MIT
  */
 
-import {Macros} from "../util/enums";
+import {DifficultyToDice, Macros} from "../util/enums";
 import {sendPrivate} from "../util/chat";
 
 /**
@@ -241,7 +241,7 @@ const construct = (templateType) => {
     let content = {
         title: "Droid Chassis Construction",
         subtitle: `${tmpl.name} (${tmpl.rank})`,
-        flavor: `${tmpl.skills.join(", ")} (${tmpl.difficulty})`,
+        flavor: `${tmpl.skills.join(", ")} (${DifficultyToDice[tmpl.difficulty]})`,
         prewide: `Time Required: ${tmpl.time}, -2 hours for each additional success`,
         Characteristics: tmpl.characteristics.join("/"),
         Defense: `${tmpl.rangedDefense} | ${tmpl.meleeDefense}`,
@@ -272,7 +272,7 @@ const program = (templateType) => {
     let content = {
         title: "Droid Directive Programming",
         subtitle: tmpl.name,
-        flavor: `${tmpl.skills.join(", ")} (${tmpl.difficulty})`,
+        flavor: `${tmpl.skills.join(", ")} (${DifficultyToDice[tmpl.difficulty]})`,
         prewide: `Time Required: ${tmpl.time}, -2 hours for each additional success`,
         Skills: tmpl.skillsGranted.join("; "),
         Talents: tmpl.talentsGranted.join("; ")

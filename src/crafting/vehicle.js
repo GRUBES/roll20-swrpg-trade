@@ -11,7 +11,7 @@
  * @see https://community.fantasyflightgames.com/topic/272869-the-nubian-design-collectives-whole-vehicle-crafting-handbook/
  */
 
-import {Macros} from "../util/enums";
+import {DifficultyToDice, Macros} from "../util/enums";
 import {sendPrivate} from "../util/chat";
 
 /**
@@ -730,7 +730,7 @@ const construct = (templateType) => {
     let content = {
         title: "Vehicle Construction",
         subtitle: tmpl.name,
-        flavor: `${tmpl.skills.join(", ")} (${tmpl.difficulty})`,
+        flavor: `${tmpl.skills.join(", ")} (${DifficultyToDice[tmpl.difficulty]})`,
         prewide: `Time Required: ${tmpl.time}, -2xVSL hours for each additional success`,
         Effect: tmpl.special || "None"
     };

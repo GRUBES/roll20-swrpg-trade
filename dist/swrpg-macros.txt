@@ -1,87 +1,95 @@
 UTILITIES:
 
-// #PartyLocation
+#PartyLocation
 /w gm @{-DicePool|grouplocation}
 
 REPAIR MODULE:
 
-// #RepairCondition
+#RepairCondition
 ?{Condition|New, 0|Minor, 1|Moderate, 2|Major, 3}
 
-// #RepairItem
+#RepairItem
 !swrpg-repair #RepairCondition ?{Base Price}
 
 TRADE MODULE:
 
-// #TradeItem
+#TradeItem
 !swrpg-trade #TradeRarity #TradeLocation #TradeProximity #TradePopulation ?{Base Price|0}
 
-// #TradeLocation
+#TradeLocation
 ?{Region|Core, 0|Colonies, 1|Inner Rim, 2|Mid Rim, 3|Outer Rim, 4|Expansion, 5|Wild Space, 6|Unknown Regions, 7}
 
-// #TradePopulation
+#TradePopulation
 ?{Population|High, 0|Average, 1|Low, 2|Uncivilized, 3}
 
-// #TradeProximity
+#TradeProximity
 ?{Trade Route Proximity|On, 0|Near, 1|Far, 2}
 
-// #TradeRarity
+#TradeRarity
 ?{Rarity|0|1|2|3|4|5|6|7|8|9|10}
 
 CONTACT NETWORK MODULE:
 
-// #ContactScope
+#ContactScope
 ?{Scope|Individual, 0|Small Group, 1|Planet, 2|System, 3|Sector, 4|Vast, 5}
 
-// #ContactExpertise
+#ContactExpertise
 ?{Expertise|None, 0|Minimal, 1|Professional, 2|Accomplished, 3|Well-Known, 4|Thought Leaders, 5}
 
-// #ContactObscurity
+#ContactObscurity
 ?{Obscurity|Basic Info, 0|Standard Info, 1|Basic Research, 2|Specialist Research, 3|Significant Research, 4|Secret, 5}
 
-// #ContactReputation
+#ContactReputation
 ?{Reputation|Famous, 1|Well-Known, 2|Average, 3|Upstart, 4|Unfamiliar, 5|Adversarial, 6}
 
-// #ContactRelevance
+#ContactRelevance
 ?{Relevance|High, 1|Average, 2|Low, 3|None, 4}
 
-// #ContactInvestigate
+#ContactInvestigate
 !swrpg-contact #ContactScope #ContactExpertise #ContactObscurity #ContactReputation #ContactRelevance
 
 CRAFTING MODULE:
 
-// #CraftArmorTemplate
+#CraftItem
+!swrpg-craft-ui
+
+#CraftArmorTemplate
 ?{Select Armor|Reinforced Clothing, 1|Light Armor, 2|Customizable Armor, 3|Deflective Armor, 4|Combat Armor, 5|
     Segmented Armor, 6|Augmentative Armor, 7}
 
-// #CraftCyberneticTemplate
+#CraftCyberneticTemplate
 ?{Select a Cybernetic|Prosthetic Replacement, 1|Cybernetic Appendage, 2|Cybernetic Implant, 3}
 
-// #CraftDirectiveTemplate
+#CraftDirectiveTemplate
 ?{Select a Directive|Labor, 6|Combat, 7|Translation, 8|Repair, 9|Navigation, 10|Healing, 11|Elimination, 12}
 
-// #CraftDroidTemplate
+#CraftDroidTemplate
 ?{Select a Chassis|Monotask, 1|Labor, 2|Combat, 3|Specialist, 4|Advanced Combat, 5}
 
-// #CraftEngineTemplate
+#CraftEngineTemplate
 ?{Select an Engine|Single Ion Coil, 17|Electron Baffled, 18|Ion Turbine, 19|Fusial Thrust, 20|Repulsor Cluster, 21|
     Ion Drive Array, 22}
 
-// #CraftFrameTemplate
+#CraftFrameTemplate
 ?{Select a Frame|Speeder Bike, 30|Landspeeder, 1|Airspeeder, 2|Walker, 3|Starfighter, 4|Transport, 5|
     Corvette, 6|Patrol Ship, 7|Carrier, 8|Frigate, 9|Heavy Cruiser, 10|Destroyer, 11|Small Station, 12|
     Medium Station, 13|Large Station, 14|Massive Station, 15|Small Moon, 16}
 
-// #CraftGadgetTemplate
+#CraftGadgetTemplate
 ?{Select a Template|Simple Tool, 1|Specialist Tool, 2|Precision Tool, 3}
 
-// #CraftHiltTemplate
+#CraftHiltTemplate
 ?{Select a Hilt|Standard Hilt, 1|Precision Hilt, 2|Defensive Hilt, 3|Double-bladed Hilt, 4|Pole Hilt, 5}
 
-// #CraftHullTemplate
+#CraftHullTemplate
 ?{Select a Hull|Basic, 23|Race Ship, 24|Bulk Freighter, 25|Transport, 26|Scout, 27|Gunship, 28|Ship of the Line, 29}
 
-// #CraftWeaponTemplate
+#CraftWeaponTemplate
 ?{Select a Template|Fist Weapon, 16|Blunt Weapon, 1|Shield, 2|Bladed Weapon, 3|Vibro Weapon, 4|Powered Weapon, 5|
     Simple Projectile, 6|Projectile Pistol, 7|Projectile Rifle, 8|Energy Pistol, 9|Energy Rifle, 10|Heavy Rifle, 11|
     Launcher, 12|Missile, 13|Grenade, 14|Mine, 15}
+
+SLICING MODULE:
+
+#SliceSystem
+!swrpg-slice-ui

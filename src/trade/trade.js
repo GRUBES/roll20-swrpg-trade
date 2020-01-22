@@ -8,6 +8,7 @@
  * @license MIT
  */
 
+import {DifficultyToDice} from "../util/enums";
 import {clamp} from "../util/math";
 import {sendPrivate} from "../util/chat";
 
@@ -105,7 +106,7 @@ const display = (rarity, region, tradeProximity, population, basePrice) => {
     let sell = sellPrices(buy).join(" | ");
     let content = {
         title: "Trade Negotiations",
-        Difficulty: diff,
+        prewide: `Negotiation or Streetwise (${DifficultyToDice[diff]})`,
         "Purchase Price": buy,
         "Sell Prices": sell
     };

@@ -12,6 +12,7 @@ import { version } from "../package.json";
 import * as Contact from "./contacts/contacts";
 import * as Craft from "./crafting/craft";
 import * as Repair from "./repair/repair";
+import * as Slice from "./slicing/slice";
 import * as Trade from "./trade/trade";
 import { program } from "./crafting/droid";
 import { assemble } from "./crafting/vehicle";
@@ -109,6 +110,19 @@ function execute(command, input) {
         "craft-template": Craft.template,
         "craft-ui": Craft.main,
         "repair": Repair.item,
+        "slice-access": Slice.access,
+        "slice-activate": Slice.activateSecurity,
+        "slice-backdoor": Slice.backdoor,
+        "slice-disable": Slice.disableSecurity,
+        "slice-enact": Slice.enact,
+        "slice-expel": Slice.expel,
+        "slice-lockdown": Slice.lockdown,
+        "slice-restart": Slice.restart,
+        "slice-security-dec": Slice.decreaseSecurity,
+        "slice-security-inc": Slice.increaseSecurity,
+        "slice-security-reset": Slice.resetSecurity,
+        "slice-trace": Slice.trace,
+        "slice-ui": Slice.main,
         "trade": Trade.item
     };
 
@@ -120,4 +134,6 @@ function execute(command, input) {
 }
 
 on("chat:message", route);
-on("ready", () => log(`[SWRPG] v${version} loaded.`));
+on("ready", () => {
+    log(`[SWRPG] v${version} loaded.`);
+});

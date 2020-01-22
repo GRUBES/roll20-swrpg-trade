@@ -141,6 +141,10 @@
    * @license MIT
    */
 
+  // Utilities for displaying dice
+  const replacer = function () { return this["replacer"]; };
+  const displayDice = (s) => (n) => _.times(n, replacer, s).join("");
+
   const CraftingMode = {
       NONE: -1,
       ARMOR: 0,
@@ -150,6 +154,35 @@
       WEAPON: 4,
       LIGHTSABER: 5,
       CYBERNETIC: 6
+  };
+
+  // Dice graphics
+  const difficulty$1 = displayDice(eote.defaults.graphics.SymbolicReplacement.difficulty);
+  const Dice = {
+      Boost: displayDice(eote.defaults.graphics.SymbolicReplacement.boost),
+      Difficulty: {
+          SIMPLE: " - ",
+          EASY: difficulty$1(1),
+          AVERAGE: difficulty$1(2),
+          HARD: difficulty$1(3),
+          DAUNTING: difficulty$1(4),
+          FORMIDABLE: difficulty$1(5)
+      },
+      Setback: displayDice(eote.defaults.graphics.SymbolicReplacement.setback)
+  };
+
+  const DifficultyToDice = [
+      Dice.Difficulty.SIMPLE,
+      Dice.Difficulty.EASY,
+      Dice.Difficulty.AVERAGE,
+      Dice.Difficulty.HARD,
+      Dice.Difficulty.DAUNTING,
+      Dice.Difficulty.FORMIDABLE
+  ];
+
+  // HTML Entities
+  const Entities = {
+      ASTERISK: "&#42;"
   };
 
   // Commonly referenced macros
@@ -162,7 +195,18 @@
       craftGadget: `[Create Gadget](!swrpg-craft-mode ${CraftingMode.GADGET})`,
       craftLightsaber: `[Create Lightsaber](!swrpg-craft-mode ${CraftingMode.LIGHTSABER})`,
       craftVehicle: `[Create Vehicle](!swrpg-craft-mode ${CraftingMode.VEHICLE})`,
-      craftWeapon: `[Create Weapon](!swrpg-craft-mode ${CraftingMode.WEAPON})`
+      craftWeapon: `[Create Weapon](!swrpg-craft-mode ${CraftingMode.WEAPON})`,
+      sliceAccess: "[Access System](!swrpg-slice-access)",
+      sliceActivate: "[Activate Security](!swrpg-slice-activate)",
+      sliceDisable: "[Disable Security](!swrpg-slice-disable)",
+      sliceDecrease: "[*Decrease*](!swrpg-slice-security-dec)",
+      sliceEnact: `[${Entities.ASTERISK}Enact Command](!swrpg-slice-enact)`,
+      sliceExpel: `[${Entities.ASTERISK}Expel User](!swrpg-slice-expel)`,
+      sliceIncrease: "[*Increase*](!swrpg-slice-security-inc)",
+      sliceLockdown: `[${Entities.ASTERISK}Lockdown](!swrpg-slice-lockdown)`,
+      sliceReset: "[*Reset*](!swrpg-slice-security-reset)",
+      sliceRestart: "[Restart System](!swrpg-slice-restart)",
+      sliceTrace: `[${Entities.ASTERISK}Trace User](!swrpg-slice-trace)`
   };
 
   /**
@@ -314,7 +358,7 @@
       let craftContent = {
           title: "Armor Construction",
           subtitle: tmpl.name,
-          flavor: `${tmpl.skills.join(", ")} (${tmpl.difficulty})`,
+          flavor: `${tmpl.skills.join(", ")} (${DifficultyToDice[tmpl.difficulty]})`,
           prewide: `Time Required: ${tmpl.time}, -2 hours for each additional success`
       };
 
@@ -426,14 +470,14 @@
       let craftContent = {
           title: "Cybernetic Construction",
           subtitle: tmpl.name,
-          flavor: `${tmpl.skills.join(", ")} (${tmpl.difficulty})`,
+          flavor: `${tmpl.skills.join(", ")} (${DifficultyToDice[tmpl.difficulty]})`,
           prewide: `Time Required: ${tmpl.time}, -2 hours for each additional success`,
           Effect: tmpl.special
       };
 
       let installContent = {
           title: "Cybernetic Installation",
-          flavor: "Medicine (3)",
+          flavor: `Medicine (${Dice.Difficulty.HARD})`,
           prewide: "Time Required: 6 hours",
           wide: "Increase Difficulty twice if installing on self",
           wide2: "Failure: Cybernetic is not installed, suffers minor damage",
@@ -704,7 +748,7 @@
       let content = {
           title: "Droid Chassis Construction",
           subtitle: `${tmpl.name} (${tmpl.rank})`,
-          flavor: `${tmpl.skills.join(", ")} (${tmpl.difficulty})`,
+          flavor: `${tmpl.skills.join(", ")} (${DifficultyToDice[tmpl.difficulty]})`,
           prewide: `Time Required: ${tmpl.time}, -2 hours for each additional success`,
           Characteristics: tmpl.characteristics.join("/"),
           Defense: `${tmpl.rangedDefense} | ${tmpl.meleeDefense}`,
@@ -735,7 +779,7 @@
       let content = {
           title: "Droid Directive Programming",
           subtitle: tmpl.name,
-          flavor: `${tmpl.skills.join(", ")} (${tmpl.difficulty})`,
+          flavor: `${tmpl.skills.join(", ")} (${DifficultyToDice[tmpl.difficulty]})`,
           prewide: `Time Required: ${tmpl.time}, -2 hours for each additional success`,
           Skills: tmpl.skillsGranted.join("; "),
           Talents: tmpl.talentsGranted.join("; ")
@@ -831,7 +875,7 @@
       let content = {
           title: "Gadget Construction",
           subtitle: tmpl.name,
-          flavor: `${tmpl.skills.join(", ")} (${tmpl.difficulty})`,
+          flavor: `${tmpl.skills.join(", ")} (${DifficultyToDice[tmpl.difficulty]})`,
           prewide: `Time Required: ${tmpl.time}, -2 hours for each additional success`,
           Effect: tmpl.special,
           Encumbrance: tmpl.encumbrance
@@ -976,7 +1020,7 @@
       let tmpl = Template$4[templateType] || {};
       let craftContent = {
           title: "Lightsaber Construction",
-          flavor: `${tmpl.skills.join(", ")} (${tmpl.difficulty})`,
+          flavor: `${tmpl.skills.join(", ")} (${DifficultyToDice[tmpl.difficulty]})`,
           prewide: `Time Required: ${tmpl.time}, -2 hours for each additional success`
       };
 
@@ -1740,7 +1784,7 @@
       let content = {
           title: "Vehicle Construction",
           subtitle: tmpl.name,
-          flavor: `${tmpl.skills.join(", ")} (${tmpl.difficulty})`,
+          flavor: `${tmpl.skills.join(", ")} (${DifficultyToDice[tmpl.difficulty]})`,
           prewide: `Time Required: ${tmpl.time}, -2xVSL hours for each additional success`,
           Effect: tmpl.special || "None"
       };
@@ -2139,7 +2183,7 @@
       let tmpl = Template$6[templateType] || {};
       let craftContent = {
           title: "Weapon Construction",
-          flavor: `${tmpl.skills.join(", ")} (${tmpl.difficulty})`,
+          flavor: `${tmpl.skills.join(", ")} (${DifficultyToDice[tmpl.difficulty]})`,
           prewide: `Time Required: ${tmpl.time}, -2 hours for each additional success`
       };
 
@@ -2277,12 +2321,12 @@
 
   // Calculate trade values and display to GM
   const display$8 = (rarity, region, tradeProximity, population, basePrice) => {
-      let diff = difficulty$1(rarity, region, tradeProximity, population);
+      let diff = difficulty$2(rarity, region, tradeProximity, population);
       let buy = purchasePrice(diff, basePrice);
       let sell = sellPrices(buy).join(" | ");
       let content = {
           title: "Trade Negotiations",
-          Difficulty: diff,
+          prewide: `Negotiation or Streetwise (${DifficultyToDice[diff]})`,
           "Purchase Price": buy,
           "Sell Prices": sell
       };
@@ -2290,7 +2334,7 @@
   };
 
   // Calculate the Difficulty of the Negotiation or Streetwise roll
-  const difficulty$1 = (rarity, region, tradeProximity, population) => clampDifficulty([
+  const difficulty$2 = (rarity, region, tradeProximity, population) => clampDifficulty([
       rarityToDifficulty(rarity),
       RegionToModifier[region],
       ProximityToModifier[tradeProximity],
@@ -2356,7 +2400,7 @@
 
   // Step 2: Acquire Materials
   const acquire = (rarity, basePrice, region, tradeProximity, population) => {
-      let diff = difficulty$1(rarity, region, tradeProximity, population);
+      let diff = difficulty$2(rarity, region, tradeProximity, population);
       let buy = purchasePrice(diff, basePrice);
       let content = {
           title: "Acquiring Materials",
@@ -2428,7 +2472,7 @@
 
   // Calculate repair values and display to GM
   const display$a = (condition, basePrice) => {
-      let diff = difficulty$2(condition);
+      let diff = difficulty$3(condition);
       let price = cost(condition, basePrice);
       let content = {
           title: "Item Repair",
@@ -2440,10 +2484,120 @@
   };
 
   // Calculate the Difficulty of the repair check
-  const difficulty$2 = (condition) => condition;
+  const difficulty$3 = (condition) => condition;
 
   // Calculate the material cost of the repairs
   const cost = (condition, basePrice) => basePrice * CostModifier[condition];
+
+  /**
+   * Core logic for slicing encounters
+   *
+   * @module swrpg/slice/core
+   *
+   * @author Draico Dorath
+   * @copyright 2020
+   * @license MIT
+   */
+
+  /* Sender of chat messages */
+  const SpeakingAs$6 = "H4-x0r";
+
+  /* Tracks number of security programs currently running */
+  let SecurityPrograms = 0;
+  const decreaseSecurity = () => {
+      SecurityPrograms = Math.max(SecurityPrograms-1, 0);
+      display$b();
+  };
+  const increaseSecurity = () => {
+      SecurityPrograms++;
+      display$b();
+  };
+  const resetSecurity = () => {
+      SecurityPrograms = 0;
+      display$b();
+  };
+
+  const access = () => {
+      let content = {
+          title: "Access Difficulties",
+          flavor: "Computers (INT)",
+          prewide: `**Defensive Slicing** adds ${Dice.Setback(1)} per Rank
+            **Improved Defensive Slicing** upgrades difficulty per Rank`,
+          wide: `*Cantina Terminal, Datapad*: ${Dice.Difficulty.EASY}`,
+          wide2: `*Common Vehicle Computer*: ${Dice.Difficulty.AVERAGE}`,
+          wide3: `*Local HoloNet, Military system*: ${Dice.Difficulty.HARD}`,
+          wide4: `*Regional HoloNet, Imperial Datavault*: ${Dice.Difficulty.DAUNTING}`,
+          wide5: `*Ancient Archive*: ${Dice.Difficulty.FORMIDABLE}`
+      };
+      sendPrivate(SpeakingAs$6, content);
+  };
+
+  const activateSecurity = () => {
+      let content = {
+          title: "Activate a Security Program",
+          flavor: `Computers (${Dice.Difficulty.AVERAGE})`
+      };
+      sendPrivate(SpeakingAs$6, content);
+  };
+
+  // Disabling a Security Program has same difficulties as System Access check
+  const disableSecurity = access;
+
+  const display$b = () => {
+      let content = {
+          title: "Slicing Encounter",
+          flavor: "Actions with * may only be executed by an Intruder when no Security Programs are active.",
+          prewide: `*Active Security Programs: ${SecurityPrograms}*
+              ${Macros.sliceIncrease} ${Macros.sliceDecrease} ${Macros.sliceReset}`,
+          wide: Macros.sliceAccess,
+          wide2: `${Macros.sliceActivate} ${Macros.sliceDisable}`,
+          wide3: `${Macros.sliceEnact} ${Macros.sliceLockdown}`,
+          wide4: `${Macros.sliceExpel} ${Macros.sliceTrace}`
+      };
+      sendPrivate(SpeakingAs$6, content);
+  };
+
+  const expel = () => {
+      let content = {
+          title: "Expel User",
+          flavor: "Opposed Computers (INT)",
+          prewide: `Add ${Dice.Boost} per known signature fragment`,
+          wide: "If expelled, upgrade the difficulty of further Access System checks by two"
+      };
+      sendPrivate(SpeakingAs$6, content);
+  };
+
+  const lockdown = () => {
+      let content = {
+          title: "Lockdown",
+          flavor: `Computers (${Dice.Difficulty.HARD})`,
+          wide: "Character must have physical access to restart the system"
+      };
+      sendPrivate(SpeakingAs$6, content);
+  };
+
+  const restart = () => {
+      let content = {
+          title: "Restart System",
+          flavor: `Computers (${Dice.Difficulty.AVERAGE})`,
+          wide: "Must have physical access",
+          wide2: "Takes one hour"
+      };
+      sendPrivate(SpeakingAs$6, content);
+  };
+
+  const trace = () => {
+      let content = {
+          title: "Trace User",
+          flavor: "Opposed Computers (INT)",
+          prewide: `Add ${Dice.Boost} per known signature fragment`,
+          header: "On Success, learn one of:",
+          wide: "Target's physical location",
+          wide2: "Portion of slicer's signature",
+          wide3: "Full list of actions target has taken in system this encounter"
+      };
+      sendPrivate(SpeakingAs$6, content);
+  };
 
   /**
    * Entry point module for the Galactic Economy system
@@ -2548,6 +2702,18 @@
           "craft-template": setTemplate,
           "craft-ui": display$9,
           "repair": display$a,
+          "slice-access": access,
+          "slice-activate": activateSecurity,
+          "slice-disable": disableSecurity,
+          // "slice-enact": Slice.enact,
+          "slice-expel": expel,
+          "slice-lockdown": lockdown,
+          "slice-restart": restart,
+          "slice-security-dec": decreaseSecurity,
+          "slice-security-inc": increaseSecurity,
+          "slice-security-reset": resetSecurity,
+          "slice-trace": trace,
+          "slice-ui": display$b,
           "trade": display$8
       };
 
@@ -2559,6 +2725,8 @@
   }
 
   on("chat:message", route);
-  on("ready", () => log(`[SWRPG] v${version} loaded.`));
+  on("ready", () => {
+      log(`[SWRPG] v${version} loaded.`);
+  });
 
 }());

@@ -9,7 +9,7 @@
  */
 
 import {sendPrivate} from "../util/chat";
-import {Macros} from "../util/enums";
+import {DifficultyToDice, Macros} from "../util/enums";
 
 /**
  * Crafting template for a lightsaber
@@ -119,7 +119,7 @@ const construct = (templateType) => {
     let tmpl = Template[templateType] || {};
     let craftContent = {
         title: "Lightsaber Construction",
-        flavor: `${tmpl.skills.join(", ")} (${tmpl.difficulty})`,
+        flavor: `${tmpl.skills.join(", ")} (${DifficultyToDice[tmpl.difficulty]})`,
         prewide: `Time Required: ${tmpl.time}, -2 hours for each additional success`
     };
 
