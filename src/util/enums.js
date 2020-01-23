@@ -54,12 +54,13 @@ export const DifficultyToDice = [
 
 // HTML Entities
 export const Entities = {
-    ASTERISK: "&#42;"
+    ASTERISK: "&#42;",
+    CR: "&#13;"
 };
 
 // Commonly referenced macros
 export const Macros = {
-    tradeLocation: "#TradeLocation #TradeProximity #TradePopulation",
+    contactInvestigate: `[Use Contact Network](!${Entities.CR}#ContactInvestigate)`,
     craftingMain: "[Crafting Station](!swrpg-craft-ui)",
     craftArmor: `[Create Armor](!swrpg-craft-mode ${CraftingMode.ARMOR})`,
     craftCybernetic: `[Create Cybernetic](!swrpg-craft-mode ${CraftingMode.CYBERNETIC})`,
@@ -68,6 +69,8 @@ export const Macros = {
     craftLightsaber: `[Create Lightsaber](!swrpg-craft-mode ${CraftingMode.LIGHTSABER})`,
     craftVehicle: `[Create Vehicle](!swrpg-craft-mode ${CraftingMode.VEHICLE})`,
     craftWeapon: `[Create Weapon](!swrpg-craft-mode ${CraftingMode.WEAPON})`,
+    partyLocation: `[Current Location](!${Entities.CR}#PartyLocation)`,
+    repairItem: `[Repair Item](!${Entities.CR}#RepairItem)`,
     sliceAccess: "[Access System](!swrpg-slice-access)",
     sliceActivate: "[Activate Security](!swrpg-slice-activate)",
     sliceDisable: "[Disable Security](!swrpg-slice-disable)",
@@ -76,12 +79,17 @@ export const Macros = {
     sliceExpel: `[${Entities.ASTERISK}Expel User](!swrpg-slice-expel)`,
     sliceIncrease: "[*Increase*](!swrpg-slice-security-inc)",
     sliceLockdown: `[${Entities.ASTERISK}Lockdown](!swrpg-slice-lockdown)`,
+    sliceMain: "[Slicing Encounter](!swrpg-slice)",
     sliceReset: "[*Reset*](!swrpg-slice-security-reset)",
     sliceRestart: "[Restart System](!swrpg-slice-restart)",
     sliceTrace: `[${Entities.ASTERISK}Trace User](!swrpg-slice-trace)`,
-    socialCharm: `[Charm](!swrpg-social-charm)`,
-    socialCoercion: `[Coercion](!swrpg-social-coercion)`,
-    socialDeception: `[Deception](!swrpg-social-deception)`,
-    socialLeadership: `[Leadership](!swrpg-social-leadership)`,
-    socialNegotiation: `[Negotiation](!swrpg-social-negotiation)`
+    socialCharm: "[Charm](!swrpg-social-charm)",
+    socialCoercion: "[Coercion](!swrpg-social-coercion)",
+    socialDeception: "[Deception](!swrpg-social-deception)",
+    socialLeadership: "[Leadership](!swrpg-social-leadership)",
+    socialMain: "[Social Encounter](!swrpg-social-ui)",
+    socialNegotiation: "[Negotiation](!swrpg-social-negotiation)",
+    tradeItem: `[Trade Item](!${Entities.CR}#TradeItem)`,
+    tradeLocation: "#TradeLocation #TradeProximity #TradePopulation"
+
 };

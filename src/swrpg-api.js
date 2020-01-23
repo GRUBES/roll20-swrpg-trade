@@ -1,7 +1,7 @@
 /**
- * Entry point module for the Galactic Economy system
+ * Primary API entry point containing command router and Roll20 Event listeners
  *
- * @module swrpg/trade/api
+ * @module swrpg/api
  *
  * @author Draico Dorath
  * @copyright 2019
@@ -9,6 +9,7 @@
  */
 
 import { version } from "../package.json";
+import { main } from "./swrpg-ui";
 import * as Contact from "./contacts/contacts";
 import * as Craft from "./crafting/craft";
 import * as Repair from "./repair/repair";
@@ -124,13 +125,14 @@ function execute(command, input) {
         "slice-security-reset": Slice.resetSecurity,
         "slice-trace": Slice.trace,
         "slice-ui": Slice.main,
-        "social": Social.main,
+        "social-ui": Social.main,
         "social-charm": Social.charm,
         "social-coercion": Social.coercion,
         "social-deception": Social.deception,
         "social-leadership": Social.leadership,
         "social-negotiation": Social.negotation,
-        "trade": Trade.item
+        "trade": Trade.item,
+        "ui": main
     };
 
     if (!(routes[command] && (typeof routes[command] === "function"))) {

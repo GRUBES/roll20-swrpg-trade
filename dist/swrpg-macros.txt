@@ -1,5 +1,8 @@
 UTILITIES:
 
+#SWRPGTools
+!swrpg-ui
+
 #PartyLocation
 /w gm @{-DicePool|grouplocation}
 
@@ -97,4 +100,4 @@ SLICING MODULE:
 SOCIAL MODULE:
 
 #SocialEncounter
-!swrpg-social
+!swrpg-social-ui
