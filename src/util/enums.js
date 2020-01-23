@@ -28,6 +28,7 @@ const difficulty = displayDice(eote.defaults.graphics.SymbolicReplacement.diffic
 export const Dice = {
     Advantage: displayDice(eote.defaults.graphics.SymbolicReplacement.advantage),
     Boost: displayDice(eote.defaults.graphics.SymbolicReplacement.boost),
+    Dark: displayDice(eote.defaults.graphics.SymbolicReplacement.dark),
     Despair: displayDice(eote.defaults.graphics.SymbolicReplacement.despair),
     Difficulty: {
         SIMPLE: " - ",
@@ -37,6 +38,8 @@ export const Dice = {
         DAUNTING: difficulty(4),
         FORMIDABLE: difficulty(5)
     },
+    Failure: displayDice(eote.defaults.graphics.SymbolicReplacement.failure),
+    Light: displayDice(eote.defaults.graphics.SymbolicReplacement.light),
     Setback: displayDice(eote.defaults.graphics.SymbolicReplacement.setback),
     Success: displayDice(eote.defaults.graphics.SymbolicReplacement.success),
     Threat: displayDice(eote.defaults.graphics.SymbolicReplacement.threat),

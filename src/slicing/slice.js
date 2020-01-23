@@ -32,7 +32,7 @@ const resetSecurity = () => {
 const access = () => {
     let content = {
         title: "Access Difficulties",
-        flavor: "Computers (INT)",
+        subtitle: "Computers (INT)",
         prewide: `**Defensive Slicing** adds ${Dice.Setback(1)} per Rank
             **Improved Defensive Slicing** upgrades Difficulty per Rank`,
         header: "Difficulty by System Type",

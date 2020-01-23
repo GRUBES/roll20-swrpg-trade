@@ -8,16 +8,17 @@
  * @license MIT
  */
 
-import { version } from "../package.json";
-import { main } from "./swrpg-ui";
+import {version} from "../package.json";
+import {main} from "./swrpg-ui";
 import * as Contact from "./contacts/contacts";
 import * as Craft from "./crafting/craft";
 import * as Repair from "./repair/repair";
 import * as Slice from "./slicing/slice";
 import * as Social from "./social/social";
 import * as Trade from "./trade/trade";
-import { program } from "./crafting/droid";
-import { assemble } from "./crafting/vehicle";
+import {program} from "./crafting/droid";
+import {assemble} from "./crafting/vehicle";
+import {rollPrivate} from "./util/chat";
 
 // API Command prefix
 const prefix = "swrpg-";
@@ -76,7 +77,8 @@ function parseCommand(msg) {
 }
 
 /**
- * Strips the command out of the chat message and returns the rest of the input parameters as an Array
+ * Strips the command out of the chat message and returns the rest of the input parameters as an
+ * Array
  *
  * @param msg {Object} Roll20 chat message
  *
