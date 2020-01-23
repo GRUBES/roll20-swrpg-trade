@@ -26,7 +26,9 @@ export const CraftingMode = {
 // Dice graphics
 const difficulty = displayDice(eote.defaults.graphics.SymbolicReplacement.difficulty);
 export const Dice = {
+    Advantage: displayDice(eote.defaults.graphics.SymbolicReplacement.advantage),
     Boost: displayDice(eote.defaults.graphics.SymbolicReplacement.boost),
+    Despair: displayDice(eote.defaults.graphics.SymbolicReplacement.despair),
     Difficulty: {
         SIMPLE: " - ",
         EASY: difficulty(1),
@@ -35,7 +37,10 @@ export const Dice = {
         DAUNTING: difficulty(4),
         FORMIDABLE: difficulty(5)
     },
-    Setback: displayDice(eote.defaults.graphics.SymbolicReplacement.setback)
+    Setback: displayDice(eote.defaults.graphics.SymbolicReplacement.setback),
+    Success: displayDice(eote.defaults.graphics.SymbolicReplacement.success),
+    Threat: displayDice(eote.defaults.graphics.SymbolicReplacement.threat),
+    Triumph: displayDice(eote.defaults.graphics.SymbolicReplacement.triumph)
 };
 
 export const DifficultyToDice = [
@@ -73,5 +78,10 @@ export const Macros = {
     sliceLockdown: `[${Entities.ASTERISK}Lockdown](!swrpg-slice-lockdown)`,
     sliceReset: "[*Reset*](!swrpg-slice-security-reset)",
     sliceRestart: "[Restart System](!swrpg-slice-restart)",
-    sliceTrace: `[${Entities.ASTERISK}Trace User](!swrpg-slice-trace)`
+    sliceTrace: `[${Entities.ASTERISK}Trace User](!swrpg-slice-trace)`,
+    socialCharm: `[Charm](!swrpg-social-charm)`,
+    socialCoercion: `[Coercion](!swrpg-social-coercion)`,
+    socialDeception: `[Deception](!swrpg-social-deception)`,
+    socialLeadership: `[Leadership](!swrpg-social-leadership)`,
+    socialNegotiation: `[Negotiation](!swrpg-social-negotiation)`
 };

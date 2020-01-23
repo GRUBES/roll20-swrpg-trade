@@ -93,3 +93,8 @@ SLICING MODULE:
 
 #SliceSystem
 !swrpg-slice-ui
+
+SOCIAL MODULE:
+
+#SocialEncounter
+!swrpg-social
