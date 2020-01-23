@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  var version = "0.9.0";
+  var version = "0.10.0";
 
   /**
    * Common enumerations
