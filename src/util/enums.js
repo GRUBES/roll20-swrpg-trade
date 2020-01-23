@@ -79,7 +79,7 @@ export const Macros = {
     sliceExpel: `[${Entities.ASTERISK}Expel User](!swrpg-slice-expel)`,
     sliceIncrease: "[*Increase*](!swrpg-slice-security-inc)",
     sliceLockdown: `[${Entities.ASTERISK}Lockdown](!swrpg-slice-lockdown)`,
-    sliceMain: "[Slicing Encounter](!swrpg-slice)",
+    sliceMain: "[Slicing Encounter](!swrpg-slice-ui)",
     sliceReset: "[*Reset*](!swrpg-slice-security-reset)",
     sliceRestart: "[Restart System](!swrpg-slice-restart)",
     sliceTrace: `[${Entities.ASTERISK}Trace User](!swrpg-slice-trace)`,

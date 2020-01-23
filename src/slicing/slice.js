@@ -34,12 +34,18 @@ const access = () => {
         title: "Access Difficulties",
         flavor: "Computers (INT)",
         prewide: `**Defensive Slicing** adds ${Dice.Setback(1)} per Rank
-            **Improved Defensive Slicing** upgrades difficulty per Rank`,
-        wide: `*Cantina Terminal, Datapad*: ${Dice.Difficulty.EASY}`,
-        wide2: `*Common Vehicle Computer*: ${Dice.Difficulty.AVERAGE}`,
-        wide3: `*Local HoloNet, Military system*: ${Dice.Difficulty.HARD}`,
-        wide4: `*Regional HoloNet, Imperial Datavault*: ${Dice.Difficulty.DAUNTING}`,
-        wide5: `*Ancient Archive*: ${Dice.Difficulty.FORMIDABLE}`
+            **Improved Defensive Slicing** upgrades Difficulty per Rank`,
+        header: "Difficulty by System Type",
+        wide: `*Cantina Terminal, Datapad*:
+            (${Dice.Difficulty.EASY})`,
+        wide2: `*Common Vehicle Computer*:
+            (${Dice.Difficulty.AVERAGE})`,
+        wide3: `*Local HoloNet, Military system*:
+            (${Dice.Difficulty.HARD})`,
+        wide4: `*Regional HoloNet, Imperial Datavault*:
+            (${Dice.Difficulty.DAUNTING})`,
+        wide5: `*Ancient Archive*:
+            (${Dice.Difficulty.FORMIDABLE})`
     };
     sendPrivate(SpeakingAs, content);
 };

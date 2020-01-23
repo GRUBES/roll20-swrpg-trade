@@ -84,7 +84,7 @@
       sliceExpel: `[${Entities.ASTERISK}Expel User](!swrpg-slice-expel)`,
       sliceIncrease: "[*Increase*](!swrpg-slice-security-inc)",
       sliceLockdown: `[${Entities.ASTERISK}Lockdown](!swrpg-slice-lockdown)`,
-      sliceMain: "[Slicing Encounter](!swrpg-slice)",
+      sliceMain: "[Slicing Encounter](!swrpg-slice-ui)",
       sliceReset: "[*Reset*](!swrpg-slice-security-reset)",
       sliceRestart: "[Restart System](!swrpg-slice-restart)",
       sliceTrace: `[${Entities.ASTERISK}Trace User](!swrpg-slice-trace)`,
@@ -2558,12 +2558,18 @@
           title: "Access Difficulties",
           flavor: "Computers (INT)",
           prewide: `**Defensive Slicing** adds ${Dice.Setback(1)} per Rank
-            **Improved Defensive Slicing** upgrades difficulty per Rank`,
-          wide: `*Cantina Terminal, Datapad*: ${Dice.Difficulty.EASY}`,
-          wide2: `*Common Vehicle Computer*: ${Dice.Difficulty.AVERAGE}`,
-          wide3: `*Local HoloNet, Military system*: ${Dice.Difficulty.HARD}`,
-          wide4: `*Regional HoloNet, Imperial Datavault*: ${Dice.Difficulty.DAUNTING}`,
-          wide5: `*Ancient Archive*: ${Dice.Difficulty.FORMIDABLE}`
+            **Improved Defensive Slicing** upgrades Difficulty per Rank`,
+          header: "Difficulty by System Type",
+          wide: `*Cantina Terminal, Datapad*:
+            (${Dice.Difficulty.EASY})`,
+          wide2: `*Common Vehicle Computer*:
+            (${Dice.Difficulty.AVERAGE})`,
+          wide3: `*Local HoloNet, Military system*:
+            (${Dice.Difficulty.HARD})`,
+          wide4: `*Regional HoloNet, Imperial Datavault*:
+            (${Dice.Difficulty.DAUNTING})`,
+          wide5: `*Ancient Archive*:
+            (${Dice.Difficulty.FORMIDABLE})`
       };
       sendPrivate(SpeakingAs$7, content);
   };
