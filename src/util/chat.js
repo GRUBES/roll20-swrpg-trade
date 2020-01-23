@@ -19,6 +19,8 @@
  * @property [wide5] {string}
  */
 
+import {Dice, DifficultyToDice} from "./enums";
+
 /**
  * The "Base" Roll Template's predefined properties
  *
@@ -41,6 +43,32 @@ const TemplateKeys = [
     "wide4",
     "wide5"
 ];
+
+/**
+ * Rolls dice in private using the "Base" Roll Template
+ *
+ * @param speakingAs {string} the sender of the chat message
+ * @param cmd {string} !eed dice command to roll
+ *
+ * @return {void} sends output to Roll20 chat
+ */
+const rollPrivate = (speakingAs, cmd) => {
+    let pool = eote.process.setDice(cmd.match(eote.defaults.regex.dice), new eote.defaults.dice());
+    let upgradedPool = eote.process.upgrade(cmd.match(eote.defaults.regex.upgrade), pool);
+    let finalPool = eote.process.downgrade(cmd.match(eote.defaults.regex.downgrade), upgradedPool);
+    let results = eote.process.rollDice(finalPool);
+    let graphics = [
+        Dice.Success(results.totals.success),
+        Dice.Failure(results.totals.failure),
+        Dice.Advantage(results.totals.advantage),
+        Dice.Threat(results.totals.threat),
+        Dice.Triumph(results.totals.triumph),
+        Dice.Despair(results.totals.despair)
+        // Dice.Light(results.totals.light),
+        // Dice.Dark(results.totals.dark)
+    ].join("");
+    sendPrivate(speakingAs, {results: graphics});
+};
 
 /**
  * Sends a public chat message with the given data using the "Base" Roll Template
@@ -96,6 +124,7 @@ const parseMessage = (data) => _.chain(data)
  * @license MIT
  */
 export {
+    rollPrivate,
     sendPrivate,
     sendPublic
 };

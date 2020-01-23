@@ -33,6 +33,7 @@
   const Dice = {
       Advantage: displayDice(eote.defaults.graphics.SymbolicReplacement.advantage),
       Boost: displayDice(eote.defaults.graphics.SymbolicReplacement.boost),
+      Dark: displayDice(eote.defaults.graphics.SymbolicReplacement.dark),
       Despair: displayDice(eote.defaults.graphics.SymbolicReplacement.despair),
       Difficulty: {
           SIMPLE: " - ",
@@ -42,6 +43,8 @@
           DAUNTING: difficulty(4),
           FORMIDABLE: difficulty(5)
       },
+      Failure: displayDice(eote.defaults.graphics.SymbolicReplacement.failure),
+      Light: displayDice(eote.defaults.graphics.SymbolicReplacement.light),
       Setback: displayDice(eote.defaults.graphics.SymbolicReplacement.setback),
       Success: displayDice(eote.defaults.graphics.SymbolicReplacement.success),
       Threat: displayDice(eote.defaults.graphics.SymbolicReplacement.threat),
@@ -144,6 +147,32 @@
   ];
 
   /**
+   * Rolls dice in private using the "Base" Roll Template
+   *
+   * @param speakingAs {string} the sender of the chat message
+   * @param cmd {string} !eed dice command to roll
+   *
+   * @return {void} sends output to Roll20 chat
+   */
+  const rollPrivate = (speakingAs, cmd) => {
+      let pool = eote.process.setDice(cmd.match(eote.defaults.regex.dice), new eote.defaults.dice());
+      let upgradedPool = eote.process.upgrade(cmd.match(eote.defaults.regex.upgrade), pool);
+      let finalPool = eote.process.downgrade(cmd.match(eote.defaults.regex.downgrade), upgradedPool);
+      let results = eote.process.rollDice(finalPool);
+      let graphics = [
+          Dice.Success(results.totals.success),
+          Dice.Failure(results.totals.failure),
+          Dice.Advantage(results.totals.advantage),
+          Dice.Threat(results.totals.threat),
+          Dice.Triumph(results.totals.triumph),
+          Dice.Despair(results.totals.despair)
+          // Dice.Light(results.totals.light),
+          // Dice.Dark(results.totals.dark)
+      ].join("");
+      sendPrivate(speakingAs, {results: graphics});
+  };
+
+  /**
    * Whispers the GM a chat message with the given data using the "Base" Roll Template
    *
    * @param speakingAs {string} the sender of the chat message
@@ -213,7 +242,7 @@
    */
 
   /* Sender of chat messages */
-  const speakingAs = "Information Broker";
+  const SpeakingAs$1 = "Information Broker";
 
   // Calculate results for Contact Network and display
   const display$1 = (scope, expertise, obscurity, reputation, relevance) => {
@@ -221,11 +250,10 @@
       let pf = proficiency(expertise);
       let diff = difficulty$1(obscurity);
       let time = responseTime(obscurity, reputation, relevance);
+      let cmd = `!eed ${ab}g ${diff}p upgrade(ability|${pf}) upgrade(difficulty|${relevance-1})`;
 
-      // FIXME How can I roll this in private?
-      eote.process.setup(`!eed ${ab}g ${diff}p upgrade(ability|${pf}) upgrade(difficulty|${relevance-1})`, speakingAs);
-
-      sendPrivate(speakingAs, {title: "Response Time", Days: time});
+      rollPrivate(SpeakingAs$1, cmd);
+      sendPrivate(SpeakingAs$1, {title: "Response Time", Days: time});
   };
 
   // Calculate the number of ability dice the Contact Network uses
@@ -271,7 +299,7 @@
    */
 
   /* Sender of chat messages */
-  const SpeakingAs$1 = "Armorsmith Droid";
+  const SpeakingAs$2 = "Armorsmith Droid";
 
   /* Types of armor templates which can be crafted */
   const TemplateType = {
@@ -403,8 +431,8 @@
           "Soak Increase": tmpl.soak
       };
 
-      sendPrivate(SpeakingAs$1, craftContent);
-      sendPrivate(SpeakingAs$1, itemContent);
+      sendPrivate(SpeakingAs$2, craftContent);
+      sendPrivate(SpeakingAs$2, itemContent);
   };
 
   const display$2 = (templateType) => {
@@ -417,7 +445,7 @@
           "Step 3": `[Construct Armor](!swrpg-craft-construct ${templateType})`,
           "Back to": Macros.craftingMain
       };
-      sendPrivate(SpeakingAs$1, content);
+      sendPrivate(SpeakingAs$2, content);
   };
 
   var Armor = /*#__PURE__*/Object.freeze({
@@ -452,7 +480,7 @@
    */
 
   /* Sender of chat messages */
-  const SpeakingAs$2 = "Cybernetics Droid";
+  const SpeakingAs$3 = "Cybernetics Droid";
 
   /* Types of cybernetic templates which can be crafted */
   const TemplateType$1 = {
@@ -518,8 +546,8 @@
           wide4: "Despair: Patient suffers Critical Injury"
       };
 
-      sendPrivate(SpeakingAs$2, craftContent);
-      sendPrivate(SpeakingAs$2, installContent);
+      sendPrivate(SpeakingAs$3, craftContent);
+      sendPrivate(SpeakingAs$3, installContent);
   };
 
   const display$3 = (templateType) => {
@@ -532,7 +560,7 @@
           "Step 3": `[Construct Cybernetic](!swrpg-craft-construct ${templateType})`,
           "Back to": Macros.craftingMain
       };
-      sendPrivate(SpeakingAs$2, content);
+      sendPrivate(SpeakingAs$3, content);
   };
 
   var Cybernetic = /*#__PURE__*/Object.freeze({
@@ -587,7 +615,7 @@
    */
 
   /* Sender of chat messages */
-  const speakingAs$1 = "Droid Mechanic";
+  const speakingAs = "Droid Mechanic";
 
   /* Types of droid templates which can be crafted */
   const TemplateType$2 = {
@@ -790,7 +818,7 @@
           "Wound Threshold": tmpl.wounds,
           "Strain Threshold": tmpl.strain
       };
-      sendPrivate(speakingAs$1, content);
+      sendPrivate(speakingAs, content);
   };
 
   const display$4 = (templateType) => {
@@ -804,7 +832,7 @@
           wide4: `Step 4: [Program Directives](!swrpg-craft-program #CraftDirectiveTemplate)`,
           "Back to": Macros.craftingMain
       };
-      sendPrivate(speakingAs$1, content);
+      sendPrivate(speakingAs, content);
   };
 
   const program = (templateType) => {
@@ -817,7 +845,7 @@
           Skills: tmpl.skillsGranted.join("; "),
           Talents: tmpl.talentsGranted.join("; ")
       };
-      sendPrivate(speakingAs$1, content);
+      sendPrivate(speakingAs, content);
   };
 
   var Droid = /*#__PURE__*/Object.freeze({
@@ -854,7 +882,7 @@
    */
 
   // Sender of chat messages
-  const SpeakingAs$3 = "Engineering Droid";
+  const SpeakingAs$4 = "Engineering Droid";
 
   // Types of templates which can be crafted
   const TemplateType$3 = {
@@ -913,7 +941,7 @@
           Effect: tmpl.special,
           Encumbrance: tmpl.encumbrance
       };
-      sendPrivate(SpeakingAs$3, content);
+      sendPrivate(SpeakingAs$4, content);
   };
 
   const display$5 = (templateType) => {
@@ -926,7 +954,7 @@
           wide3: `Step 3: [Construct Gadget](!swrpg-craft-construct ${templateType})`,
           "Back to": Macros.craftingMain
       };
-      sendPrivate(SpeakingAs$3, content);
+      sendPrivate(SpeakingAs$4, content);
   };
 
   var Gadget = /*#__PURE__*/Object.freeze({
@@ -964,7 +992,7 @@
    */
 
   /* Sender of chat messages */
-  const SpeakingAs$4 = "The Living Force";
+  const SpeakingAs$5 = "The Living Force";
 
   /* Types of lightsaber templates which can be crafted */
   const TemplateType$4 = {
@@ -1065,8 +1093,8 @@
           "Hard Points": tmpl.hardpoints
       };
 
-      sendPrivate(SpeakingAs$4, craftContent);
-      sendPrivate(SpeakingAs$4, itemContent);
+      sendPrivate(SpeakingAs$5, craftContent);
+      sendPrivate(SpeakingAs$5, itemContent);
   };
 
   const display$6 = (templateType) => {
@@ -1079,7 +1107,7 @@
           "Step 3": `[Construct Hilt](!swrpg-craft-construct ${templateType})`,
           "Back to": Macros.craftingMain
       };
-      sendPrivate(SpeakingAs$4, content);
+      sendPrivate(SpeakingAs$5, content);
   };
 
   var Lightsaber = /*#__PURE__*/Object.freeze({
@@ -1168,7 +1196,7 @@
    */
 
   /* Sender of chat messages */
-  const SpeakingAs$5 = "Mechanics Droid";
+  const SpeakingAs$6 = "Mechanics Droid";
 
   /* Types of vehicle templates which can be crafted */
   const TemplateType$5 = {
@@ -1821,7 +1849,7 @@
           prewide: `Time Required: ${tmpl.time}, -2xVSL hours for each additional success`,
           Effect: tmpl.special || "None"
       };
-      sendPrivate(SpeakingAs$5, content);
+      sendPrivate(SpeakingAs$6, content);
   };
 
   const display$7 = (templateType) => {
@@ -1841,7 +1869,7 @@
           "Step 10": `[Assemble Vehicle](!swrpg-craft-assemble ${templateType})`,
           "Back to": Macros.craftingMain
       };
-      sendPrivate(SpeakingAs$5, content);
+      sendPrivate(SpeakingAs$6, content);
   };
 
   const assemble = (templateType) => {
@@ -1855,7 +1883,7 @@
           wide: `Crew Required: ${tmpl.assemblyCrew}`,
           wide2: `Supply Cost: ${tmpl.assemblyCost}`
       };
-      sendPrivate(SpeakingAs$5, assembleContent);
+      sendPrivate(SpeakingAs$6, assembleContent);
   };
 
   var Vehicle = /*#__PURE__*/Object.freeze({
@@ -1898,7 +1926,7 @@
    */
 
   /* Sender of chat messages */
-  const speakingAs$2 = "Weaponsmith Droid";
+  const speakingAs$1 = "Weaponsmith Droid";
 
   /* Types of weapon templates which can be crafted */
   const TemplateType$6 = {
@@ -2232,8 +2260,8 @@
           "Hard Points": tmpl.hardpoints
       };
 
-      sendPrivate(speakingAs$2, craftContent);
-      sendPrivate(speakingAs$2, itemContent);
+      sendPrivate(speakingAs$1, craftContent);
+      sendPrivate(speakingAs$1, itemContent);
   };
 
   const display$8 = (templateType) => {
@@ -2246,7 +2274,7 @@
           wide3: `Step 3: [Construct Weapon](!swrpg-craft-construct ${templateType})`,
           "Back to": Macros.craftingMain
       };
-      sendPrivate(speakingAs$2, content);
+      sendPrivate(speakingAs$1, content);
   };
 
   var Weapon = /*#__PURE__*/Object.freeze({
@@ -2266,7 +2294,7 @@
    */
 
   /* Sender of chat messages */
-  const speakingAs$3 = "Trade Representative";
+  const speakingAs$2 = "Trade Representative";
 
   /**
    * Enumeration of proximity to major trade route
@@ -2366,7 +2394,7 @@
           wide2: `${Dice.Success(2)} ${sellList[1]}`,
           wide3: `${Dice.Success(3)} ${sellList[2]}`
       };
-      sendPrivate(speakingAs$3, content);
+      sendPrivate(speakingAs$2, content);
   };
 
   // Calculate the Difficulty of the Negotiation or Streetwise roll
@@ -2401,7 +2429,7 @@
    */
 
   /* Sender of chat messages */
-  const SpeakingAs$6 = "Crafting Droid";
+  const SpeakingAs$7 = "Crafting Droid";
 
   // Maps a Mode to its Module
   const ModeToModule = {
@@ -2443,7 +2471,7 @@
           Difficulty: diff,
           "Purchase Price": buy
       };
-      sendPrivate(SpeakingAs$6, content);
+      sendPrivate(SpeakingAs$7, content);
   };
 
   // Step 3: Construct
@@ -2464,7 +2492,7 @@
           wide3: `${Macros.craftVehicle} ${Macros.craftWeapon}`,
           wide4: `${Macros.craftCybernetic}`
       };
-      sendPrivate(SpeakingAs$6, content);
+      sendPrivate(SpeakingAs$7, content);
   };
 
   /**
@@ -2478,7 +2506,7 @@
    */
 
   /* Sender of chat messages */
-  const speakingAs$4 = "Repair Droid";
+  const speakingAs$3 = "Repair Droid";
 
   /**
    * Enumeration of Item Conditions
@@ -2516,7 +2544,7 @@
           "Repair Cost": price,
           wide: `${Dice.Advantage(1)} or ${Dice.Threat(1)} modifies cost by 10% each`
       };
-      sendPrivate(speakingAs$4, content);
+      sendPrivate(speakingAs$3, content);
   };
 
   // Calculate the Difficulty of the repair check
@@ -2536,7 +2564,7 @@
    */
 
   /* Sender of chat messages */
-  const SpeakingAs$7 = "H4-x0r";
+  const SpeakingAs$8 = "H4-x0r";
 
   /* Tracks number of security programs currently running */
   let SecurityPrograms = 0;
@@ -2556,7 +2584,7 @@
   const access = () => {
       let content = {
           title: "Access Difficulties",
-          flavor: "Computers (INT)",
+          subtitle: "Computers (INT)",
           prewide: `**Defensive Slicing** adds ${Dice.Setback(1)} per Rank
             **Improved Defensive Slicing** upgrades Difficulty per Rank`,
           header: "Difficulty by System Type",
@@ -2571,7 +2599,7 @@
           wide5: `*Ancient Archive*:
             (${Dice.Difficulty.FORMIDABLE})`
       };
-      sendPrivate(SpeakingAs$7, content);
+      sendPrivate(SpeakingAs$8, content);
   };
 
   const activateSecurity = () => {
@@ -2579,7 +2607,7 @@
           title: "Activate a Security Program",
           flavor: `Computers (${Dice.Difficulty.AVERAGE})`
       };
-      sendPrivate(SpeakingAs$7, content);
+      sendPrivate(SpeakingAs$8, content);
   };
 
   const backdoor = () => {
@@ -2587,7 +2615,7 @@
           title: "Create or Locate Backdoor",
           flavor: `Computers (${Dice.Difficulty.HARD})`
       };
-      sendPrivate(SpeakingAs$7, content);
+      sendPrivate(SpeakingAs$8, content);
   };
 
   // Disabling a Security Program has same difficulties as System Access check
@@ -2604,7 +2632,7 @@
           wide3: `${Macros.sliceEnact} ${Macros.sliceLockdown}`,
           wide4: `${Macros.sliceExpel} ${Macros.sliceTrace}`
       };
-      sendPrivate(SpeakingAs$7, content);
+      sendPrivate(SpeakingAs$8, content);
   };
 
   const enact = () => {
@@ -2613,7 +2641,7 @@
           flavor: "Computers",
           wide: "Difficulty is set by similarity of command to the intended function of the system"
       };
-      sendPrivate(SpeakingAs$7, content);
+      sendPrivate(SpeakingAs$8, content);
   };
 
   const expel = () => {
@@ -2623,7 +2651,7 @@
           prewide: `Add ${Dice.Boost(1)} per known Signature fragment`,
           wide: "If expelled, upgrade the difficulty of further Access System checks by two"
       };
-      sendPrivate(SpeakingAs$7, content);
+      sendPrivate(SpeakingAs$8, content);
   };
 
   const lockdown = () => {
@@ -2632,7 +2660,7 @@
           flavor: `Computers (${Dice.Difficulty.HARD})`,
           wide: "Character must have physical access to restart the system"
       };
-      sendPrivate(SpeakingAs$7, content);
+      sendPrivate(SpeakingAs$8, content);
   };
 
   const restart = () => {
@@ -2642,7 +2670,7 @@
           wide: "Must have physical access",
           wide2: "Takes one hour"
       };
-      sendPrivate(SpeakingAs$7, content);
+      sendPrivate(SpeakingAs$8, content);
   };
 
   const trace = () => {
@@ -2655,7 +2683,7 @@
           wide2: "One segment of target's Signature",
           wide3: "Full list of actions target has taken in system this encounter"
       };
-      sendPrivate(SpeakingAs$7, content);
+      sendPrivate(SpeakingAs$8, content);
   };
 
   /**
@@ -2669,7 +2697,7 @@
    */
 
   /* Sender of chat messages */
-  const SpeakingAs$8 = "C-4D4";
+  const SpeakingAs$9 = "C-4D4";
 
   const charm = () => {
       let content = {
@@ -2683,7 +2711,7 @@
           wide4: `${Dice.Threat(1)} reduces the number of affected people
             ${Dice.Despair(1)} turns the NPC into a minor recurring adversary`
       };
-      sendPrivate(SpeakingAs$8, content);
+      sendPrivate(SpeakingAs$9, content);
   };
 
   const coercion = () => {
@@ -2698,7 +2726,7 @@
           wide3: `${Dice.Threat(1)} builds resentment towards coercer
             ${Dice.Despair(1)} reveals too much information to target`
       };
-      sendPrivate(SpeakingAs$8, content);
+      sendPrivate(SpeakingAs$9, content);
   };
 
   const deception = () => {
@@ -2712,7 +2740,7 @@
           wide2: `${Dice.Threat(1)} increases suspicion
             ${Dice.Despair(1)} increases hostility and harms reputation`
       };
-      sendPrivate(SpeakingAs$8, content);
+      sendPrivate(SpeakingAs$9, content);
   };
 
   const leadership = () => {
@@ -2726,7 +2754,7 @@
           wide2: `${Dice.Threat(1)} decreases effectiveness of targets
             ${Dice.Despair(1)} undermines authority`
       };
-      sendPrivate(SpeakingAs$8, content);
+      sendPrivate(SpeakingAs$9, content);
   };
 
   const negotation = () => {
@@ -2739,7 +2767,7 @@
           wide2: `${Dice.Threat(1)} decreases acting character's profit by 5% each or reduces scope of deal
             ${Dice.Despair(1)} seriously sabotages deal or relationship`
       };
-      sendPrivate(SpeakingAs$8, content);
+      sendPrivate(SpeakingAs$9, content);
   };
 
   const display$d = () => {
@@ -2750,7 +2778,7 @@
           wide2: `${Macros.socialDeception} ${Macros.socialLeadership}`,
           wide3: Macros.socialNegotiation
       };
-      sendPrivate(SpeakingAs$8, content);
+      sendPrivate(SpeakingAs$9, content);
   };
 
   /**
@@ -2820,7 +2848,8 @@
   }
 
   /**
-   * Strips the command out of the chat message and returns the rest of the input parameters as an Array
+   * Strips the command out of the chat message and returns the rest of the input parameters as an
+   * Array
    *
    * @param msg {Object} Roll20 chat message
    *

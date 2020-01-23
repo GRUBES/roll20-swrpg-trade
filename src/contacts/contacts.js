@@ -8,11 +8,11 @@
  * @license MIT
  */
 
-import {clamp} from "../util/math";
-import {sendPrivate} from "../util/chat";
+import { clamp } from "../util/math";
+import { rollPrivate, sendPrivate } from "../util/chat";
 
 /* Sender of chat messages */
-const speakingAs = "Information Broker";
+const SpeakingAs = "Information Broker";
 
 /**
  * Enumeration of information Obscurity values for Contact Networks
@@ -63,11 +63,10 @@ const display = (scope, expertise, obscurity, reputation, relevance) => {
     let pf = proficiency(expertise);
     let diff = difficulty(obscurity);
     let time = responseTime(obscurity, reputation, relevance);
+    let cmd = `!eed ${ab}g ${diff}p upgrade(ability|${pf}) upgrade(difficulty|${relevance-1})`;
 
-    // FIXME How can I roll this in private?
-    eote.process.setup(`!eed ${ab}g ${diff}p upgrade(ability|${pf}) upgrade(difficulty|${relevance-1})`, speakingAs);
-
-    sendPrivate(speakingAs, {title: "Response Time", Days: time});
+    rollPrivate(SpeakingAs, cmd);
+    sendPrivate(SpeakingAs, {title: "Response Time", Days: time});
 };
 
 // Calculate the number of ability dice the Contact Network uses
@@ -80,7 +79,7 @@ const difficulty = (obscurity) => clamp5(obscurity);
 const proficiency = (expertise) => clamp5(expertise);
 
 // Calculate the response time of the informant
-const responseTime = (obscurity, reputation, relevance) => (obscurity * 3 * reputation * relevance);
+const responseTime = (obscurity, reputation, relevance) => (obscurity * reputation * relevance);
 
 const clamp5 = clamp(0, 5);
 
