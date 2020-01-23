@@ -8,7 +8,8 @@
  * @license MIT
  */
 
-import {sendPrivate} from "../util/chat";
+import { sendPrivate } from "../util/chat";
+import { Dice } from "../util/enums";
 
 /* Sender of chat messages */
 const speakingAs = "Repair Droid";
@@ -47,7 +48,7 @@ const display = (condition, basePrice) => {
         title: "Item Repair",
         Difficulty: diff,
         "Repair Cost": price,
-        "Adv or Thr": "modifies cost accordingly by 10% each for self repair"
+        wide: `${Dice.Advantage(1)} or ${Dice.Threat(1)} modifies cost by 10% each`
     };
     sendPrivate(speakingAs, content);
 };

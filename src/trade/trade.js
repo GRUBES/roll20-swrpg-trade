@@ -8,7 +8,7 @@
  * @license MIT
  */
 
-import {DifficultyToDice} from "../util/enums";
+import {Dice, DifficultyToDice} from "../util/enums";
 import {clamp} from "../util/math";
 import {sendPrivate} from "../util/chat";
 
@@ -102,13 +102,16 @@ const RegionToModifier = {
 // Calculate trade values and display to GM
 const display = (rarity, region, tradeProximity, population, basePrice) => {
     let diff = difficulty(rarity, region, tradeProximity, population);
-    let buy = purchasePrice(diff, basePrice);
-    let sell = sellPrices(buy).join(" | ");
+    let buy = Math.ceil(purchasePrice(diff, basePrice));
+    let sellList = sellPrices(buy).map(Math.ceil);
     let content = {
         title: "Trade Negotiations",
-        prewide: `Negotiation or Streetwise (${DifficultyToDice[diff]})`,
-        "Purchase Price": buy,
-        "Sell Prices": sell
+        flavor: `Negotiation or Streetwise (${DifficultyToDice[diff]})`,
+        prewide: `Purchase Price: ${buy}`,
+        header: "Sell Prices",
+        wide: `${Dice.Success(1)} ${sellList[0]}`,
+        wide2: `${Dice.Success(2)} ${sellList[1]}`,
+        wide3: `${Dice.Success(3)} ${sellList[2]}`
     };
     sendPrivate(speakingAs, content);
 };

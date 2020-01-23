@@ -4,17 +4,100 @@
   var version = "0.9.0";
 
   /**
-   * Math utility module
+   * Common enumerations
    *
-   * @module swrpg/util/math
+   * @module swrpg/util/enum
    *
    * @author Draico Dorath
-   * @copyright 2019
+   * @copyright 2020
    * @license MIT
    */
 
-  // Clamp a value between two others, inclusive
-  const clamp = (min, max) => v => Math.max(Math.min(v, max), min);
+  // Utilities for displaying dice
+  const replacer = function () { return this["replacer"]; };
+  const displayDice = (s) => (n) => _.times(n, replacer, s).join("");
+
+  const CraftingMode = {
+      NONE: -1,
+      ARMOR: 0,
+      DROID: 1,
+      GADGET: 2,
+      VEHICLE: 3,
+      WEAPON: 4,
+      LIGHTSABER: 5,
+      CYBERNETIC: 6
+  };
+
+  // Dice graphics
+  const difficulty = displayDice(eote.defaults.graphics.SymbolicReplacement.difficulty);
+  const Dice = {
+      Advantage: displayDice(eote.defaults.graphics.SymbolicReplacement.advantage),
+      Boost: displayDice(eote.defaults.graphics.SymbolicReplacement.boost),
+      Despair: displayDice(eote.defaults.graphics.SymbolicReplacement.despair),
+      Difficulty: {
+          SIMPLE: " - ",
+          EASY: difficulty(1),
+          AVERAGE: difficulty(2),
+          HARD: difficulty(3),
+          DAUNTING: difficulty(4),
+          FORMIDABLE: difficulty(5)
+      },
+      Setback: displayDice(eote.defaults.graphics.SymbolicReplacement.setback),
+      Success: displayDice(eote.defaults.graphics.SymbolicReplacement.success),
+      Threat: displayDice(eote.defaults.graphics.SymbolicReplacement.threat),
+      Triumph: displayDice(eote.defaults.graphics.SymbolicReplacement.triumph)
+  };
+
+  const DifficultyToDice = [
+      Dice.Difficulty.SIMPLE,
+      Dice.Difficulty.EASY,
+      Dice.Difficulty.AVERAGE,
+      Dice.Difficulty.HARD,
+      Dice.Difficulty.DAUNTING,
+      Dice.Difficulty.FORMIDABLE
+  ];
+
+  // HTML Entities
+  const Entities = {
+      ASTERISK: "&#42;",
+      CR: "&#13;"
+  };
+
+  // Commonly referenced macros
+  const Macros = {
+      contactInvestigate: `[Use Contact Network](!${Entities.CR}#ContactInvestigate)`,
+      craftingMain: "[Crafting Station](!swrpg-craft-ui)",
+      craftArmor: `[Create Armor](!swrpg-craft-mode ${CraftingMode.ARMOR})`,
+      craftCybernetic: `[Create Cybernetic](!swrpg-craft-mode ${CraftingMode.CYBERNETIC})`,
+      craftDroid: `[Create Droid](!swrpg-craft-mode ${CraftingMode.DROID})`,
+      craftGadget: `[Create Gadget](!swrpg-craft-mode ${CraftingMode.GADGET})`,
+      craftLightsaber: `[Create Lightsaber](!swrpg-craft-mode ${CraftingMode.LIGHTSABER})`,
+      craftVehicle: `[Create Vehicle](!swrpg-craft-mode ${CraftingMode.VEHICLE})`,
+      craftWeapon: `[Create Weapon](!swrpg-craft-mode ${CraftingMode.WEAPON})`,
+      partyLocation: `[Current Location](!${Entities.CR}#PartyLocation)`,
+      repairItem: `[Repair Item](!${Entities.CR}#RepairItem)`,
+      sliceAccess: "[Access System](!swrpg-slice-access)",
+      sliceActivate: "[Activate Security](!swrpg-slice-activate)",
+      sliceDisable: "[Disable Security](!swrpg-slice-disable)",
+      sliceDecrease: "[*Decrease*](!swrpg-slice-security-dec)",
+      sliceEnact: `[${Entities.ASTERISK}Enact Command](!swrpg-slice-enact)`,
+      sliceExpel: `[${Entities.ASTERISK}Expel User](!swrpg-slice-expel)`,
+      sliceIncrease: "[*Increase*](!swrpg-slice-security-inc)",
+      sliceLockdown: `[${Entities.ASTERISK}Lockdown](!swrpg-slice-lockdown)`,
+      sliceMain: "[Slicing Encounter](!swrpg-slice)",
+      sliceReset: "[*Reset*](!swrpg-slice-security-reset)",
+      sliceRestart: "[Restart System](!swrpg-slice-restart)",
+      sliceTrace: `[${Entities.ASTERISK}Trace User](!swrpg-slice-trace)`,
+      socialCharm: "[Charm](!swrpg-social-charm)",
+      socialCoercion: "[Coercion](!swrpg-social-coercion)",
+      socialDeception: "[Deception](!swrpg-social-deception)",
+      socialLeadership: "[Leadership](!swrpg-social-leadership)",
+      socialMain: "[Social Encounter](!swrpg-social-ui)",
+      socialNegotiation: "[Negotiation](!swrpg-social-negotiation)",
+      tradeItem: `[Trade Item](!${Entities.CR}#TradeItem)`,
+      tradeLocation: "#TradeLocation #TradeProximity #TradePopulation"
+
+  };
 
   /**
    * Data structure for the predefined properties of the "Base" Roll Template
@@ -91,6 +174,34 @@
       .value()
       .join("");
 
+  /* Sender of chat messages */
+  const SpeakingAs = "The Dark Side";
+
+  // Render the entry point chat UI for the crafting system
+  const display = () => {
+      let content = {
+          title: "GM Tools",
+          wide: `${Macros.partyLocation} ${Macros.craftingMain}`,
+          wide2: `${Macros.sliceMain} ${Macros.socialMain}`,
+          wide3: `${Macros.repairItem} ${Macros.tradeItem}`,
+          wide4: `${Macros.contactInvestigate}`
+      };
+      sendPrivate(SpeakingAs, content);
+  };
+
+  /**
+   * Math utility module
+   *
+   * @module swrpg/util/math
+   *
+   * @author Draico Dorath
+   * @copyright 2019
+   * @license MIT
+   */
+
+  // Clamp a value between two others, inclusive
+  const clamp = (min, max) => v => Math.max(Math.min(v, max), min);
+
   /**
    * Core logic for the Contact Networks system
    *
@@ -105,10 +216,10 @@
   const speakingAs = "Information Broker";
 
   // Calculate results for Contact Network and display
-  const display = (scope, expertise, obscurity, reputation, relevance) => {
+  const display$1 = (scope, expertise, obscurity, reputation, relevance) => {
       let ab = ability(scope);
       let pf = proficiency(expertise);
-      let diff = difficulty(obscurity);
+      let diff = difficulty$1(obscurity);
       let time = responseTime(obscurity, reputation, relevance);
 
       // FIXME How can I roll this in private?
@@ -121,7 +232,7 @@
   const ability = (scope) => clamp5(scope);
 
   // Calculate the Difficulty of the Contact Network's skill check
-  const difficulty = (obscurity) => clamp5(obscurity);
+  const difficulty$1 = (obscurity) => clamp5(obscurity);
 
   // Calculate the number of ability upgrades the Contact Network receives
   const proficiency = (expertise) => clamp5(expertise);
@@ -130,94 +241,6 @@
   const responseTime = (obscurity, reputation, relevance) => (obscurity * 3 * reputation * relevance);
 
   const clamp5 = clamp(0, 5);
-
-  /**
-   * Common enumerations
-   *
-   * @module swrpg/util/enum
-   *
-   * @author Draico Dorath
-   * @copyright 2020
-   * @license MIT
-   */
-
-  // Utilities for displaying dice
-  const replacer = function () { return this["replacer"]; };
-  const displayDice = (s) => (n) => _.times(n, replacer, s).join("");
-
-  const CraftingMode = {
-      NONE: -1,
-      ARMOR: 0,
-      DROID: 1,
-      GADGET: 2,
-      VEHICLE: 3,
-      WEAPON: 4,
-      LIGHTSABER: 5,
-      CYBERNETIC: 6
-  };
-
-  // Dice graphics
-  const difficulty$1 = displayDice(eote.defaults.graphics.SymbolicReplacement.difficulty);
-  const Dice = {
-      Advantage: displayDice(eote.defaults.graphics.SymbolicReplacement.advantage),
-      Boost: displayDice(eote.defaults.graphics.SymbolicReplacement.boost),
-      Despair: displayDice(eote.defaults.graphics.SymbolicReplacement.despair),
-      Difficulty: {
-          SIMPLE: " - ",
-          EASY: difficulty$1(1),
-          AVERAGE: difficulty$1(2),
-          HARD: difficulty$1(3),
-          DAUNTING: difficulty$1(4),
-          FORMIDABLE: difficulty$1(5)
-      },
-      Setback: displayDice(eote.defaults.graphics.SymbolicReplacement.setback),
-      Success: displayDice(eote.defaults.graphics.SymbolicReplacement.success),
-      Threat: displayDice(eote.defaults.graphics.SymbolicReplacement.threat),
-      Triumph: displayDice(eote.defaults.graphics.SymbolicReplacement.triumph)
-  };
-
-  const DifficultyToDice = [
-      Dice.Difficulty.SIMPLE,
-      Dice.Difficulty.EASY,
-      Dice.Difficulty.AVERAGE,
-      Dice.Difficulty.HARD,
-      Dice.Difficulty.DAUNTING,
-      Dice.Difficulty.FORMIDABLE
-  ];
-
-  // HTML Entities
-  const Entities = {
-      ASTERISK: "&#42;"
-  };
-
-  // Commonly referenced macros
-  const Macros = {
-      tradeLocation: "#TradeLocation #TradeProximity #TradePopulation",
-      craftingMain: "[Crafting Station](!swrpg-craft-ui)",
-      craftArmor: `[Create Armor](!swrpg-craft-mode ${CraftingMode.ARMOR})`,
-      craftCybernetic: `[Create Cybernetic](!swrpg-craft-mode ${CraftingMode.CYBERNETIC})`,
-      craftDroid: `[Create Droid](!swrpg-craft-mode ${CraftingMode.DROID})`,
-      craftGadget: `[Create Gadget](!swrpg-craft-mode ${CraftingMode.GADGET})`,
-      craftLightsaber: `[Create Lightsaber](!swrpg-craft-mode ${CraftingMode.LIGHTSABER})`,
-      craftVehicle: `[Create Vehicle](!swrpg-craft-mode ${CraftingMode.VEHICLE})`,
-      craftWeapon: `[Create Weapon](!swrpg-craft-mode ${CraftingMode.WEAPON})`,
-      sliceAccess: "[Access System](!swrpg-slice-access)",
-      sliceActivate: "[Activate Security](!swrpg-slice-activate)",
-      sliceDisable: "[Disable Security](!swrpg-slice-disable)",
-      sliceDecrease: "[*Decrease*](!swrpg-slice-security-dec)",
-      sliceEnact: `[${Entities.ASTERISK}Enact Command](!swrpg-slice-enact)`,
-      sliceExpel: `[${Entities.ASTERISK}Expel User](!swrpg-slice-expel)`,
-      sliceIncrease: "[*Increase*](!swrpg-slice-security-inc)",
-      sliceLockdown: `[${Entities.ASTERISK}Lockdown](!swrpg-slice-lockdown)`,
-      sliceReset: "[*Reset*](!swrpg-slice-security-reset)",
-      sliceRestart: "[Restart System](!swrpg-slice-restart)",
-      sliceTrace: `[${Entities.ASTERISK}Trace User](!swrpg-slice-trace)`,
-      socialCharm: `[Charm](!swrpg-social-charm)`,
-      socialCoercion: `[Coercion](!swrpg-social-coercion)`,
-      socialDeception: `[Deception](!swrpg-social-deception)`,
-      socialLeadership: `[Leadership](!swrpg-social-leadership)`,
-      socialNegotiation: `[Negotiation](!swrpg-social-negotiation)`
-  };
 
   /**
    * Core logic for crafting armor
@@ -248,7 +271,7 @@
    */
 
   /* Sender of chat messages */
-  const SpeakingAs = "Armorsmith Droid";
+  const SpeakingAs$1 = "Armorsmith Droid";
 
   /* Types of armor templates which can be crafted */
   const TemplateType = {
@@ -380,11 +403,11 @@
           "Soak Increase": tmpl.soak
       };
 
-      sendPrivate(SpeakingAs, craftContent);
-      sendPrivate(SpeakingAs, itemContent);
+      sendPrivate(SpeakingAs$1, craftContent);
+      sendPrivate(SpeakingAs$1, itemContent);
   };
 
-  const display$1 = (templateType) => {
+  const display$2 = (templateType) => {
       let tmpl = Template[templateType] || {};
       let content = {
           title: "Armor Construction",
@@ -394,13 +417,13 @@
           "Step 3": `[Construct Armor](!swrpg-craft-construct ${templateType})`,
           "Back to": Macros.craftingMain
       };
-      sendPrivate(SpeakingAs, content);
+      sendPrivate(SpeakingAs$1, content);
   };
 
   var Armor = /*#__PURE__*/Object.freeze({
     __proto__: null,
     construct: construct,
-    display: display$1
+    display: display$2
   });
 
   /**
@@ -429,7 +452,7 @@
    */
 
   /* Sender of chat messages */
-  const SpeakingAs$1 = "Cybernetics Droid";
+  const SpeakingAs$2 = "Cybernetics Droid";
 
   /* Types of cybernetic templates which can be crafted */
   const TemplateType$1 = {
@@ -495,11 +518,11 @@
           wide4: "Despair: Patient suffers Critical Injury"
       };
 
-      sendPrivate(SpeakingAs$1, craftContent);
-      sendPrivate(SpeakingAs$1, installContent);
+      sendPrivate(SpeakingAs$2, craftContent);
+      sendPrivate(SpeakingAs$2, installContent);
   };
 
-  const display$2 = (templateType) => {
+  const display$3 = (templateType) => {
       let tmpl = Template$1[templateType] || {};
       let content = {
           title: "Cybernetics Construction",
@@ -509,13 +532,13 @@
           "Step 3": `[Construct Cybernetic](!swrpg-craft-construct ${templateType})`,
           "Back to": Macros.craftingMain
       };
-      sendPrivate(SpeakingAs$1, content);
+      sendPrivate(SpeakingAs$2, content);
   };
 
   var Cybernetic = /*#__PURE__*/Object.freeze({
     __proto__: null,
     construct: construct$1,
-    display: display$2
+    display: display$3
   });
 
   /**
@@ -770,7 +793,7 @@
       sendPrivate(speakingAs$1, content);
   };
 
-  const display$3 = (templateType) => {
+  const display$4 = (templateType) => {
       let tmpl = Template$2[templateType] || {};
       let content = {
           title: "Droid Construction",
@@ -800,7 +823,7 @@
   var Droid = /*#__PURE__*/Object.freeze({
     __proto__: null,
     construct: construct$2,
-    display: display$3,
+    display: display$4,
     program: program
   });
 
@@ -831,7 +854,7 @@
    */
 
   // Sender of chat messages
-  const SpeakingAs$2 = "Engineering Droid";
+  const SpeakingAs$3 = "Engineering Droid";
 
   // Types of templates which can be crafted
   const TemplateType$3 = {
@@ -890,10 +913,10 @@
           Effect: tmpl.special,
           Encumbrance: tmpl.encumbrance
       };
-      sendPrivate(SpeakingAs$2, content);
+      sendPrivate(SpeakingAs$3, content);
   };
 
-  const display$4 = (templateType) => {
+  const display$5 = (templateType) => {
       let tmpl = Template$3[templateType] || {};
       let content = {
           title: "Gadget Construction",
@@ -903,13 +926,13 @@
           wide3: `Step 3: [Construct Gadget](!swrpg-craft-construct ${templateType})`,
           "Back to": Macros.craftingMain
       };
-      sendPrivate(SpeakingAs$2, content);
+      sendPrivate(SpeakingAs$3, content);
   };
 
   var Gadget = /*#__PURE__*/Object.freeze({
     __proto__: null,
     construct: construct$3,
-    display: display$4
+    display: display$5
   });
 
   /**
@@ -941,7 +964,7 @@
    */
 
   /* Sender of chat messages */
-  const SpeakingAs$3 = "The Living Force";
+  const SpeakingAs$4 = "The Living Force";
 
   /* Types of lightsaber templates which can be crafted */
   const TemplateType$4 = {
@@ -1042,11 +1065,11 @@
           "Hard Points": tmpl.hardpoints
       };
 
-      sendPrivate(SpeakingAs$3, craftContent);
-      sendPrivate(SpeakingAs$3, itemContent);
+      sendPrivate(SpeakingAs$4, craftContent);
+      sendPrivate(SpeakingAs$4, itemContent);
   };
 
-  const display$5 = (templateType) => {
+  const display$6 = (templateType) => {
       let tmpl = Template$4[templateType] || {};
       let content = {
           title: "Lightsaber Construction",
@@ -1056,13 +1079,13 @@
           "Step 3": `[Construct Hilt](!swrpg-craft-construct ${templateType})`,
           "Back to": Macros.craftingMain
       };
-      sendPrivate(SpeakingAs$3, content);
+      sendPrivate(SpeakingAs$4, content);
   };
 
   var Lightsaber = /*#__PURE__*/Object.freeze({
     __proto__: null,
     construct: construct$4,
-    display: display$5
+    display: display$6
   });
 
   /**
@@ -1145,7 +1168,7 @@
    */
 
   /* Sender of chat messages */
-  const SpeakingAs$4 = "Mechanics Droid";
+  const SpeakingAs$5 = "Mechanics Droid";
 
   /* Types of vehicle templates which can be crafted */
   const TemplateType$5 = {
@@ -1798,10 +1821,10 @@
           prewide: `Time Required: ${tmpl.time}, -2xVSL hours for each additional success`,
           Effect: tmpl.special || "None"
       };
-      sendPrivate(SpeakingAs$4, content);
+      sendPrivate(SpeakingAs$5, content);
   };
 
-  const display$6 = (templateType) => {
+  const display$7 = (templateType) => {
       let tmpl = Template$5[templateType] || {};
       let content = {
           title: "Vehicle Construction",
@@ -1818,7 +1841,7 @@
           "Step 10": `[Assemble Vehicle](!swrpg-craft-assemble ${templateType})`,
           "Back to": Macros.craftingMain
       };
-      sendPrivate(SpeakingAs$4, content);
+      sendPrivate(SpeakingAs$5, content);
   };
 
   const assemble = (templateType) => {
@@ -1832,13 +1855,13 @@
           wide: `Crew Required: ${tmpl.assemblyCrew}`,
           wide2: `Supply Cost: ${tmpl.assemblyCost}`
       };
-      sendPrivate(SpeakingAs$4, assembleContent);
+      sendPrivate(SpeakingAs$5, assembleContent);
   };
 
   var Vehicle = /*#__PURE__*/Object.freeze({
     __proto__: null,
     construct: construct$5,
-    display: display$6,
+    display: display$7,
     assemble: assemble
   });
 
@@ -2213,7 +2236,7 @@
       sendPrivate(speakingAs$2, itemContent);
   };
 
-  const display$7 = (templateType) => {
+  const display$8 = (templateType) => {
       let tmpl = Template$6[templateType] || {};
       let content = {
           title: "Weapon Construction",
@@ -2229,7 +2252,7 @@
   var Weapon = /*#__PURE__*/Object.freeze({
     __proto__: null,
     construct: construct$6,
-    display: display$7
+    display: display$8
   });
 
   /**
@@ -2330,15 +2353,18 @@
   };
 
   // Calculate trade values and display to GM
-  const display$8 = (rarity, region, tradeProximity, population, basePrice) => {
+  const display$9 = (rarity, region, tradeProximity, population, basePrice) => {
       let diff = difficulty$2(rarity, region, tradeProximity, population);
-      let buy = purchasePrice(diff, basePrice);
-      let sell = sellPrices(buy).join(" | ");
+      let buy = Math.ceil(purchasePrice(diff, basePrice));
+      let sellList = sellPrices(buy).map(Math.ceil);
       let content = {
           title: "Trade Negotiations",
-          prewide: `Negotiation or Streetwise (${DifficultyToDice[diff]})`,
-          "Purchase Price": buy,
-          "Sell Prices": sell
+          flavor: `Negotiation or Streetwise (${DifficultyToDice[diff]})`,
+          prewide: `Purchase Price: ${buy}`,
+          header: "Sell Prices",
+          wide: `${Dice.Success(1)} ${sellList[0]}`,
+          wide2: `${Dice.Success(2)} ${sellList[1]}`,
+          wide3: `${Dice.Success(3)} ${sellList[2]}`
       };
       sendPrivate(speakingAs$3, content);
   };
@@ -2375,7 +2401,7 @@
    */
 
   /* Sender of chat messages */
-  const SpeakingAs$5 = "Crafting Droid";
+  const SpeakingAs$6 = "Crafting Droid";
 
   // Maps a Mode to its Module
   const ModeToModule = {
@@ -2395,7 +2421,7 @@
   let currentMode;
   const setMode = (m) => {
       currentMode = m;
-      ModeToModule[currentMode] ? ModeToModule[currentMode].display(currentTemplate) : display$9();
+      ModeToModule[currentMode] ? ModeToModule[currentMode].display(currentTemplate) : display$a();
   };
 
   /**
@@ -2405,7 +2431,7 @@
   let currentTemplate;
   const setTemplate = (t) => {
       currentTemplate = t;
-      ModeToModule[currentMode] ? ModeToModule[currentMode].display(currentTemplate) : display$9();
+      ModeToModule[currentMode] ? ModeToModule[currentMode].display(currentTemplate) : display$a();
   };
 
   // Step 2: Acquire Materials
@@ -2417,18 +2443,18 @@
           Difficulty: diff,
           "Purchase Price": buy
       };
-      sendPrivate(SpeakingAs$5, content);
+      sendPrivate(SpeakingAs$6, content);
   };
 
   // Step 3: Construct
   const construct$7 = () => {
       (currentTemplate && ModeToModule[currentMode]) ?
           ModeToModule[currentMode].construct(currentTemplate) :
-          display$9();
+          display$a();
   };
 
   // Render the entry point chat UI for the crafting system
-  const display$9 = () => {
+  const display$a = () => {
       currentMode = CraftingMode.NONE;
       currentTemplate = undefined;
       let content = {
@@ -2438,7 +2464,7 @@
           wide3: `${Macros.craftVehicle} ${Macros.craftWeapon}`,
           wide4: `${Macros.craftCybernetic}`
       };
-      sendPrivate(SpeakingAs$5, content);
+      sendPrivate(SpeakingAs$6, content);
   };
 
   /**
@@ -2481,14 +2507,14 @@
   };
 
   // Calculate repair values and display to GM
-  const display$a = (condition, basePrice) => {
+  const display$b = (condition, basePrice) => {
       let diff = difficulty$3(condition);
       let price = cost(condition, basePrice);
       let content = {
           title: "Item Repair",
           Difficulty: diff,
           "Repair Cost": price,
-          "Adv or Thr": "modifies cost accordingly by 10% each for self repair"
+          wide: `${Dice.Advantage(1)} or ${Dice.Threat(1)} modifies cost by 10% each`
       };
       sendPrivate(speakingAs$4, content);
   };
@@ -2510,21 +2536,21 @@
    */
 
   /* Sender of chat messages */
-  const SpeakingAs$6 = "H4-x0r";
+  const SpeakingAs$7 = "H4-x0r";
 
   /* Tracks number of security programs currently running */
   let SecurityPrograms = 0;
   const decreaseSecurity = () => {
       SecurityPrograms = Math.max(SecurityPrograms-1, 0);
-      display$b();
+      display$c();
   };
   const increaseSecurity = () => {
       SecurityPrograms++;
-      display$b();
+      display$c();
   };
   const resetSecurity = () => {
       SecurityPrograms = 0;
-      display$b();
+      display$c();
   };
 
   const access = () => {
@@ -2539,7 +2565,7 @@
           wide4: `*Regional HoloNet, Imperial Datavault*: ${Dice.Difficulty.DAUNTING}`,
           wide5: `*Ancient Archive*: ${Dice.Difficulty.FORMIDABLE}`
       };
-      sendPrivate(SpeakingAs$6, content);
+      sendPrivate(SpeakingAs$7, content);
   };
 
   const activateSecurity = () => {
@@ -2547,7 +2573,7 @@
           title: "Activate a Security Program",
           flavor: `Computers (${Dice.Difficulty.AVERAGE})`
       };
-      sendPrivate(SpeakingAs$6, content);
+      sendPrivate(SpeakingAs$7, content);
   };
 
   const backdoor = () => {
@@ -2555,13 +2581,13 @@
           title: "Create or Locate Backdoor",
           flavor: `Computers (${Dice.Difficulty.HARD})`
       };
-      sendPrivate(SpeakingAs$6, content);
+      sendPrivate(SpeakingAs$7, content);
   };
 
   // Disabling a Security Program has same difficulties as System Access check
   const disableSecurity = access;
 
-  const display$b = () => {
+  const display$c = () => {
       let content = {
           title: "Slicing Encounter",
           flavor: "Actions with * may only be executed by an Intruder when no Security Programs are active.",
@@ -2572,7 +2598,7 @@
           wide3: `${Macros.sliceEnact} ${Macros.sliceLockdown}`,
           wide4: `${Macros.sliceExpel} ${Macros.sliceTrace}`
       };
-      sendPrivate(SpeakingAs$6, content);
+      sendPrivate(SpeakingAs$7, content);
   };
 
   const enact = () => {
@@ -2581,7 +2607,7 @@
           flavor: "Computers",
           wide: "Difficulty is set by similarity of command to the intended function of the system"
       };
-      sendPrivate(SpeakingAs$6, content);
+      sendPrivate(SpeakingAs$7, content);
   };
 
   const expel = () => {
@@ -2591,7 +2617,7 @@
           prewide: `Add ${Dice.Boost(1)} per known Signature fragment`,
           wide: "If expelled, upgrade the difficulty of further Access System checks by two"
       };
-      sendPrivate(SpeakingAs$6, content);
+      sendPrivate(SpeakingAs$7, content);
   };
 
   const lockdown = () => {
@@ -2600,7 +2626,7 @@
           flavor: `Computers (${Dice.Difficulty.HARD})`,
           wide: "Character must have physical access to restart the system"
       };
-      sendPrivate(SpeakingAs$6, content);
+      sendPrivate(SpeakingAs$7, content);
   };
 
   const restart = () => {
@@ -2610,7 +2636,7 @@
           wide: "Must have physical access",
           wide2: "Takes one hour"
       };
-      sendPrivate(SpeakingAs$6, content);
+      sendPrivate(SpeakingAs$7, content);
   };
 
   const trace = () => {
@@ -2623,7 +2649,7 @@
           wide2: "One segment of target's Signature",
           wide3: "Full list of actions target has taken in system this encounter"
       };
-      sendPrivate(SpeakingAs$6, content);
+      sendPrivate(SpeakingAs$7, content);
   };
 
   /**
@@ -2637,7 +2663,7 @@
    */
 
   /* Sender of chat messages */
-  const SpeakingAs$7 = "C-4D4";
+  const SpeakingAs$8 = "C-4D4";
 
   const charm = () => {
       let content = {
@@ -2651,7 +2677,7 @@
           wide4: `${Dice.Threat(1)} reduces the number of affected people
             ${Dice.Despair(1)} turns the NPC into a minor recurring adversary`
       };
-      sendPrivate(SpeakingAs$7, content);
+      sendPrivate(SpeakingAs$8, content);
   };
 
   const coercion = () => {
@@ -2666,7 +2692,7 @@
           wide3: `${Dice.Threat(1)} builds resentment towards coercer
             ${Dice.Despair(1)} reveals too much information to target`
       };
-      sendPrivate(SpeakingAs$7, content);
+      sendPrivate(SpeakingAs$8, content);
   };
 
   const deception = () => {
@@ -2680,7 +2706,7 @@
           wide2: `${Dice.Threat(1)} increases suspicion
             ${Dice.Despair(1)} increases hostility and harms reputation`
       };
-      sendPrivate(SpeakingAs$7, content);
+      sendPrivate(SpeakingAs$8, content);
   };
 
   const leadership = () => {
@@ -2694,7 +2720,7 @@
           wide2: `${Dice.Threat(1)} decreases effectiveness of targets
             ${Dice.Despair(1)} undermines authority`
       };
-      sendPrivate(SpeakingAs$7, content);
+      sendPrivate(SpeakingAs$8, content);
   };
 
   const negotation = () => {
@@ -2707,10 +2733,10 @@
           wide2: `${Dice.Threat(1)} decreases acting character's profit by 5% each or reduces scope of deal
             ${Dice.Despair(1)} seriously sabotages deal or relationship`
       };
-      sendPrivate(SpeakingAs$7, content);
+      sendPrivate(SpeakingAs$8, content);
   };
 
-  const display$c = () => {
+  const display$d = () => {
       let content = {
           title: "Social Encounter",
           flavor: `Prior relationship may add ${Dice.Boost(1)} / ${Dice.Setback(1)} as appropriate`,
@@ -2718,13 +2744,13 @@
           wide2: `${Macros.socialDeception} ${Macros.socialLeadership}`,
           wide3: Macros.socialNegotiation
       };
-      sendPrivate(SpeakingAs$7, content);
+      sendPrivate(SpeakingAs$8, content);
   };
 
   /**
-   * Entry point module for the Galactic Economy system
+   * Primary API entry point containing command router and Roll20 Event listeners
    *
-   * @module swrpg/trade/api
+   * @module swrpg/api
    *
    * @author Draico Dorath
    * @copyright 2019
@@ -2815,15 +2841,15 @@
    */
   function execute(command, input) {
       const routes = {
-          "contact": display,
+          "contact": display$1,
           "craft-acquire": acquire,
           "craft-assemble": assemble,
           "craft-construct": construct$7,
           "craft-mode": setMode,
           "craft-program": program,
           "craft-template": setTemplate,
-          "craft-ui": display$9,
-          "repair": display$a,
+          "craft-ui": display$a,
+          "repair": display$b,
           "slice-access": access,
           "slice-activate": activateSecurity,
           "slice-backdoor": backdoor,
@@ -2836,14 +2862,15 @@
           "slice-security-inc": increaseSecurity,
           "slice-security-reset": resetSecurity,
           "slice-trace": trace,
-          "slice-ui": display$b,
-          "social": display$c,
+          "slice-ui": display$c,
+          "social-ui": display$d,
           "social-charm": charm,
           "social-coercion": coercion,
           "social-deception": deception,
           "social-leadership": leadership,
           "social-negotiation": negotation,
-          "trade": display$8
+          "trade": display$9,
+          "ui": display
       };
 
       if (!(routes[command] && (typeof routes[command] === "function"))) {
