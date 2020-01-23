@@ -79,7 +79,7 @@ const difficulty = (obscurity) => clamp5(obscurity);
 const proficiency = (expertise) => clamp5(expertise);
 
 // Calculate the response time of the informant
-const responseTime = (obscurity, reputation, relevance) => (obscurity * 3 * reputation * relevance);
+const responseTime = (obscurity, reputation, relevance) => (obscurity * reputation * relevance);
 
 const clamp5 = clamp(0, 5);
 
