@@ -63,8 +63,9 @@ export const Entities = {
 
 // Commonly referenced macros
 export const Macros = {
+    combatMain: "", // TODO
     contactInvestigate: `[Use Contact Network](!${Entities.CR}#ContactInvestigate)`,
-    craftingMain: "[Crafting Station](!swrpg-craft-ui)",
+    craftingMain: "[Crafting](!swrpg-craft-ui)",
     craftArmor: `[Create Armor](!swrpg-craft-mode ${CraftingMode.ARMOR})`,
     craftCybernetic: `[Create Cybernetic](!swrpg-craft-mode ${CraftingMode.CYBERNETIC})`,
     craftDroid: `[Create Droid](!swrpg-craft-mode ${CraftingMode.DROID})`,
@@ -72,6 +73,7 @@ export const Macros = {
     craftLightsaber: `[Create Lightsaber](!swrpg-craft-mode ${CraftingMode.LIGHTSABER})`,
     craftVehicle: `[Create Vehicle](!swrpg-craft-mode ${CraftingMode.VEHICLE})`,
     craftWeapon: `[Create Weapon](!swrpg-craft-mode ${CraftingMode.WEAPON})`,
+    navMain: `[Terrain Navigation](!swrpg-nav-ui)`,
     partyLocation: `[Current Location](!${Entities.CR}#PartyLocation)`,
     repairItem: `[Repair Item](!${Entities.CR}#RepairItem)`,
     sliceAccess: "[Access System](!swrpg-slice-access)",
@@ -82,7 +84,7 @@ export const Macros = {
     sliceExpel: `[${Entities.ASTERISK}Expel User](!swrpg-slice-expel)`,
     sliceIncrease: "[*Increase*](!swrpg-slice-security-inc)",
     sliceLockdown: `[${Entities.ASTERISK}Lockdown](!swrpg-slice-lockdown)`,
-    sliceMain: "[Slicing Encounter](!swrpg-slice-ui)",
+    sliceMain: "[Slicing](!swrpg-slice-ui)",
     sliceReset: "[*Reset*](!swrpg-slice-security-reset)",
     sliceRestart: "[Restart System](!swrpg-slice-restart)",
     sliceTrace: `[${Entities.ASTERISK}Trace User](!swrpg-slice-trace)`,
@@ -90,9 +92,8 @@ export const Macros = {
     socialCoercion: "[Coercion](!swrpg-social-coercion)",
     socialDeception: "[Deception](!swrpg-social-deception)",
     socialLeadership: "[Leadership](!swrpg-social-leadership)",
-    socialMain: "[Social Encounter](!swrpg-social-ui)",
+    socialMain: "[Social](!swrpg-social-ui)",
     socialNegotiation: "[Negotiation](!swrpg-social-negotiation)",
     tradeItem: `[Trade Item](!${Entities.CR}#TradeItem)`,
     tradeLocation: "#TradeLocation #TradeProximity #TradePopulation"
-
 };

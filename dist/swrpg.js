@@ -68,6 +68,7 @@
 
   // Commonly referenced macros
   const Macros = {
+      combatMain: "", // TODO
       contactInvestigate: `[Use Contact Network](!${Entities.CR}#ContactInvestigate)`,
       craftingMain: "[Crafting Station](!swrpg-craft-ui)",
       craftArmor: `[Create Armor](!swrpg-craft-mode ${CraftingMode.ARMOR})`,
@@ -77,6 +78,7 @@
       craftLightsaber: `[Create Lightsaber](!swrpg-craft-mode ${CraftingMode.LIGHTSABER})`,
       craftVehicle: `[Create Vehicle](!swrpg-craft-mode ${CraftingMode.VEHICLE})`,
       craftWeapon: `[Create Weapon](!swrpg-craft-mode ${CraftingMode.WEAPON})`,
+      navMain: `[Terrain Navigation](!swrpg-nav-ui)`,
       partyLocation: `[Current Location](!${Entities.CR}#PartyLocation)`,
       repairItem: `[Repair Item](!${Entities.CR}#RepairItem)`,
       sliceAccess: "[Access System](!swrpg-slice-access)",
@@ -87,7 +89,7 @@
       sliceExpel: `[${Entities.ASTERISK}Expel User](!swrpg-slice-expel)`,
       sliceIncrease: "[*Increase*](!swrpg-slice-security-inc)",
       sliceLockdown: `[${Entities.ASTERISK}Lockdown](!swrpg-slice-lockdown)`,
-      sliceMain: "[Slicing Encounter](!swrpg-slice-ui)",
+      sliceMain: "[Slicing](!swrpg-slice-ui)",
       sliceReset: "[*Reset*](!swrpg-slice-security-reset)",
       sliceRestart: "[Restart System](!swrpg-slice-restart)",
       sliceTrace: `[${Entities.ASTERISK}Trace User](!swrpg-slice-trace)`,
@@ -95,11 +97,10 @@
       socialCoercion: "[Coercion](!swrpg-social-coercion)",
       socialDeception: "[Deception](!swrpg-social-deception)",
       socialLeadership: "[Leadership](!swrpg-social-leadership)",
-      socialMain: "[Social Encounter](!swrpg-social-ui)",
+      socialMain: "[Social](!swrpg-social-ui)",
       socialNegotiation: "[Negotiation](!swrpg-social-negotiation)",
       tradeItem: `[Trade Item](!${Entities.CR}#TradeItem)`,
       tradeLocation: "#TradeLocation #TradeProximity #TradePopulation"
-
   };
 
   /**
@@ -211,9 +212,10 @@
       let content = {
           title: "GM Tools",
           wide: `${Macros.partyLocation} ${Macros.craftingMain}`,
-          wide2: `${Macros.sliceMain} ${Macros.socialMain}`,
-          wide3: `${Macros.repairItem} ${Macros.tradeItem}`,
-          wide4: `${Macros.contactInvestigate}`
+          wide2: `${Macros.combatMain} ${Macros.navMain}`,
+          wide3: `${Macros.sliceMain} ${Macros.socialMain}`,
+          wide4: `${Macros.repairItem} ${Macros.tradeItem}`,
+          wide5: `${Macros.contactInvestigate}`
       };
       sendPrivate(SpeakingAs, content);
   };
@@ -2496,6 +2498,29 @@
   };
 
   /**
+   * Core logic for Terrain and Stellar Navigation challenges
+   *
+   * @module swrpg/nav/core
+   *
+   * @author Draico Dorath
+   * @copyright 2020
+   * @license MIT
+   */
+
+  /* Sender of chat messages */
+  const SpeakingAs$8 = "Navigator Holomap";
+
+  const display$b = () => {
+      let content = {
+          title: "Terrain Navigation",
+          wide: "Step 1: Determine range scale",
+          wide2: "Step 2: Determine initial range separation",
+          wide3: "Step 3: Determine Difficulty"
+      };
+      sendPrivate(SpeakingAs$8, content);
+  };
+
+  /**
    * Core logic for item repair
    *
    * @module swrpg/repair/core
@@ -2535,7 +2560,7 @@
   };
 
   // Calculate repair values and display to GM
-  const display$b = (condition, basePrice) => {
+  const display$c = (condition, basePrice) => {
       let diff = difficulty$3(condition);
       let price = cost(condition, basePrice);
       let content = {
@@ -2564,21 +2589,21 @@
    */
 
   /* Sender of chat messages */
-  const SpeakingAs$8 = "H4-x0r";
+  const SpeakingAs$9 = "H4-x0r";
 
   /* Tracks number of security programs currently running */
   let SecurityPrograms = 0;
   const decreaseSecurity = () => {
       SecurityPrograms = Math.max(SecurityPrograms-1, 0);
-      display$c();
+      display$d();
   };
   const increaseSecurity = () => {
       SecurityPrograms++;
-      display$c();
+      display$d();
   };
   const resetSecurity = () => {
       SecurityPrograms = 0;
-      display$c();
+      display$d();
   };
 
   const access = () => {
@@ -2599,7 +2624,7 @@
           wide5: `*Ancient Archive*:
             (${Dice.Difficulty.FORMIDABLE})`
       };
-      sendPrivate(SpeakingAs$8, content);
+      sendPrivate(SpeakingAs$9, content);
   };
 
   const activateSecurity = () => {
@@ -2607,7 +2632,7 @@
           title: "Activate a Security Program",
           flavor: `Computers (${Dice.Difficulty.AVERAGE})`
       };
-      sendPrivate(SpeakingAs$8, content);
+      sendPrivate(SpeakingAs$9, content);
   };
 
   const backdoor = () => {
@@ -2615,13 +2640,13 @@
           title: "Create or Locate Backdoor",
           flavor: `Computers (${Dice.Difficulty.HARD})`
       };
-      sendPrivate(SpeakingAs$8, content);
+      sendPrivate(SpeakingAs$9, content);
   };
 
   // Disabling a Security Program has same difficulties as System Access check
   const disableSecurity = access;
 
-  const display$c = () => {
+  const display$d = () => {
       let content = {
           title: "Slicing Encounter",
           flavor: "Actions with * may only be executed by an Intruder when no Security Programs are active.",
@@ -2632,7 +2657,7 @@
           wide3: `${Macros.sliceEnact} ${Macros.sliceLockdown}`,
           wide4: `${Macros.sliceExpel} ${Macros.sliceTrace}`
       };
-      sendPrivate(SpeakingAs$8, content);
+      sendPrivate(SpeakingAs$9, content);
   };
 
   const enact = () => {
@@ -2641,7 +2666,7 @@
           flavor: "Computers",
           wide: "Difficulty is set by similarity of command to the intended function of the system"
       };
-      sendPrivate(SpeakingAs$8, content);
+      sendPrivate(SpeakingAs$9, content);
   };
 
   const expel = () => {
@@ -2651,7 +2676,7 @@
           prewide: `Add ${Dice.Boost(1)} per known Signature fragment`,
           wide: "If expelled, upgrade the difficulty of further Access System checks by two"
       };
-      sendPrivate(SpeakingAs$8, content);
+      sendPrivate(SpeakingAs$9, content);
   };
 
   const lockdown = () => {
@@ -2660,7 +2685,7 @@
           flavor: `Computers (${Dice.Difficulty.HARD})`,
           wide: "Character must have physical access to restart the system"
       };
-      sendPrivate(SpeakingAs$8, content);
+      sendPrivate(SpeakingAs$9, content);
   };
 
   const restart = () => {
@@ -2670,7 +2695,7 @@
           wide: "Must have physical access",
           wide2: "Takes one hour"
       };
-      sendPrivate(SpeakingAs$8, content);
+      sendPrivate(SpeakingAs$9, content);
   };
 
   const trace = () => {
@@ -2683,7 +2708,7 @@
           wide2: "One segment of target's Signature",
           wide3: "Full list of actions target has taken in system this encounter"
       };
-      sendPrivate(SpeakingAs$8, content);
+      sendPrivate(SpeakingAs$9, content);
   };
 
   /**
@@ -2697,7 +2722,7 @@
    */
 
   /* Sender of chat messages */
-  const SpeakingAs$9 = "C-4D4";
+  const SpeakingAs$a = "C-4D4";
 
   const charm = () => {
       let content = {
@@ -2711,7 +2736,7 @@
           wide4: `${Dice.Threat(1)} reduces the number of affected people
             ${Dice.Despair(1)} turns the NPC into a minor recurring adversary`
       };
-      sendPrivate(SpeakingAs$9, content);
+      sendPrivate(SpeakingAs$a, content);
   };
 
   const coercion = () => {
@@ -2726,7 +2751,7 @@
           wide3: `${Dice.Threat(1)} builds resentment towards coercer
             ${Dice.Despair(1)} reveals too much information to target`
       };
-      sendPrivate(SpeakingAs$9, content);
+      sendPrivate(SpeakingAs$a, content);
   };
 
   const deception = () => {
@@ -2740,7 +2765,7 @@
           wide2: `${Dice.Threat(1)} increases suspicion
             ${Dice.Despair(1)} increases hostility and harms reputation`
       };
-      sendPrivate(SpeakingAs$9, content);
+      sendPrivate(SpeakingAs$a, content);
   };
 
   const leadership = () => {
@@ -2754,7 +2779,7 @@
           wide2: `${Dice.Threat(1)} decreases effectiveness of targets
             ${Dice.Despair(1)} undermines authority`
       };
-      sendPrivate(SpeakingAs$9, content);
+      sendPrivate(SpeakingAs$a, content);
   };
 
   const negotation = () => {
@@ -2767,10 +2792,10 @@
           wide2: `${Dice.Threat(1)} decreases acting character's profit by 5% each or reduces scope of deal
             ${Dice.Despair(1)} seriously sabotages deal or relationship`
       };
-      sendPrivate(SpeakingAs$9, content);
+      sendPrivate(SpeakingAs$a, content);
   };
 
-  const display$d = () => {
+  const display$e = () => {
       let content = {
           title: "Social Encounter",
           flavor: `Prior relationship may add ${Dice.Boost(1)} / ${Dice.Setback(1)} as appropriate`,
@@ -2778,7 +2803,7 @@
           wide2: `${Macros.socialDeception} ${Macros.socialLeadership}`,
           wide3: Macros.socialNegotiation
       };
-      sendPrivate(SpeakingAs$9, content);
+      sendPrivate(SpeakingAs$a, content);
   };
 
   /**
@@ -2884,7 +2909,8 @@
           "craft-program": program,
           "craft-template": setTemplate,
           "craft-ui": display$a,
-          "repair": display$b,
+          "nav-ui": display$b,
+          "repair": display$c,
           "slice-access": access,
           "slice-activate": activateSecurity,
           "slice-backdoor": backdoor,
@@ -2897,8 +2923,8 @@
           "slice-security-inc": increaseSecurity,
           "slice-security-reset": resetSecurity,
           "slice-trace": trace,
-          "slice-ui": display$c,
-          "social-ui": display$d,
+          "slice-ui": display$d,
+          "social-ui": display$e,
           "social-charm": charm,
           "social-coercion": coercion,
           "social-deception": deception,

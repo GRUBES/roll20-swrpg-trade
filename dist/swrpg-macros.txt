@@ -12,7 +12,7 @@ REPAIR MODULE:
 ?{Condition|New, 0|Minor, 1|Moderate, 2|Major, 3}
 
 #RepairItem
-!swrpg-repair #RepairCondition ?{Base Price}
+!swrpg-repair #RepairCondition ?{Base Price|0}
 
 TRADE MODULE:
 
