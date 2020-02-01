@@ -28,6 +28,7 @@ const difficulty = displayDice(eote.defaults.graphics.SymbolicReplacement.diffic
 export const Dice = {
     Advantage: displayDice(eote.defaults.graphics.SymbolicReplacement.advantage),
     Boost: displayDice(eote.defaults.graphics.SymbolicReplacement.boost),
+    Challenge: displayDice(eote.defaults.graphics.SymbolicReplacement.challenge),
     Dark: displayDice(eote.defaults.graphics.SymbolicReplacement.dark),
     Despair: displayDice(eote.defaults.graphics.SymbolicReplacement.despair),
     Difficulty: {
@@ -58,6 +59,7 @@ export const DifficultyToDice = [
 // HTML Entities
 export const Entities = {
     ASTERISK: "&#42;",
+    AT: "&#64;",
     CR: "&#13;"
 };
 
@@ -73,7 +75,7 @@ export const Macros = {
     craftLightsaber: `[Create Lightsaber](!swrpg-craft-mode ${CraftingMode.LIGHTSABER})`,
     craftVehicle: `[Create Vehicle](!swrpg-craft-mode ${CraftingMode.VEHICLE})`,
     craftWeapon: `[Create Weapon](!swrpg-craft-mode ${CraftingMode.WEAPON})`,
-    navMain: `[Terrain Navigation](!swrpg-nav-ui)`,
+    navMain: `[Terrain Navigation](!swrpg-nav-ui ${Entities.AT}{target|Vehicle|space-speed_current} ${Entities.AT}{target|Vehicle|space-silhouette} #NavHazard)`,
     partyLocation: `[Current Location](!${Entities.CR}#PartyLocation)`,
     repairItem: `[Repair Item](!${Entities.CR}#RepairItem)`,
     sliceAccess: "[Access System](!swrpg-slice-access)",

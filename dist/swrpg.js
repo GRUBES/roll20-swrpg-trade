@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  var version = "0.11.0";
+  var version = "0.12.0";
 
   /**
    * Common enumerations
@@ -33,6 +33,7 @@
   const Dice = {
       Advantage: displayDice(eote.defaults.graphics.SymbolicReplacement.advantage),
       Boost: displayDice(eote.defaults.graphics.SymbolicReplacement.boost),
+      Challenge: displayDice(eote.defaults.graphics.SymbolicReplacement.challenge),
       Dark: displayDice(eote.defaults.graphics.SymbolicReplacement.dark),
       Despair: displayDice(eote.defaults.graphics.SymbolicReplacement.despair),
       Difficulty: {
@@ -63,6 +64,7 @@
   // HTML Entities
   const Entities = {
       ASTERISK: "&#42;",
+      AT: "&#64;",
       CR: "&#13;"
   };
 
@@ -70,7 +72,7 @@
   const Macros = {
       combatMain: "", // TODO
       contactInvestigate: `[Use Contact Network](!${Entities.CR}#ContactInvestigate)`,
-      craftingMain: "[Crafting Station](!swrpg-craft-ui)",
+      craftingMain: "[Crafting](!swrpg-craft-ui)",
       craftArmor: `[Create Armor](!swrpg-craft-mode ${CraftingMode.ARMOR})`,
       craftCybernetic: `[Create Cybernetic](!swrpg-craft-mode ${CraftingMode.CYBERNETIC})`,
       craftDroid: `[Create Droid](!swrpg-craft-mode ${CraftingMode.DROID})`,
@@ -78,7 +80,7 @@
       craftLightsaber: `[Create Lightsaber](!swrpg-craft-mode ${CraftingMode.LIGHTSABER})`,
       craftVehicle: `[Create Vehicle](!swrpg-craft-mode ${CraftingMode.VEHICLE})`,
       craftWeapon: `[Create Weapon](!swrpg-craft-mode ${CraftingMode.WEAPON})`,
-      navMain: `[Terrain Navigation](!swrpg-nav-ui)`,
+      navMain: `[Terrain Navigation](!swrpg-nav-ui ${Entities.AT}{target|Vehicle|space-speed_current} ${Entities.AT}{target|Vehicle|space-silhouette} #NavHazard)`,
       partyLocation: `[Current Location](!${Entities.CR}#PartyLocation)`,
       repairItem: `[Repair Item](!${Entities.CR}#RepairItem)`,
       sliceAccess: "[Access System](!swrpg-slice-access)",
@@ -2411,7 +2413,7 @@
   const purchasePrice = (diff, basePrice) => clampModifier(diff) * basePrice;
 
   // Calculate recommended Sale Prices based on number of Successes
-  const sellPrices = (purchasePrice) => [purchasePrice / 4, purchasePrice / 2, purchasePrice * 0.75];
+  const sellPrices = (p) => [p / 4, p / 2, p * 0.75];
 
   // Maps an item's Rarity to the appropriate Difficulty
   const rarityToDifficulty = (r = 0) => Math.floor(clampRarity(r) / 2);
@@ -2498,6 +2500,29 @@
   };
 
   /**
+   * Dice pool utility methods
+   *
+   * @module swrpg/util/dice
+   *
+   * @author Draico Dorath
+   * @copyright 2020
+   * @license MIT
+   */
+
+  /**
+   * Leverage the !eed chat command to build a dice pool
+   *
+   * @param cmd {string} !eed chat command
+   *
+   * @returns {Object}
+   */
+  const pool = (cmd) => {
+      let pool = eote.process.setDice(cmd.match(eote.defaults.regex.dice), new eote.defaults.dice());
+      let upgradedPool = eote.process.upgrade(cmd.match(eote.defaults.regex.upgrade), pool);
+      return eote.process.downgrade(cmd.match(eote.defaults.regex.downgrade), upgradedPool);
+  };
+
+  /**
    * Core logic for Terrain and Stellar Navigation challenges
    *
    * @module swrpg/nav/core
@@ -2510,12 +2535,35 @@
   /* Sender of chat messages */
   const SpeakingAs$8 = "Navigator Holomap";
 
-  const display$b = () => {
+  /**
+   * Build appropriate difficulty pool for the navigation check
+   *
+   * @param speed {number} vehicle's current speed
+   * @param silhouette {number} vehicle's silhouette
+   * @param hazard {number} navigational hazard rating
+   *
+   * @returns {Object}
+   */
+  const difficulty$3 = (speed, silhouette, hazard) => {
+      log(JSON.stringify({speed, silhouette}));
+      let cmd = `!eed ${speed}p ${hazard}blk upgrade(difficulty|${Math.ceil(silhouette/2)})`;
+      let result = pool(cmd);
+      return result.count;
+  };
+
+  const display$b = (speed, silhouette, hazard) => {
+      let count = difficulty$3(parseInt(speed), parseInt(silhouette), parseInt(hazard));
       let content = {
           title: "Terrain Navigation",
-          wide: "Step 1: Determine range scale",
-          wide2: "Step 2: Determine initial range separation",
-          wide3: "Step 3: Determine Difficulty"
+          flavor: "Piloting (Space) or Piloting (Planetary)",
+          prewide: [
+              count.difficulty ? DifficultyToDice[count.difficulty] : "",
+              count.challenge ? Dice.Challenge(count.challenge) : "",
+              count.setback ? Dice.Setback(count.setback) : ""
+          ].filter(Boolean).join(""),
+          header: "Outcome Suggestions",
+          wide: `${Dice.Failure(1)} Unsuccessful navigation and speed decreases by 1`,
+          wide2: `${Dice.Despair(1)} May result in a collision`
       };
       sendPrivate(SpeakingAs$8, content);
   };
@@ -2561,7 +2609,7 @@
 
   // Calculate repair values and display to GM
   const display$c = (condition, basePrice) => {
-      let diff = difficulty$3(condition);
+      let diff = difficulty$4(condition);
       let price = cost(condition, basePrice);
       let content = {
           title: "Item Repair",
@@ -2573,7 +2621,7 @@
   };
 
   // Calculate the Difficulty of the repair check
-  const difficulty$3 = (condition) => condition;
+  const difficulty$4 = (condition) => condition;
 
   // Calculate the material cost of the repairs
   const cost = (condition, basePrice) => basePrice * CostModifier[condition];

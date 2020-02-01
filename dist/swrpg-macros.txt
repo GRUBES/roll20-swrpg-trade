@@ -101,3 +101,8 @@ SOCIAL MODULE:
 
 #SocialEncounter
 !swrpg-social-ui
+
+NAVIGATION MODULE:
+
+#NavHazard
+?{Hazards|None/Easy, 0|Tricky, 1|Dangerous, 2|Very Risky, 3}
