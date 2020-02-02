@@ -128,7 +128,7 @@ const difficulty = (rarity, region, tradeProximity, population) => clampDifficul
 const purchasePrice = (diff, basePrice) => clampModifier(diff) * basePrice;
 
 // Calculate recommended Sale Prices based on number of Successes
-const sellPrices = (purchasePrice) => [purchasePrice / 4, purchasePrice / 2, purchasePrice * 0.75];
+const sellPrices = (p) => [p / 4, p / 2, p * 0.75];
 
 // Maps an item's Rarity to the appropriate Difficulty
 const rarityToDifficulty = (r = 0) => Math.floor(clampRarity(r) / 2);

@@ -20,9 +20,10 @@ const display = () => {
     let content = {
         title: "GM Tools",
         wide: `${Macros.partyLocation} ${Macros.craftingMain}`,
-        wide2: `${Macros.sliceMain} ${Macros.socialMain}`,
-        wide3: `${Macros.repairItem} ${Macros.tradeItem}`,
-        wide4: `${Macros.contactInvestigate}`
+        wide2: `${Macros.navMain} ${Macros.navChase}`,
+        wide3: `${Macros.sliceMain} ${Macros.socialMain}`,
+        wide4: `${Macros.repairItem} ${Macros.tradeItem}`,
+        wide5: `${Macros.contactInvestigate}`
     };
     sendPrivate(SpeakingAs, content);
 };

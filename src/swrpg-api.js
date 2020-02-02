@@ -11,14 +11,15 @@
 import {version} from "../package.json";
 import {main} from "./swrpg-ui";
 import * as Contact from "./contacts/contacts";
+import * as Chase from "./navigation/chase";
 import * as Craft from "./crafting/craft";
+import * as Navigation from "./navigation/navigation";
 import * as Repair from "./repair/repair";
 import * as Slice from "./slicing/slice";
 import * as Social from "./social/social";
 import * as Trade from "./trade/trade";
 import {program} from "./crafting/droid";
 import {assemble} from "./crafting/vehicle";
-import {rollPrivate} from "./util/chat";
 
 // API Command prefix
 const prefix = "swrpg-";
@@ -113,6 +114,8 @@ function execute(command, input) {
         "craft-program": program,
         "craft-template": Craft.template,
         "craft-ui": Craft.main,
+        "nav-chase": Chase.main,
+        "nav-ui": Navigation.main,
         "repair": Repair.item,
         "slice-access": Slice.access,
         "slice-activate": Slice.activateSecurity,
