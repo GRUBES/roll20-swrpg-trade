@@ -20,6 +20,7 @@
  */
 
 import {Dice, DifficultyToDice} from "./enums";
+import {roll} from "./dice";
 
 /**
  * The "Base" Roll Template's predefined properties
@@ -53,10 +54,7 @@ const TemplateKeys = [
  * @return {void} sends output to Roll20 chat
  */
 const rollPrivate = (speakingAs, cmd) => {
-    let pool = eote.process.setDice(cmd.match(eote.defaults.regex.dice), new eote.defaults.dice());
-    let upgradedPool = eote.process.upgrade(cmd.match(eote.defaults.regex.upgrade), pool);
-    let finalPool = eote.process.downgrade(cmd.match(eote.defaults.regex.downgrade), upgradedPool);
-    let results = eote.process.rollDice(finalPool);
+    let results = roll(cmd);
     let graphics = [
         Dice.Success(results.totals.success),
         Dice.Failure(results.totals.failure),
@@ -64,6 +62,7 @@ const rollPrivate = (speakingAs, cmd) => {
         Dice.Threat(results.totals.threat),
         Dice.Triumph(results.totals.triumph),
         Dice.Despair(results.totals.despair)
+        // TODO
         // Dice.Light(results.totals.light),
         // Dice.Dark(results.totals.dark)
     ].join("");
