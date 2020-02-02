@@ -83,6 +83,13 @@
       navChase: `[Chase](!swrpg-nav-chase)`,
       navMain: `[Terrain Navigation](!swrpg-nav-ui ${Entities.AT}{target|Vehicle|space-speed_current} ${Entities.AT}{target|Vehicle|space-silhouette} #NavHazard)`,
       partyLocation: `[Current Location](!${Entities.CR}#PartyLocation)`,
+      recoverHit: `[Critical Hit](!swrpg-recover-hit)`,
+      recoverHull: `[Hull Trauma](!swrpg-recover-hull)`,
+      recoverInjury: `[Critical Injury](!swrpg-recover-injury)`,
+      recoverMain: `[Rest/Recovery](!swrpg-recover-ui)`,
+      recoverStrain: `[Strain](!swrpg-recover-strain)`,
+      recoverSystem: `[System Strain](!swrpg-recover-sys)`,
+      recoverWound: `[Wounds](!swrpg-recover-wound)`,
       repairItem: `[Repair Item](!${Entities.CR}#RepairItem)`,
       sliceAccess: "[Access System](!swrpg-slice-access)",
       sliceActivate: "[Activate Security](!swrpg-slice-activate)",
@@ -252,6 +259,7 @@
   const display = () => {
       let content = {
           title: "GM Tools",
+          prewide: `${Macros.combatMain} ${Macros.recoverMain}`,
           wide: `${Macros.partyLocation} ${Macros.craftingMain}`,
           wide2: `${Macros.navMain} ${Macros.navChase}`,
           wide3: `${Macros.sliceMain} ${Macros.socialMain}`,
@@ -2617,6 +2625,78 @@
   };
 
   /**
+   * Core logic for the recovery rules
+   *
+   * @module swrpg/recovery/core
+   *
+   * @author Draico Dorath
+   * @copyright 2020
+   * @license MIT
+   */
+
+  /* Sender of chat messages */
+  const SpeakingAs$a = "TB-77";
+
+  // Rules for recovering from Critical Hits to a Vehicle
+  const hit = () => {
+      let content = {
+          title: "Critical Hit Recovery"
+      };
+      sendPrivate(SpeakingAs$a, content);
+  };
+
+  // Rules for recovering from Hull Trauma to a Vehicle
+  const hull = () => {
+      let content = {
+          title: "Hull Trauma Recovery"
+      };
+      sendPrivate(SpeakingAs$a, content);
+  };
+
+  // Rules for recovering from Critical Injuries
+  const injury = () => {
+      let content = {
+          title: "Critical Injury Recovery"
+      };
+      sendPrivate(SpeakingAs$a, content);
+  };
+
+  // Rules for recovering from Strain
+  const strain = () => {
+      let content = {
+          title: "Strain Recovery"
+      };
+      sendPrivate(SpeakingAs$a, content);
+  };
+
+  // Rules for recovering System Strain on a Vehicle
+  const system = () => {
+      let content = {
+          title: "System Strain Recovery"
+      };
+      sendPrivate(SpeakingAs$a, content);
+  };
+
+  // Rules for recovering from Wounds
+  const wound = () => {
+      let content = {
+          title: "Wound Recovery"
+      };
+      sendPrivate(SpeakingAs$a, content);
+  };
+
+  const display$d = () => {
+      let content = {
+          title: "Medical Bay",
+          wide: "**Character:**",
+          wide2: `${Macros.recoverWound} ${Macros.recoverStrain} ${Macros.recoverInjury}`,
+          wide3: "**Vehicle:**",
+          wide4: `${Macros.recoverHull} ${Macros.recoverSystem} ${Macros.recoverHit}`
+      };
+      sendPrivate(SpeakingAs$a, content);
+  };
+
+  /**
    * Core logic for item repair
    *
    * @module swrpg/repair/core
@@ -2656,7 +2736,7 @@
   };
 
   // Calculate repair values and display to GM
-  const display$d = (condition, basePrice) => {
+  const display$e = (condition, basePrice) => {
       let diff = difficulty$4(condition);
       let price = cost(condition, basePrice);
       let content = {
@@ -2685,21 +2765,21 @@
    */
 
   /* Sender of chat messages */
-  const SpeakingAs$a = "H4-x0r";
+  const SpeakingAs$b = "H4-x0r";
 
   /* Tracks number of security programs currently running */
   let SecurityPrograms = 0;
   const decreaseSecurity = () => {
       SecurityPrograms = Math.max(SecurityPrograms-1, 0);
-      display$e();
+      display$f();
   };
   const increaseSecurity = () => {
       SecurityPrograms++;
-      display$e();
+      display$f();
   };
   const resetSecurity = () => {
       SecurityPrograms = 0;
-      display$e();
+      display$f();
   };
 
   const access = () => {
@@ -2720,7 +2800,7 @@
           wide5: `*Ancient Archive*:
             (${Dice.Difficulty.FORMIDABLE})`
       };
-      sendPrivate(SpeakingAs$a, content);
+      sendPrivate(SpeakingAs$b, content);
   };
 
   const activateSecurity = () => {
@@ -2728,7 +2808,7 @@
           title: "Activate a Security Program",
           flavor: `Computers (${Dice.Difficulty.AVERAGE})`
       };
-      sendPrivate(SpeakingAs$a, content);
+      sendPrivate(SpeakingAs$b, content);
   };
 
   const backdoor = () => {
@@ -2736,13 +2816,13 @@
           title: "Create or Locate Backdoor",
           flavor: `Computers (${Dice.Difficulty.HARD})`
       };
-      sendPrivate(SpeakingAs$a, content);
+      sendPrivate(SpeakingAs$b, content);
   };
 
   // Disabling a Security Program has same difficulties as System Access check
   const disableSecurity = access;
 
-  const display$e = () => {
+  const display$f = () => {
       let content = {
           title: "Slicing Encounter",
           flavor: "Actions with * may only be executed by an Intruder when no Security Programs are active.",
@@ -2753,7 +2833,7 @@
           wide3: `${Macros.sliceEnact} ${Macros.sliceLockdown}`,
           wide4: `${Macros.sliceExpel} ${Macros.sliceTrace}`
       };
-      sendPrivate(SpeakingAs$a, content);
+      sendPrivate(SpeakingAs$b, content);
   };
 
   const enact = () => {
@@ -2762,7 +2842,7 @@
           flavor: "Computers",
           wide: "Difficulty is set by similarity of command to the intended function of the system"
       };
-      sendPrivate(SpeakingAs$a, content);
+      sendPrivate(SpeakingAs$b, content);
   };
 
   const expel = () => {
@@ -2772,7 +2852,7 @@
           prewide: `Add ${Dice.Boost(1)} per known Signature fragment`,
           wide: "If expelled, upgrade the difficulty of further Access System checks by two"
       };
-      sendPrivate(SpeakingAs$a, content);
+      sendPrivate(SpeakingAs$b, content);
   };
 
   const lockdown = () => {
@@ -2781,7 +2861,7 @@
           flavor: `Computers (${Dice.Difficulty.HARD})`,
           wide: "Character must have physical access to restart the system"
       };
-      sendPrivate(SpeakingAs$a, content);
+      sendPrivate(SpeakingAs$b, content);
   };
 
   const restart = () => {
@@ -2791,7 +2871,7 @@
           wide: "Must have physical access",
           wide2: "Takes one hour"
       };
-      sendPrivate(SpeakingAs$a, content);
+      sendPrivate(SpeakingAs$b, content);
   };
 
   const trace = () => {
@@ -2804,7 +2884,7 @@
           wide2: "One segment of target's Signature",
           wide3: "Full list of actions target has taken in system this encounter"
       };
-      sendPrivate(SpeakingAs$a, content);
+      sendPrivate(SpeakingAs$b, content);
   };
 
   /**
@@ -2818,7 +2898,7 @@
    */
 
   /* Sender of chat messages */
-  const SpeakingAs$b = "C-4D4";
+  const SpeakingAs$c = "C-4D4";
 
   const charm = () => {
       let content = {
@@ -2832,7 +2912,7 @@
           wide4: `${Dice.Threat(1)} reduces the number of affected people
             ${Dice.Despair(1)} turns the NPC into a minor recurring adversary`
       };
-      sendPrivate(SpeakingAs$b, content);
+      sendPrivate(SpeakingAs$c, content);
   };
 
   const coercion = () => {
@@ -2847,7 +2927,7 @@
           wide3: `${Dice.Threat(1)} builds resentment towards coercer
             ${Dice.Despair(1)} reveals too much information to target`
       };
-      sendPrivate(SpeakingAs$b, content);
+      sendPrivate(SpeakingAs$c, content);
   };
 
   const deception = () => {
@@ -2861,7 +2941,7 @@
           wide2: `${Dice.Threat(1)} increases suspicion
             ${Dice.Despair(1)} increases hostility and harms reputation`
       };
-      sendPrivate(SpeakingAs$b, content);
+      sendPrivate(SpeakingAs$c, content);
   };
 
   const leadership = () => {
@@ -2875,7 +2955,7 @@
           wide2: `${Dice.Threat(1)} decreases effectiveness of targets
             ${Dice.Despair(1)} undermines authority`
       };
-      sendPrivate(SpeakingAs$b, content);
+      sendPrivate(SpeakingAs$c, content);
   };
 
   const negotation = () => {
@@ -2888,10 +2968,10 @@
           wide2: `${Dice.Threat(1)} decreases acting character's profit by 5% each or reduces scope of deal
             ${Dice.Despair(1)} seriously sabotages deal or relationship`
       };
-      sendPrivate(SpeakingAs$b, content);
+      sendPrivate(SpeakingAs$c, content);
   };
 
-  const display$f = () => {
+  const display$g = () => {
       let content = {
           title: "Social Encounter",
           flavor: `Prior relationship may add ${Dice.Boost(1)} / ${Dice.Setback(1)} as appropriate`,
@@ -2899,7 +2979,7 @@
           wide2: `${Macros.socialDeception} ${Macros.socialLeadership}`,
           wide3: Macros.socialNegotiation
       };
-      sendPrivate(SpeakingAs$b, content);
+      sendPrivate(SpeakingAs$c, content);
   };
 
   /**
@@ -3007,7 +3087,14 @@
           "craft-ui": display$b,
           "nav-chase": display$2,
           "nav-ui": display$c,
-          "repair": display$d,
+          "recover-hit": hit,
+          "recover-hull": hull,
+          "recover-injury": injury,
+          "recover-strain": strain,
+          "recover-sys": system,
+          "recover-wound": wound,
+          "recover-ui": display$d,
+          "repair": display$e,
           "slice-access": access,
           "slice-activate": activateSecurity,
           "slice-backdoor": backdoor,
@@ -3020,8 +3107,8 @@
           "slice-security-inc": increaseSecurity,
           "slice-security-reset": resetSecurity,
           "slice-trace": trace,
-          "slice-ui": display$e,
-          "social-ui": display$f,
+          "slice-ui": display$f,
+          "social-ui": display$g,
           "social-charm": charm,
           "social-coercion": coercion,
           "social-deception": deception,

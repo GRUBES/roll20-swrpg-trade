@@ -19,6 +19,7 @@ const SpeakingAs = "The Dark Side";
 const display = () => {
     let content = {
         title: "GM Tools",
+        prewide: `${Macros.combatMain} ${Macros.recoverMain}`,
         wide: `${Macros.partyLocation} ${Macros.craftingMain}`,
         wide2: `${Macros.navMain} ${Macros.navChase}`,
         wide3: `${Macros.sliceMain} ${Macros.socialMain}`,

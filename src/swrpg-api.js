@@ -14,6 +14,7 @@ import * as Contact from "./contacts/contacts";
 import * as Chase from "./navigation/chase";
 import * as Craft from "./crafting/craft";
 import * as Navigation from "./navigation/navigation";
+import * as Recover from "./recovery/recovery";
 import * as Repair from "./repair/repair";
 import * as Slice from "./slicing/slice";
 import * as Social from "./social/social";
@@ -116,6 +117,13 @@ function execute(command, input) {
         "craft-ui": Craft.main,
         "nav-chase": Chase.main,
         "nav-ui": Navigation.main,
+        "recover-hit": Recover.hit,
+        "recover-hull": Recover.hull,
+        "recover-injury": Recover.injury,
+        "recover-strain": Recover.strain,
+        "recover-sys": Recover.system,
+        "recover-wound": Recover.wound,
+        "recover-ui": Recover.main,
         "repair": Repair.item,
         "slice-access": Slice.access,
         "slice-activate": Slice.activateSecurity,
