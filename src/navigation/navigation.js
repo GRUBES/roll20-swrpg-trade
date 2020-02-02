@@ -22,10 +22,15 @@ const SpeakingAs = "Navigator Holomap";
  * @param silhouette {number} vehicle's silhouette
  * @param hazard {number} navigational hazard rating
  *
- * @returns {Object}
+ * @returns data {Object}
+ * @returns data.challenge {number} Challenge dice in difficulty pool
+ * @returns data.difficulty {number} Difficulty dice in difficulty pool
+ * @returns data.setback {number} Setback dice in difficulty pool
+ *
+ * @private
+ * @function
  */
 const difficulty = (speed, silhouette, hazard) => {
-    log(JSON.stringify({speed, silhouette}));
     let cmd = `!eed ${speed}p ${hazard}blk upgrade(difficulty|${Math.ceil(silhouette/2)})`;
     let result = pool(cmd);
     return result.count;
@@ -51,6 +56,10 @@ const display = (speed, silhouette, hazard) => {
 export {
     /**
      * Displays the UI for navigation challenges
+     *
+     * @param speed {number} Vehicle's current speed
+     * @param silhouette {number} Vehicle's silhouette
+     * @param hazard {number} Hazard rating
      *
      * @returns {void} sends output to Roll20 chat
      *
