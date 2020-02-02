@@ -11,6 +11,7 @@
 import {version} from "../package.json";
 import {main} from "./swrpg-ui";
 import * as Contact from "./contacts/contacts";
+import * as Chase from "./navigation/chase";
 import * as Craft from "./crafting/craft";
 import * as Navigation from "./navigation/navigation";
 import * as Repair from "./repair/repair";
@@ -113,6 +114,7 @@ function execute(command, input) {
         "craft-program": program,
         "craft-template": Craft.template,
         "craft-ui": Craft.main,
+        "nav-chase": Chase.main,
         "nav-ui": Navigation.main,
         "repair": Repair.item,
         "slice-access": Slice.access,

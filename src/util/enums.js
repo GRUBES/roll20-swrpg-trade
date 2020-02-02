@@ -75,6 +75,7 @@ export const Macros = {
     craftLightsaber: `[Create Lightsaber](!swrpg-craft-mode ${CraftingMode.LIGHTSABER})`,
     craftVehicle: `[Create Vehicle](!swrpg-craft-mode ${CraftingMode.VEHICLE})`,
     craftWeapon: `[Create Weapon](!swrpg-craft-mode ${CraftingMode.WEAPON})`,
+    navChase: `[Chase](!swrpg-nav-chase)`,
     navMain: `[Terrain Navigation](!swrpg-nav-ui ${Entities.AT}{target|Vehicle|space-speed_current} ${Entities.AT}{target|Vehicle|space-silhouette} #NavHazard)`,
     partyLocation: `[Current Location](!${Entities.CR}#PartyLocation)`,
     repairItem: `[Repair Item](!${Entities.CR}#RepairItem)`,
