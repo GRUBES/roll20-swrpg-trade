@@ -87,6 +87,7 @@
       recoverHull: `[Hull Trauma](!swrpg-recover-hull)`,
       recoverInjury: `[Critical Injury](!swrpg-recover-injury)`,
       recoverMain: `[Rest/Recovery](!swrpg-recover-ui)`,
+      recoverMedicine: `[Medicine Check](!swrpg-recover-medicine ${Entities.AT}{target|Wounded|wounds} ${Entities.AT}{target|Wounded|wounds|max} #RecoverSelfHeal #RecoverMedEquipment)`,
       recoverStrain: `[Strain](!swrpg-recover-strain)`,
       recoverSystem: `[System Strain](!swrpg-recover-sys)`,
       recoverWound: `[Wounds](!swrpg-recover-wound)`,
@@ -2661,6 +2662,76 @@
       sendPrivate(SpeakingAs$a, content);
   };
 
+  /**
+   * Calculate difficulty of Medicine check for recovery
+   *
+   * @param wounds {number} target's current wound value
+   * @param threshold {number} target's wound threshold
+   * @param isSelfHeal {boolean} true if the target is healing themself; false otherwise
+   * @param hasEquipment {boolean} true if the healer has appropriate medical equipment; false otherwise
+   *
+   * @returns {number} Difficulty of Medicine check
+   *
+   * @private
+   * @function
+   */
+  const medicineDifficulty = (wounds, threshold, isSelfHeal, hasEquipment) => {
+      /*
+       * E-CRB 220
+       * Wounds <= half of Threshold -> Easy
+       * Wounds > half of Threshold -> Average
+       * Wounds > Threshold -> Hard
+       */
+      let ratio = wounds / threshold;
+      let diff = (ratio > 1) ? 3 : ((ratio > 0.5) ? 2 : 1);
+
+      /*
+       * E-CRB 219
+       * A character may attempt to heal their own normal wounds ... but increases
+       * the difficulty twice.
+       */
+      if (isSelfHeal) {
+          diff += 2;
+      }
+
+      /*
+       * E-CRB 219
+       * ... attempting a Medicine check without the proper equipment increases difficulty by one
+       */
+      if (!hasEquipment) {
+          diff += 1;
+      }
+
+      return Math.min(diff, 5);
+  };
+
+  /**
+   * Display Medical Care UI
+   *
+   * @param wounds {number} target's current wound value
+   * @param threshold {number} target's wound threshold
+   * @param isSelfHeal {boolean} true if the target is healing themself; false otherwise
+   * @param hasEquipment {boolean} true if the healer has appropriate medical equipment; false otherwise
+   *
+   * @returns {void} Displays output to chat
+   *
+   * @function
+   */
+  const medicine = (wounds, threshold, isSelfHeal, hasEquipment) => {
+      let diff = medicineDifficulty(parseInt(wounds), parseInt(threshold), parseInt(isSelfHeal), parseInt(hasEquipment));
+
+      let content = {
+          title: "Medical Care",
+          flavor: `- Medicine check for humanoids
+        - Mechanics check for droids`,
+          prewide: `(${DifficultyToDice[diff]})`,
+          header: "Target Recovers:",
+          wide: `one Wound per ${Dice.Success(1)}`,
+          wide2: `one Strain per ${Dice.Advantage(1)}`
+      };
+      sendPrivate(SpeakingAs$a, content);
+  };
+
   // Rules for recovering from Strain
   const strain = () => {
       let content = {
@@ -2680,11 +2751,23 @@
   // Rules for recovering from Wounds
   const wound = () => {
       let content = {
-          title: "Wound Recovery"
+          title: "Wound Recovery Options",
+          wide: "*Full night rest:* recover 1 Wound",
+          wide2: `**Once per Encounter:**
+            ${Macros.recoverMedicine}`,
+          wide3: `**Humanoids/Non-Droids:**
+            - *Stimpack*: requires one Maneuver; recover 5 Wounds with first, then 4, then 3, etc; limit 5 per day.
+            - *Bacta Tank*:
+            -- If wounded, recover 1 Wound per 2 hours
+            -- If incapacitated, recover 1 Wound per 6 hours`,
+          wide4: `**Droids:**
+            - *Repair Patch:* requires one Maneuver; recover 3 Wounds; limit 5 per day
+            - *Oil Bath:* recover 1 Wound per hour`
       };
       sendPrivate(SpeakingAs$a, content);
   };
 
+  // Main recovery UI
   const display$d = () => {
       let content = {
           title: "Medical Bay",
@@ -3090,6 +3173,7 @@
           "recover-hit": hit,
           "recover-hull": hull,
           "recover-injury": injury,
+          "recover-medicine": medicine,
           "recover-strain": strain,
           "recover-sys": system,
           "recover-wound": wound,

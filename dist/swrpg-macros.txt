@@ -106,3 +106,11 @@ NAVIGATION MODULE:
 
 #NavHazard
 ?{Hazards|None/Easy, 0|Tricky, 1|Dangerous, 2|Very Risky, 3}
+
+RECOVERY MODULE:
+
+#RecoverSelfHeal
+?{Target healing themself|No, 0|Yes, 1}
+
+#RecoverMedEquipment
+?{Healer has medical equipment|No, 0|Yes, 1}

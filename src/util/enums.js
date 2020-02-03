@@ -82,6 +82,7 @@ export const Macros = {
     recoverHull: `[Hull Trauma](!swrpg-recover-hull)`,
     recoverInjury: `[Critical Injury](!swrpg-recover-injury)`,
     recoverMain: `[Rest/Recovery](!swrpg-recover-ui)`,
+    recoverMedicine: `[Medicine Check](!swrpg-recover-medicine ${Entities.AT}{target|Wounded|wounds} ${Entities.AT}{target|Wounded|wounds|max} #RecoverSelfHeal #RecoverMedEquipment)`,
     recoverStrain: `[Strain](!swrpg-recover-strain)`,
     recoverSystem: `[System Strain](!swrpg-recover-sys)`,
     recoverWound: `[Wounds](!swrpg-recover-wound)`,

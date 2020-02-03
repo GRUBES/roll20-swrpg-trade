@@ -120,6 +120,7 @@ function execute(command, input) {
         "recover-hit": Recover.hit,
         "recover-hull": Recover.hull,
         "recover-injury": Recover.injury,
+        "recover-medicine": Recover.medicine,
         "recover-strain": Recover.strain,
         "recover-sys": Recover.system,
         "recover-wound": Recover.wound,
