@@ -2735,7 +2735,14 @@
   // Rules for recovering from Strain
   const strain = () => {
       let content = {
-          title: "Strain Recovery"
+          title: "Strain Recovery Options",
+          wide: `*Once during an Encounter:*
+            ${Macros.recoverMedicine}`,
+          wide2: `*After an Encounter:*
+            **Discipline** or **Cool (${Dice.Difficulty.SIMPLE})**
+            - recover 1 Strain per ${Dice.Success(1)}`,
+          wide3: `*Full night rest:*
+            - recover all Strain`
       };
       sendPrivate(SpeakingAs$a, content);
   };
