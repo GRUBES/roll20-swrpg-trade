@@ -2657,7 +2657,21 @@
   // Rules for recovering from Critical Injuries
   const injury = () => {
       let content = {
-          title: "Critical Injury Recovery"
+          title: "Critical Injury Recovery",
+          flavor: "Difficulty of all checks is set by Severity of Critical Injury",
+          prewide: `
+            **All Characters:**
+            - *Once per full Week of Rest*: **Resilience** check
+        
+            **Humanoids/Non-Droids:**
+            - (Once per Week) *Another character* may perform **Medicine** check 
+            - (Once per 24 hours) *Bacta Tank:* **Resilience** check
+            
+            **Droids:**
+            - (Once per Week) *Another character* may perform **Mechanics** check`,
+          header: "Difficulty Modifiers:",
+          wide: "Increase by 2 for character healing/repairing their own Injury",
+          wide2: "Increase by 1 if proper equipment is not available",
       };
       sendPrivate(SpeakingAs$a, content);
   };
