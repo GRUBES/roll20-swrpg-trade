@@ -14,10 +14,23 @@ import {Dice, DifficultyToDice, Macros} from "../util/enums";
 /* Sender of chat messages */
 const SpeakingAs = "TB-77";
 
+const damageControl = (current, threshold) => {
+    /*
+     * E-CRB 233
+     * Strain < half of Threshold -> Easy
+     * Strain >= half of Threshold -> Average
+     * Strain > Threshold -> Hard
+     */
+    let ratio = current / threshold;
+    return (ratio > 1) ? 3 : ((ratio >= 0.5) ? 2 : 1);
+};
+
 // Rules for recovering from Critical Hits to a Vehicle
 export const hit = () => {
     let content = {
-        title: "Critical Hit Recovery"
+        title: "Critical Hit Recovery",
+        flavor: "Difficulty of all checks is set by Severity of Critical Injury",
+        wide: "*Damage Control:* requires one Action; Mechanics check; repeatable as often as needed"
     };
     sendPrivate(SpeakingAs, content);
 };
@@ -47,7 +60,7 @@ export const injury = () => {
             - (Once per Week) *Another character* may perform **Mechanics** check`,
         header: "Difficulty Modifiers:",
         wide: "Increase by 2 for character healing/repairing their own Injury",
-        wide2: "Increase by 1 if proper equipment is not available",
+        wide2: "Increase by 1 if proper equipment is not available"
     };
     sendPrivate(SpeakingAs, content);
 };

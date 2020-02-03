@@ -78,6 +78,7 @@ export const Macros = {
     navChase: `[Chase](!swrpg-nav-chase)`,
     navMain: `[Terrain Navigation](!swrpg-nav-ui ${Entities.AT}{target|Vehicle|space-speed_current} ${Entities.AT}{target|Vehicle|space-silhouette} #NavHazard)`,
     partyLocation: `[Current Location](!${Entities.CR}#PartyLocation)`,
+    recoverDC: `[Medicine Check](!swrpg-recover-dc ${Entities.AT}{target|Vehicle|space-hull_trauma} ${Entities.AT}{target|Vehicle|space-hull_trauma|max})`,
     recoverHit: `[Critical Hit](!swrpg-recover-hit)`,
     recoverHull: `[Hull Trauma](!swrpg-recover-hull)`,
     recoverInjury: `[Critical Injury](!swrpg-recover-injury)`,
